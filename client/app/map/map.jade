@@ -1,14 +1,2 @@
 div(ng-include='"components/navbar/navbar.html"')
-.container
-  openlayers(ol-center='center', height='400px')
-    h1 Center autodiscover example
-    form
-      | Latitude : 
-      input(type='number', step='any', ng-model='center.lat') 
-      | Longitude : 
-      input(type='number', step='any', ng-model='center.lon') 
-      | Zoom : 
-      input(type='number', step='any', ng-model='center.zoom')
-               
-      button(ng-click='center.autodiscover=true') Discover position
- 
+openlayers(ol-center='center', ol-defaults="defaults")
