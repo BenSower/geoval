@@ -1,17 +1,20 @@
 'use strict';
 
 angular.module('geovalApp')
-  .controller('MapCtrl', function ($scope, $http, Auth, User) {
+    .controller('MapCtrl', function($scope) {
+        angular.extend($scope, {
+            center: {
+                lat: 0,
+                lon: 0,
+                autodiscover: true,  
+                projection: 'EPSG:4326'
+            },
+            defaults: {
+                interactions: {
+                    mouseWheelZoom: true
+                }
+            }
 
-    // Use the User $resource to fetch all users
-    $scope.users = User.query();
-
-    $scope.delete = function(user) {
-      User.remove({ id: user._id });
-      angular.forEach($scope.users, function(u, i) {
-        if (u === user) {
-          $scope.users.splice(i, 1);
-        }
-      });
-    };
-  });
+        });
+    });
+ 
