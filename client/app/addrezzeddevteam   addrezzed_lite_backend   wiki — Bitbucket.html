@@ -1,0 +1,1879 @@
+<!DOCTYPE html>
+<!-- saved from url=(0126)https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/edit/RESTful%20HTTP%20Api%20v2%20/api/v2/me/appear%20(POST) -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="utf-8"><script type="text/javascript" async="" src="./addrezzeddevteam   addrezzed_lite_backend   wiki — Bitbucket_files/inpage_linkid.js" id="undefined"></script><script type="text/javascript">(window.NREUM||(NREUM={})).loader_config={xpid:"VwMGVVZSGwIIUFBQDwU="};window.NREUM||(NREUM={}),__nr_require=function(t,e,n){function r(n){if(!e[n]){var o=e[n]={exports:{}};t[n][0].call(o.exports,function(e){var o=t[n][1][e];return r(o?o:e)},o,o.exports)}return e[n].exports}if("function"==typeof __nr_require)return __nr_require;for(var o=0;o<n.length;o++)r(n[o]);return r}({QJf3ax:[function(t,e){function n(t){function e(e,n,a){t&&t(e,n,a),a||(a={});for(var c=s(e),f=c.length,u=i(a,o,r),d=0;f>d;d++)c[d].apply(u,n);return u}function a(t,e){f[t]=s(t).concat(e)}function s(t){return f[t]||[]}function c(){return n(e)}var f={};return{on:a,emit:e,create:c,listeners:s,_events:f}}function r(){return{}}var o="nr@context",i=t("gos");e.exports=n()},{gos:"7eSDFh"}],ee:[function(t,e){e.exports=t("QJf3ax")},{}],3:[function(t){function e(t,e,n,i,s){try{c?c-=1:r("err",[s||new UncaughtException(t,e,n)])}catch(f){try{r("ierr",[f,(new Date).getTime(),!0])}catch(u){}}return"function"==typeof a?a.apply(this,o(arguments)):!1}function UncaughtException(t,e,n){this.message=t||"Uncaught error with no additional information",this.sourceURL=e,this.line=n}function n(t){r("err",[t,(new Date).getTime()])}var r=t("handle"),o=t(5),i=t("ee"),a=window.onerror,s=!1,c=0;t("loader").features.err=!0,window.onerror=e,NREUM.noticeError=n;try{throw new Error}catch(f){"stack"in f&&(t(1),t(4),"addEventListener"in window&&t(2),window.XMLHttpRequest&&XMLHttpRequest.prototype&&XMLHttpRequest.prototype.addEventListener&&t(3),s=!0)}i.on("fn-start",function(){s&&(c+=1)}),i.on("fn-err",function(t,e,r){s&&(this.thrown=!0,n(r))}),i.on("fn-end",function(){s&&!this.thrown&&c>0&&(c-=1)}),i.on("internal-error",function(t){r("ierr",[t,(new Date).getTime(),!0])})},{1:8,2:5,3:9,4:7,5:21,ee:"QJf3ax",handle:"D5DuLP",loader:"G9z0Bl"}],4:[function(t){function e(){}if(window.performance&&window.performance.timing&&window.performance.getEntriesByType){var n=t("ee"),r=t("handle"),o=t(2);t("loader").features.stn=!0,t(1),n.on("fn-start",function(t){var e=t[0];e instanceof Event&&(this.bstStart=Date.now())}),n.on("fn-end",function(t,e){var n=t[0];n instanceof Event&&r("bst",[n,e,this.bstStart,Date.now()])}),o.on("fn-start",function(t,e,n){this.bstStart=Date.now(),this.bstType=n}),o.on("fn-end",function(t,e){r("bstTimer",[e,this.bstStart,Date.now(),this.bstType])}),n.on("pushState-start",function(){this.time=Date.now(),this.startPath=location.pathname+location.hash}),n.on("pushState-end",function(){r("bstHist",[location.pathname+location.hash,this.startPath,this.time])}),"addEventListener"in window.performance&&(window.performance.addEventListener("webkitresourcetimingbufferfull",function(){r("bstResource",[window.performance.getEntriesByType("resource")]),window.performance.webkitClearResourceTimings()},!1),window.performance.addEventListener("resourcetimingbufferfull",function(){r("bstResource",[window.performance.getEntriesByType("resource")]),window.performance.clearResourceTimings()},!1)),document.addEventListener("scroll",e,!1),document.addEventListener("keypress",e,!1),document.addEventListener("click",e,!1)}},{1:6,2:8,ee:"QJf3ax",handle:"D5DuLP",loader:"G9z0Bl"}],5:[function(t,e){function n(t){i.inPlace(t,["addEventListener","removeEventListener"],"-",r)}function r(t){return t[1]}var o=(t(1),t("ee").create()),i=t(2)(o),a=t("gos");if(e.exports=o,n(window),"getPrototypeOf"in Object){for(var s=document;s&&!s.hasOwnProperty("addEventListener");)s=Object.getPrototypeOf(s);s&&n(s);for(var c=XMLHttpRequest.prototype;c&&!c.hasOwnProperty("addEventListener");)c=Object.getPrototypeOf(c);c&&n(c)}else XMLHttpRequest.prototype.hasOwnProperty("addEventListener")&&n(XMLHttpRequest.prototype);o.on("addEventListener-start",function(t){if(t[1]){var e=t[1];"function"==typeof e?this.wrapped=t[1]=a(e,"nr@wrapped",function(){return i(e,"fn-",null,e.name||"anonymous")}):"function"==typeof e.handleEvent&&i.inPlace(e,["handleEvent"],"fn-")}}),o.on("removeEventListener-start",function(t){var e=this.wrapped;e&&(t[1]=e)})},{1:21,2:22,ee:"QJf3ax",gos:"7eSDFh"}],6:[function(t,e){var n=(t(2),t("ee").create()),r=t(1)(n);e.exports=n,r.inPlace(window.history,["pushState"],"-")},{1:22,2:21,ee:"QJf3ax"}],7:[function(t,e){var n=(t(2),t("ee").create()),r=t(1)(n);e.exports=n,r.inPlace(window,["requestAnimationFrame","mozRequestAnimationFrame","webkitRequestAnimationFrame","msRequestAnimationFrame"],"raf-"),n.on("raf-start",function(t){t[0]=r(t[0],"fn-")})},{1:22,2:21,ee:"QJf3ax"}],8:[function(t,e){function n(t,e,n){var r=t[0];"string"==typeof r&&(r=new Function(r)),t[0]=o(r,"fn-",null,n)}var r=(t(2),t("ee").create()),o=t(1)(r);e.exports=r,o.inPlace(window,["setTimeout","setInterval","setImmediate"],"setTimer-"),r.on("setTimer-start",n)},{1:22,2:21,ee:"QJf3ax"}],9:[function(t,e){function n(){c.inPlace(this,d,"fn-")}function r(t,e){c.inPlace(e,["onreadystatechange"],"fn-")}function o(t,e){return e}var i=t("ee").create(),a=t(1),s=t(2),c=s(i),f=s(a),u=window.XMLHttpRequest,d=["onload","onerror","onabort","onloadstart","onloadend","onprogress","ontimeout"];e.exports=i,window.XMLHttpRequest=function(t){var e=new u(t);try{i.emit("new-xhr",[],e),f.inPlace(e,["addEventListener","removeEventListener"],"-",function(t,e){return e}),e.addEventListener("readystatechange",n,!1)}catch(r){try{i.emit("internal-error",[r])}catch(o){}}return e},window.XMLHttpRequest.prototype=u.prototype,c.inPlace(XMLHttpRequest.prototype,["open","send"],"-xhr-",o),i.on("send-xhr-start",r),i.on("open-xhr-start",r)},{1:5,2:22,ee:"QJf3ax"}],10:[function(t){function e(t){if("string"==typeof t&&t.length)return t.length;if("object"!=typeof t)return void 0;if("undefined"!=typeof ArrayBuffer&&t instanceof ArrayBuffer&&t.byteLength)return t.byteLength;if("undefined"!=typeof Blob&&t instanceof Blob&&t.size)return t.size;if("undefined"!=typeof FormData&&t instanceof FormData)return void 0;try{return JSON.stringify(t).length}catch(e){return void 0}}function n(t){var n=this.params,r=this.metrics;if(!this.ended){this.ended=!0;for(var i=0;c>i;i++)t.removeEventListener(s[i],this.listener,!1);if(!n.aborted){if(r.duration=(new Date).getTime()-this.startTime,4===t.readyState){n.status=t.status;var a=t.responseType,f="arraybuffer"===a||"blob"===a||"json"===a?t.response:t.responseText,u=e(f);if(u&&(r.rxSize=u),this.sameOrigin){var d=t.getResponseHeader("X-NewRelic-App-Data");d&&(n.cat=d.split(", ").pop())}}else n.status=0;r.cbTime=this.cbTime,o("xhr",[n,r,this.startTime])}}}function r(t,e){var n=i(e),r=t.params;r.host=n.hostname+":"+n.port,r.pathname=n.pathname,t.sameOrigin=n.sameOrigin}if(window.XMLHttpRequest&&XMLHttpRequest.prototype&&XMLHttpRequest.prototype.addEventListener&&!/CriOS/.test(navigator.userAgent)){t("loader").features.xhr=!0;var o=t("handle"),i=t(2),a=t("ee"),s=["load","error","abort","timeout"],c=s.length,f=t(1);t(4),t(3),a.on("new-xhr",function(){this.totalCbs=0,this.called=0,this.cbTime=0,this.end=n,this.ended=!1,this.xhrGuids={}}),a.on("open-xhr-start",function(t){this.params={method:t[0]},r(this,t[1]),this.metrics={}}),a.on("open-xhr-end",function(t,e){"loader_config"in NREUM&&"xpid"in NREUM.loader_config&&this.sameOrigin&&e.setRequestHeader("X-NewRelic-ID",NREUM.loader_config.xpid)}),a.on("send-xhr-start",function(t,n){var r=this.metrics,o=t[0],i=this;if(r&&o){var f=e(o);f&&(r.txSize=f)}this.startTime=(new Date).getTime(),this.listener=function(t){try{"abort"===t.type&&(i.params.aborted=!0),("load"!==t.type||i.called===i.totalCbs&&(i.onloadCalled||"function"!=typeof n.onload))&&i.end(n)}catch(e){try{a.emit("internal-error",[e])}catch(r){}}};for(var u=0;c>u;u++)n.addEventListener(s[u],this.listener,!1)}),a.on("xhr-cb-time",function(t,e,n){this.cbTime+=t,e?this.onloadCalled=!0:this.called+=1,this.called!==this.totalCbs||!this.onloadCalled&&"function"==typeof n.onload||this.end(n)}),a.on("xhr-load-added",function(t,e){var n=""+f(t)+!!e;this.xhrGuids&&!this.xhrGuids[n]&&(this.xhrGuids[n]=!0,this.totalCbs+=1)}),a.on("xhr-load-removed",function(t,e){var n=""+f(t)+!!e;this.xhrGuids&&this.xhrGuids[n]&&(delete this.xhrGuids[n],this.totalCbs-=1)}),a.on("addEventListener-end",function(t,e){e instanceof XMLHttpRequest&&"load"===t[0]&&a.emit("xhr-load-added",[t[1],t[2]],e)}),a.on("removeEventListener-end",function(t,e){e instanceof XMLHttpRequest&&"load"===t[0]&&a.emit("xhr-load-removed",[t[1],t[2]],e)}),a.on("fn-start",function(t,e,n){e instanceof XMLHttpRequest&&("onload"===n&&(this.onload=!0),("load"===(t[0]&&t[0].type)||this.onload)&&(this.xhrCbStart=(new Date).getTime()))}),a.on("fn-end",function(t,e){this.xhrCbStart&&a.emit("xhr-cb-time",[(new Date).getTime()-this.xhrCbStart,this.onload,e],e)})}},{1:"XL7HBI",2:11,3:9,4:5,ee:"QJf3ax",handle:"D5DuLP",loader:"G9z0Bl"}],11:[function(t,e){e.exports=function(t){var e=document.createElement("a"),n=window.location,r={};e.href=t,r.port=e.port;var o=e.href.split("://");return!r.port&&o[1]&&(r.port=o[1].split("/")[0].split("@").pop().split(":")[1]),r.port&&"0"!==r.port||(r.port="https"===o[0]?"443":"80"),r.hostname=e.hostname||n.hostname,r.pathname=e.pathname,r.protocol=o[0],"/"!==r.pathname.charAt(0)&&(r.pathname="/"+r.pathname),r.sameOrigin=!e.hostname||e.hostname===document.domain&&e.port===n.port&&e.protocol===n.protocol,r}},{}],gos:[function(t,e){e.exports=t("7eSDFh")},{}],"7eSDFh":[function(t,e){function n(t,e,n){if(r.call(t,e))return t[e];var o=n();if(Object.defineProperty&&Object.keys)try{return Object.defineProperty(t,e,{value:o,writable:!0,enumerable:!1}),o}catch(i){}return t[e]=o,o}var r=Object.prototype.hasOwnProperty;e.exports=n},{}],D5DuLP:[function(t,e){function n(t,e,n){return r.listeners(t).length?r.emit(t,e,n):(o[t]||(o[t]=[]),void o[t].push(e))}var r=t("ee").create(),o={};e.exports=n,n.ee=r,r.q=o},{ee:"QJf3ax"}],handle:[function(t,e){e.exports=t("D5DuLP")},{}],XL7HBI:[function(t,e){function n(t){var e=typeof t;return!t||"object"!==e&&"function"!==e?-1:t===window?0:i(t,o,function(){return r++})}var r=1,o="nr@id",i=t("gos");e.exports=n},{gos:"7eSDFh"}],id:[function(t,e){e.exports=t("XL7HBI")},{}],loader:[function(t,e){e.exports=t("G9z0Bl")},{}],G9z0Bl:[function(t,e){function n(){var t=l.info=NREUM.info;if(t&&t.licenseKey&&t.applicationID&&f&&f.body){s(h,function(e,n){e in t||(t[e]=n)}),l.proto="https"===p.split(":")[0]||t.sslForHttp?"https://":"http://",a("mark",["onload",i()]);var e=f.createElement("script");e.src=l.proto+t.agent,f.body.appendChild(e)}}function r(){"complete"===f.readyState&&o()}function o(){a("mark",["domContent",i()])}function i(){return(new Date).getTime()}var a=t("handle"),s=t(1),c=window,f=c.document,u="addEventListener",d="attachEvent",p=(""+location).split("?")[0],h={beacon:"bam.nr-data.net",errorBeacon:"bam.nr-data.net",agent:"js-agent.newrelic.com/nr-515.min.js"},l=e.exports={offset:i(),origin:p,features:{}};f[u]?(f[u]("DOMContentLoaded",o,!1),c[u]("load",n,!1)):(f[d]("onreadystatechange",r),c[d]("onload",n)),a("mark",["firstbyte",i()])},{1:20,handle:"D5DuLP"}],20:[function(t,e){function n(t,e){var n=[],o="",i=0;for(o in t)r.call(t,o)&&(n[i]=e(o,t[o]),i+=1);return n}var r=Object.prototype.hasOwnProperty;e.exports=n},{}],21:[function(t,e){function n(t,e,n){e||(e=0),"undefined"==typeof n&&(n=t?t.length:0);for(var r=-1,o=n-e||0,i=Array(0>o?0:o);++r<o;)i[r]=t[e+r];return i}e.exports=n},{}],22:[function(t,e){function n(t){return!(t&&"function"==typeof t&&t.apply&&!t[i])}var r=t("ee"),o=t(1),i="nr@wrapper",a=Object.prototype.hasOwnProperty;e.exports=function(t){function e(t,e,r,a){function nrWrapper(){var n,i,s,f;try{i=this,n=o(arguments),s=r&&r(n,i)||{}}catch(d){u([d,"",[n,i,a],s])}c(e+"start",[n,i,a],s);try{return f=t.apply(i,n)}catch(p){throw c(e+"err",[n,i,p],s),p}finally{c(e+"end",[n,i,f],s)}}return n(t)?t:(e||(e=""),nrWrapper[i]=!0,f(t,nrWrapper),nrWrapper)}function s(t,r,o,i){o||(o="");var a,s,c,f="-"===o.charAt(0);for(c=0;c<r.length;c++)s=r[c],a=t[s],n(a)||(t[s]=e(a,f?s+o:o,i,s,t))}function c(e,n,r){try{t.emit(e,n,r)}catch(o){u([o,e,n,r])}}function f(t,e){if(Object.defineProperty&&Object.keys)try{var n=Object.keys(t);return n.forEach(function(n){Object.defineProperty(e,n,{get:function(){return t[n]},set:function(e){return t[n]=e,e}})}),e}catch(r){u([r])}for(var o in t)a.call(t,o)&&(e[o]=t[o]);return e}function u(e){try{t.emit("internal-error",e)}catch(n){}}return t||(t=r),e.inPlace=s,e.flag=i,e}},{1:21,ee:"QJf3ax"}]},{},["G9z0Bl",3,10,4]);</script><script type="text/javascript">window.NREUM||(NREUM={});NREUM.info={"beacon":"beacon-4.newrelic.com","queueTime":0,"licenseKey":"a2cef8c3d3","agent":"js-agent.newrelic.com/nr-515.min.js","transactionName":"Z11RZxdWW0cEVkYLDV4XdUYLVEFdClsdAAtEWkZQDlJBGgRFQhFMR1FYWktBXFESRggHBllM","userAttributes":"SxpaQDpWQEANUFwWC1NZR1YBFQ9AF0BXTkBZS2xSFV4XDgNUXhEHHBpGQABFaloEWFdAWBJaVl06RFRBAEcQHw==","applicationID":"1841284","errorBeacon":"bam.nr-data.net","applicationTime":185}</script>
+  <title>
+  addrezzeddevteam / addrezzed_lite_backend / wiki — Bitbucket
+</title>
+  
+
+
+<meta id="bb-canon-url" name="bb-canon-url" content="https://bitbucket.org">
+
+<meta name="description" content="">
+<meta name="bb-view-name" content="bitbucket.apps.wiki.views.edit">
+
+<meta name="application-name" content="Bitbucket">
+<meta name="apple-mobile-web-app-title" content="Bitbucket">
+<meta name="theme-color" content="#205081">
+<meta name="msapplication-TileColor" content="#205081">
+<meta name="msapplication-TileImage" content="https://d3oaxc4q5k2d6q.cloudfront.net/m/7cb54ff512e6/img/logos/bitbucket/white-256.png">
+<link rel="apple-touch-icon" sizes="192x192" type="image/png" href="https://d3oaxc4q5k2d6q.cloudfront.net/m/7cb54ff512e6//img/bitbucket_avatar/192/bitbucket.png">
+<link rel="icon" sizes="192x192" type="image/png" href="https://d3oaxc4q5k2d6q.cloudfront.net/m/7cb54ff512e6//img/bitbucket_avatar/192/bitbucket.png">
+<link rel="icon" sizes="16x16 32x32" type="image/x-icon" href="https://bitbucket.org/favicon.ico">
+<link rel="search" type="application/opensearchdescription+xml" href="https://bitbucket.org/opensearch.xml" title="Bitbucket">
+
+  
+    
+  
+<link rel="stylesheet" href="./addrezzeddevteam   addrezzed_lite_backend   wiki — Bitbucket_files/7670b82cb28a.css" type="text/css">
+<link rel="stylesheet" href="./addrezzeddevteam   addrezzed_lite_backend   wiki — Bitbucket_files/801806e71c93.css" type="text/css">
+
+
+  
+  <!--[if lte IE 9]><link rel="stylesheet" href="https://d3oaxc4q5k2d6q.cloudfront.net/m/7cb54ff512e6/bower_components/fd-slider/css/fd-slider.css" media="all"><![endif]-->
+  <!--[if IE 9]><link rel="stylesheet" href="https://d3oaxc4q5k2d6q.cloudfront.net/m/7cb54ff512e6/bower_components/bb-aui/aui-next/css/aui-ie9.css" media="all"><![endif]-->
+  <!--[if IE]><link rel="stylesheet" href="https://d3oaxc4q5k2d6q.cloudfront.net/m/7cb54ff512e6/css/aui-overrides-ie.css" media="all"><![endif]-->
+  
+  
+    <link href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/rss?token=bf75612512491de80d4781eb6705b904" rel="alternate nofollow" type="application/rss+xml" title="RSS feed for addrezzed_lite_backend">
+  
+
+<script src="./addrezzeddevteam   addrezzed_lite_backend   wiki — Bitbucket_files/ga.js" async="true"></script><style></style><style type="text/css"></style><style type="text/css"></style><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="components/clone/clone-dialog" src="./addrezzeddevteam   addrezzed_lite_backend   wiki — Bitbucket_files/clone-dialog.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="repo/create-branch" src="./addrezzeddevteam   addrezzed_lite_backend   wiki — Bitbucket_files/create-branch.js"></script></head>
+<body class="production aui-page-sidebar aui-sidebar-collapsed linux chrome" data-base-url="https://bitbucket.org" data-no-avatar-image="https://d3oaxc4q5k2d6q.cloudfront.net/m/7cb54ff512e6/img/default_avatar/16/user_blue.png" data-current-user="{&quot;username&quot;: &quot;ben_sauer&quot;, &quot;displayName&quot;: &quot;Ben Sower&quot;, &quot;firstName&quot;: &quot;Ben&quot;, &quot;avatarUrl&quot;: &quot;https://bitbucket-assetroot.s3.amazonaws.com/c/photos/2014/Dec/01/418314320-0-ben_sauer-avatar_avatar.png&quot;, &quot;lastName&quot;: &quot;Sower&quot;, &quot;isTeam&quot;: false, &quot;isSshEnabled&quot;: true, &quot;isKbdShortcutsEnabled&quot;: true, &quot;id&quot;: 3641042, &quot;isAuthenticated&quot;: true}" data-atlassian-id="{&quot;loginStatusUrl&quot;: &quot;https://id.atlassian.com/profile/rest/profile&quot;}" data-settings="{&quot;MENTIONS_MIN_QUERY_LENGTH&quot;: 3}" data-flag-super-touch-point="true" data-current-repo="{&quot;scm&quot;: &quot;git&quot;, &quot;readOnly&quot;: false, &quot;mainbranch&quot;: {&quot;name&quot;: &quot;master&quot;}, &quot;language&quot;: &quot;javascript&quot;, &quot;creator&quot;: {&quot;username&quot;: &quot;derfeli&quot;}, &quot;owner&quot;: {&quot;username&quot;: &quot;addrezzeddevteam&quot;, &quot;isTeam&quot;: true}, &quot;fullslug&quot;: &quot;addrezzeddevteam/addrezzed_lite_backend&quot;, &quot;slug&quot;: &quot;addrezzed_lite_backend&quot;, &quot;id&quot;: 6987534, &quot;pygmentsLanguage&quot;: &quot;javascript&quot;}" data-aui-version="5.7.12">
+
+  
+    <script type="text/javascript" src="./addrezzeddevteam   addrezzed_lite_backend   wiki — Bitbucket_files/9f0feb819aab.js"></script>
+  
+
+
+<div id="page">
+  <div id="wrapper">
+    
+  
+
+
+    <header id="header" role="banner" data-modules="header/tracking">
+      
+  
+  
+
+
+      <nav class="aui-header aui-dropdown2-trigger-group" role="navigation" data-aui-responsive="true">
+        <div class="aui-header-inner">
+          <div class="aui-header-primary">
+            
+  
+  <div class="aui-header-before">
+    <a class="aui-dropdown2-trigger app-switcher-trigger" aria-owns="app-switcher" aria-haspopup="true" tabindex="0" aria-controls="app-switcher">
+      <span class="aui-icon aui-icon-small aui-iconfont-appswitcher">Verknüpfte Anwendungen</span>
+    </a>
+    
+      <nav id="app-switcher" class="aui-dropdown2 aui-style-default aui-dropdown2-disable-active-class">
+        <div class="aui-dropdown2-section blank-slate">
+          <h2>Verknüpfe Bitbucket mit anderen großartigen Atlassian-Produkten:</h2>
+          <dl>
+            <dt class="jira">JIRA</dt>
+            <dd>Projekt- und Ticketverfolgung</dd>
+            <dt class="confluence">Confluence</dt>
+            <dd>Gemeinsam arbeiten und Inhalte teilen</dd>
+            <dt class="bamboo">Bamboo</dt>
+            <dd>Kontinuierliche Integration</dd>
+          </dl>
+          <a href="https://www.atlassian.com/ondemand/signup/?product=jira.ondemand,com.atlassian.bitbucket&utm_source=bitbucket&utm_medium=button&utm_campaign=app_switcher&utm_content=trial_button" class="aui-button aui-button-primary" target="_blank" id="ondemand-trial">kostenlos testen</a>
+          <a href="https://www.atlassian.com/software?utm_source=bitbucket&utm_medium=button&utm_campaign=app_switcher&utm_content=learn_more_button#cloud-products" class="aui-button" target="_blank" id="ondemand-learn-more">mehr erfahren</a>
+        </div>
+      </nav>
+    
+  </div>
+
+
+            
+              <h1 class="aui-header-logo aui-header-logo-bitbucket " id="logo">
+                <a href="https://bitbucket.org/" title="( type g then d )">
+                  <span class="aui-header-logo-device">Bitbucket</span>
+                </a>
+              </h1>
+            
+            
+  
+<script id="repo-dropdown-template" type="text/html">
+    
+
+[[#hasViewed]]
+  <div class="aui-dropdown2-section">
+    <strong class="viewed">Kürzlich angesehen</strong>
+    <ul class="aui-list-truncate">
+      [[#viewed]]
+        <li class="[[#is_private]]private[[/is_private]][[^is_private]]public[[/is_private]] repository">
+          <a href="[[url]]" title="[[owner]]/[[name]]" class="aui-icon-container recently-viewed repo-link">
+            <img class="repo-avatar size16" src="[[{avatar}]]" alt="[[owner]]/[[name]] avatar"/>
+            [[owner]] / [[name]]
+          </a>
+        </li>
+      [[/viewed]]
+    </ul>
+  </div>
+[[/hasViewed]]
+[[#hasUpdated]]
+<div class="aui-dropdown2-section">
+  <strong class="updated">Kürzlich aktualisiert</strong>
+  <ul class="aui-list-truncate">
+    [[#updated]]
+    <li class="[[#is_private]]private[[/is_private]][[^is_private]]public[[/is_private]] repository">
+      <a href="[[url]]" title="[[owner]]/[[name]]" class="aui-icon-container recently-updated repo-link">
+        <img class="repo-avatar size16" src="[[{avatar}]]" alt="[[owner]]/[[name]] avatar"/>
+        [[owner]] / [[name]]
+      </a>
+    </li>
+    [[/updated]]
+  </ul>
+</div>
+[[/hasUpdated]]
+
+  </script>
+<ul class="aui-nav __skate" style="width: auto;">
+  
+    <li>
+      <a class="aui-dropdown2-trigger" aria-owns="dashboard-dropdown" aria-haspopup="true" href="https://bitbucket.org/dashboard/overview" id="dashboard-dropdown-trigger">
+        Dashboard
+        <span class="aui-icon-dropdown"></span>
+      </a>
+      <nav id="dashboard-dropdown" class="aui-dropdown2 aui-style-default">
+        <div class="aui-dropdown2-section">
+          <ul>
+            <li>
+              <a href="https://bitbucket.org/dashboard/overview" id="dashboard-overview-link">
+                Übersicht
+              </a>
+            </li>
+            <li>
+              <a href="https://bitbucket.org/dashboard/pullrequests" id="dashboard-prs-link">
+                Pull-Requests
+              </a>
+            </li>
+            <li>
+              <a href="https://bitbucket.org/dashboard/issues" id="dashboard-issues-link">
+                Tickets
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </li>
+    
+      <script id="team-dropdown-template" type="text/html">
+    
+
+<div class="aui-dropdown2-section primary">
+  <ul class="aui-list-truncate">
+    [[#teams]]
+      <li>
+        <a href="/[[username]]" class="aui-icon-container team-link">
+          <img class="avatar avatar16" src="[[avatar]]" alt="" width="16" height="16" />[[display_name]]
+        </a>
+      </li>
+    [[/teams]]
+  </ul>
+</div>
+
+<div class="aui-dropdown2-section">
+  <ul>
+    <li>
+      <a href="/account/create-team/?team_source=header"
+          data-modules="registration/create-team-link"
+          id="create-team-link">Team erstellen</a>
+    </li>
+  </ul>
+</div>
+
+  </script>
+      <li>
+        <a class="aui-dropdown2-trigger" href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/edit/RESTful%20HTTP%20Api%20v2%20/api/v2/me/appear%20(POST)#" id="teams-dropdown-trigger" data-modules="header/teams-dropdown" aria-owns="teams-dropdown" aria-haspopup="true">
+          Teams
+          <span class="aui-icon-dropdown"></span>
+        </a>
+        <div id="teams-dropdown" class="aui-dropdown2 aui-style-default">
+          <div class="aui-dropdown2-section blank-slate">
+            <p>Organize your team's work and supercharge repository administration.</p>
+            <a class="aui-button aui-button-primary" id="create-team-blank-slate" href="https://bitbucket.org/account/create-team/?team_source=menu_blank">
+              Team erstellen
+            </a>
+          </div>
+        </div>
+      </li>
+    
+    <li>
+      <a class="aui-dropdown2-trigger selected" aria-owns="repo-dropdown" aria-haspopup="true" href="https://bitbucket.org/repo/mine" id="repositories-dropdown-trigger">
+        Repositorys
+        <span class="aui-icon-dropdown"></span>
+      </a>
+      <nav id="repo-dropdown" class="aui-dropdown2 aui-style-default">
+        <div id="repo-dropdown-recent" data-modules="header/recent-repos"></div>
+        <div class="aui-dropdown2-section">
+          <ul>
+            <li>
+              <a href="https://bitbucket.org/repo/create" class="new-repository" id="create-repo-link" title="( type c then r )">
+                Repository erstellen
+              </a>
+            </li>
+            <li>
+              <a href="https://bitbucket.org/repo/import" class="import-repository" id="import-repo-link" title="( type i then r )">
+                Repository importieren
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </li>
+    
+    <li style="display: none;"><a id="aui-responsive-header-dropdown-trigger-0" class="  aui-dropdown2-trigger __skate" aria-owns="aui-responsive-header-dropdown-content-0" aria-controls="aui-responsive-header-dropdown-content-0" aria-haspopup="true" href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/edit/RESTful%20HTTP%20Api%20v2%20/api/v2/me/appear%20(POST)#" data-aui-trigger="">More<span class="icon aui-icon-dropdown"></span></a><div id="aui-responsive-header-dropdown-content-0" class="aui-dropdown2 aui-style-default"><div class="aui-dropdown2-section"><ul id="aui-responsive-header-dropdown-list-0"></ul></div></div></li><li>
+      
+        <a class="aui-button aui-button-primary" href="https://bitbucket.org/repo/create" id="repo-create-cta" title="Repository erstellen">
+          Erstellen
+        </a>
+      
+    </li>
+  
+</ul>
+
+          </div>
+          <div class="aui-header-secondary">
+            
+  
+
+<ul role="menu" class="aui-nav __skate">
+  
+  <li>
+    <form action="https://bitbucket.org/repo/all" method="get" class="aui-quicksearch">
+      <label for="search-query" class="assistive">owner/repository</label>
+      <input id="search-query" class="bb-repo-typeahead" type="text" placeholder="Find a repository…" name="name" autocomplete="off" data-bb-typeahead-focus="false" title="( type / )">
+    </form>
+  </li>
+  <li id="ace-stp-menu">
+    <a id="ace-stp-menu-link" class="aui-nav-link __skate" href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/edit/RESTful%20HTTP%20Api%20v2%20/api/v2/me/appear%20(POST)#" aria-controls="super-touch-point-dialog" data-aui-trigger="" data-modules="aui/inline-dialog2" aria-expanded="false" aria-haspopup="true">
+  <span id="ace-stp-menu-icon" class="aui-icon aui-icon-small ace-stp-icon-message"></span>
+  <span class="aui-icon-dropdown"></span>
+</a>
+  </li>
+  
+    
+  
+  
+    <li>
+      <a class="aui-dropdown2-trigger" aria-owns="user-dropdown" aria-haspopup="true" data-container="#header .aui-header-inner" href="https://bitbucket.org/ben_sauer" title="ben_sauer" id="user-dropdown-trigger">
+        <div class="aui-avatar aui-avatar-small">
+            <div class="aui-avatar-inner">
+                <img src="./addrezzeddevteam   addrezzed_lite_backend   wiki — Bitbucket_files/418314320-0-ben_sauer-avatar_avatar.png" class="" data-src-url="https://bitbucket-assetroot.s3.amazonaws.com/c/photos/2014/Dec/01/418314320-0-ben_sauer-avatar_avatar.png" data-src-url-2x="https://bitbucket-assetroot.s3.amazonaws.com/c/photos/2014/Dec/01/418314320-0-ben_sauer-avatar_avatar.png" alt="Logged in as ben_sauer" height="24" width="24">
+            </div>
+        </div>
+      </a>
+      <nav id="user-dropdown" class="aui-dropdown2 aui-style-default" aria-hidden="true">
+        <div class="aui-dropdown2-section">
+          <ul>
+            <li>
+              <a href="https://bitbucket.org/ben_sauer" id="profile-link">Profil anzeigen</a>
+            </li>
+            <li>
+              <a href="https://bitbucket.org/account/user/ben_sauer/" id="account-link" title="( type g then a )">Benutzerkonto verwalten</a>
+            </li>
+            <li>
+                <a href="https://bitbucket.org/account/notifications/" id="inbox-link" title="( type g then i )">Posteingang <span id="inbox-unread-count"></span></a>
+            </li>
+            <li>
+              <a href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/edit/RESTful%20HTTP%20Api%20v2%20/api/v2/me/appear%20(POST)#general-invite" class="general-invite-link" id="general-invite-dropdown" data-modules="header/general-invite">Lade einen Freund ein</a>
+              <script id="general-invite-template" type="text/html">
+    
+<div id="general-invite">
+  <form class="aui invitation-form" id="general-invite-form" method="post" novalidate>
+    <div class="error aui-message hidden">
+      <span class="aui-icon icon-error"></span>
+      <div class="message"></div>
+    </div>
+    <div class="field-group">
+      <label for="id_general_email_address">E-Mail-Adresse</label>
+      <input type="email" id="id_general_email_address" name="email-address" class="text long-field">
+    </div>
+  </form>
+</div>
+
+  </script>
+            </li>
+          </ul>
+        </div>
+        <div class="aui-dropdown2-section">
+          <ul>
+            <li>
+              
+                <a href="https://bitbucket.org/account/signout/" id="log-out-link">Abmelden</a>
+              
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </li>
+  
+</ul>
+
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    
+  <header id="account-warning" role="banner" data-modules="header/account-warning" class="aui-message-banner warning
+        ">
+  <div class="aui-message-banner-inner">
+    <span class="aui-icon aui-icon-warning"></span>
+    <span class="message">
+    
+    </span>
+  </div>
+</header>
+
+    
+  
+<header id="aui-message-bar">
+  
+</header>
+
+
+    <div id="content" role="main">
+      
+  
+
+<div class="aui-sidebar repo-sidebar" data-modules="components/repo-sidebar,experiment/grow1279-guide" aria-expanded="false">
+  <div class="aui-sidebar-wrapper" style="height: 872px;">
+    <div class="aui-sidebar-body">
+      <header class="aui-page-header">
+        <div class="aui-page-header-inner">
+          <div class="aui-page-header-image">
+            <a href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend" id="repo-avatar-link" class="repo-link">
+              <span class="aui-avatar aui-avatar-large aui-avatar-project">
+                <span class="aui-avatar-inner">
+                  <img src="./addrezzeddevteam   addrezzed_lite_backend   wiki — Bitbucket_files/js_64.png" class="" data-src-url="https://d3oaxc4q5k2d6q.cloudfront.net/m/7cb54ff512e6/img/language-avatars/js_64.png" data-src-url-2x="https://d3oaxc4q5k2d6q.cloudfront.net/m/7cb54ff512e6/img/language-avatars/js_128.png" alt="">
+                </span>
+              </span>
+            </a>
+          </div>
+          <div class="aui-page-header-main">
+            <ol class="aui-nav aui-nav-breadcrumbs __skate">
+              <li>
+                <a href="https://bitbucket.org/addrezzeddevteam" id="repo-owner-link">addrezzeddevteam</a>
+              </li>
+            </ol>
+            <h1>
+              
+                <span class="aui-icon aui-icon-small aui-iconfont-locked"></span>
+              
+              <a href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend" title="addrezzed_lite_backend" class="entity-name">addrezzed_lite_backend</a>
+            </h1>
+          </div>
+        </div>
+      </header>
+      <nav class="aui-navgroup aui-navgroup-vertical">
+        <div class="aui-navgroup-inner">
+          
+            
+              <div class="aui-sidebar-group aui-sidebar-group-actions repository-actions forks-enabled can-create">
+                <div class="aui-nav-heading">
+                  <strong>Aktionen</strong>
+                </div>
+                <ul id="repo-actions" class="aui-nav __skate">
+                  
+                  
+                    <li>
+                      <a id="repo-clone-button" class="aui-nav-item " href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/edit/RESTful%20HTTP%20Api%20v2%20/api/v2/me/appear%20(POST)#clone" data-modules="components/clone/clone-dialog">
+                        <span class="aui-icon icon-clone"></span>
+                        <span class="aui-nav-item-label">Klonen</span>
+                      </a>
+                    </li>
+                  
+                    <li>
+                      <a id="repo-create-branch-link" class="aui-nav-item create-branch-button" href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/branch" data-modules="repo/create-branch" title="( type x then b )">
+                        <span class="aui-icon icon-create-branch"></span>
+                        <span class="aui-nav-item-label">erstelle Branch</span>
+                      </a>
+                    </li>
+                  
+                    <li>
+                      <a id="repo-create-pull-request-link" class="aui-nav-item " href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/pull-request/new" title="( type x then p )">
+                        <span class="aui-icon icon-create-pull-request"></span>
+                        <span class="aui-nav-item-label">Pull-Request erstellen</span>
+                      </a>
+                    </li>
+                  
+                    <li>
+                      <a id="repo-compare-link" class="aui-nav-item " href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/branches/compare" title="( type x then c )">
+                        <span class="aui-icon aui-icon-small aui-iconfont-devtools-compare"></span>
+                        <span class="aui-nav-item-label">Vergleichen</span>
+                      </a>
+                    </li>
+                  
+                    <li>
+                      <a id="repo-fork-link" class="aui-nav-item " href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/fork" title="( type x then f )">
+                        <span class="aui-icon icon-fork"></span>
+                        <span class="aui-nav-item-label">Fork</span>
+                      </a>
+                    </li>
+                  
+                </ul>
+              </div>
+            
+          
+          <div class="aui-sidebar-group aui-sidebar-group-tier-one repository-sections">
+            <div class="aui-nav-heading">
+              <strong>Navigation</strong>
+            </div>
+            <ul class="aui-nav __skate">
+              
+              
+                <li>
+                  <a id="repo-overview-link" class="aui-nav-item " href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/overview" title="( type r then o )">
+                    
+                    <span class="aui-icon icon-overview"></span>
+                    <span class="aui-nav-item-label">Übersicht</span>
+                  </a>
+                </li>
+              
+                <li>
+                  <a id="repo-source-link" class="aui-nav-item " href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/src" title="( type r then s )">
+                    
+                    <span class="aui-icon icon-source"></span>
+                    <span class="aui-nav-item-label">Quellcode</span>
+                  </a>
+                </li>
+              
+                <li>
+                  <a id="repo-commits-link" class="aui-nav-item " href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/commits" title="( type r then c )">
+                    
+                    <span class="aui-icon icon-commits"></span>
+                    <span class="aui-nav-item-label">Commits</span>
+                  </a>
+                </li>
+              
+                <li>
+                  <a id="repo-branches-link" class="aui-nav-item " href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/branches" title="( type r then b )">
+                    
+                    <span class="aui-icon icon-branches"></span>
+                    <span class="aui-nav-item-label">Branches</span>
+                  </a>
+                </li>
+              
+                <li>
+                  <a id="repo-pullrequests-link" class="aui-nav-item " href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/pull-requests" title="( type r then p )">
+                    
+                    <span class="aui-icon icon-pull-requests"></span>
+                    <span class="aui-nav-item-label">Pull-Requests</span>
+                  </a>
+                </li>
+              
+                <li>
+                  <a id="repo-issues-link" class="aui-nav-item " href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/issues?status=new&status=open" title=" ( type r then i )">
+                    
+                      <span class="aui-badge" title="6 active issues" id="issues-count">6</span>
+                    
+                    <span class="aui-icon icon-issues"></span>
+                    <span class="aui-nav-item-label">Tickets</span>
+                  </a>
+                </li>
+              
+                <li class="aui-nav-selected">
+                  <a id="repo-wiki-link" class="aui-nav-item " href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki" title="( type r then w )">
+                    
+                    <span class="aui-icon icon-wiki"></span>
+                    <span class="aui-nav-item-label">Wiki</span>
+                  </a>
+                </li>
+              
+                <li>
+                  <a id="repo-downloads-link" class="aui-nav-item " href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/downloads" title="( type r then d )">
+                    
+                    <span class="aui-icon icon-downloads"></span>
+                    <span class="aui-nav-item-label">Downloads</span>
+                  </a>
+                </li>
+              
+            </ul>
+          </div>
+          <div class="aui-sidebar-group aui-sidebar-group-tier-one repository-settings">
+            <div class="aui-nav-heading">
+              <strong class="assistive">Settings</strong>
+            </div>
+            <ul class="aui-nav __skate">
+              
+              
+                <li>
+                  <a id="repo-settings-link" class="aui-nav-item " href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/admin">
+                    
+                    <span class="aui-icon icon-settings"></span>
+                    <span class="aui-nav-item-label">Settings</span>
+                  </a>
+                </li>
+              
+            </ul>
+          </div>
+          
+            
+              <div class="hidden kb-shortcut-actions">
+                <a id="repo-create-issue" href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/issues/new" title="( type x then i )"></a>
+              </div>
+            
+          
+        </div>
+      </nav>
+    </div>
+    <div class="aui-sidebar-footer">
+      <a class="aui-sidebar-toggle aui-sidebar-footer-tipsy aui-button aui-button-subtle"><span class="aui-icon"></span></a>
+    </div>
+  </div>
+  
+    <script id="share-repo-template" type="text/html">
+  
+
+<div class="clearfix">
+   <span class="repo-avatar-container size32" title="addrezzeddevteam/addrezzed_lite_backend">
+  <img alt="addrezzeddevteam/addrezzed_lite_backend" src="https://d3oaxc4q5k2d6q.cloudfront.net/m/7cb54ff512e6/img/language-avatars/default_32.png" class="deferred-image" data-src-url="https://d3oaxc4q5k2d6q.cloudfront.net/m/7cb54ff512e6/img/language-avatars/js_32.png" data-src-url-2x="https://d3oaxc4q5k2d6q.cloudfront.net/m/7cb54ff512e6/img/language-avatars/js_64.png">
+</span>
+
+  <span class="repo-name-container">
+    addrezzeddevteam / addrezzed_lite_backend
+  </span>
+</div>
+<p class="helptext">
+  
+    Existing users are granted access to this repository immediately.
+    New users will be sent an invitation.
+  
+</p>
+<div class="manage-repo-link"
+  data-manage-link="/addrezzeddevteam/addrezzed_lite_backend/admin/access"></div>
+<div class="share-form"></div>
+
+</script>
+    <script id="share-dialog-template" type="text/html">
+  <div class="aui-tabs horizontal-tabs">
+  <ul class="tabs-menu">
+    [[#panels]]
+      <li class="menu-item">
+        <a href="#[[tabId]]"><strong>[[display]]</strong></a>
+      </li>
+    [[/panels]]
+  </ul>
+  [[#panels]]
+    <div class="tabs-pane" id="[[tabId]]"></div>
+  [[/panels]]
+</div>
+
+</script>
+  
+  
+
+<div id="repo-clone-dialog" class="clone-dialog hidden">
+  
+<div class="clone-url ssh" data-modules="components/clone/clone-url-dropdown">
+  <div class="aui-buttons">
+    <a href="ssh://git@bitbucket.org/addrezzeddevteam/addrezzed_lite_backend.git" class="aui-button aui-dropdown2-trigger" aria-haspopup="true" aria-owns="clone-url-dropdown-header">
+      <span class="dropdown-text">SSH
+          </span>
+    </a>
+    <div id="clone-url-dropdown-header" class="aui-dropdown2 aui-style-default">
+      <ul class="aui-list-truncate">
+        <li>
+          <a href="https://ben_sauer@bitbucket.org/addrezzeddevteam/addrezzed_lite_backend.git" data-command="git clone https://ben_sauer@bitbucket.org/addrezzeddevteam/addrezzed_lite_backend.git" class="item-link https">HTTPS
+          </a>
+        </li>
+        <li>
+          <a href="ssh://git@bitbucket.org/addrezzeddevteam/addrezzed_lite_backend.git" data-command="git clone git@bitbucket.org:addrezzeddevteam/addrezzed_lite_backend.git" class="item-link ssh">SSH
+          </a>
+        </li>
+      </ul>
+    </div>
+    <input type="text" readonly="readonly" class="clone-url-input" value="git clone https://ben_sauer@bitbucket.org/addrezzeddevteam/addrezzed_lite_backend.git">
+  </div>
+  
+  <p>Brauchen Sie Hilfe beim Clonen? Besuchen Sie
+     <a href="https://confluence.atlassian.com/x/cgozDQ" target="_blank">Bitbucket 101</a>.</p>
+  
+</div>
+
+  
+
+<div class="sourcetree-callout clone-in-sourcetree" data-modules="components/clone/clone-in-sourcetree" data-https-url="https://ben_sauer@bitbucket.org/addrezzeddevteam/addrezzed_lite_backend.git" data-ssh-url="ssh://git@bitbucket.org/addrezzeddevteam/addrezzed_lite_backend.git">
+
+  <div>
+    <button class="aui-button aui-button-primary">
+      
+        In SourceTree klonen
+      
+    </button>
+  </div>
+
+  <p class="windows-text">
+      
+<a href="http://www.sourcetreeapp.com/?utm_source=internal&utm_medium=link&utm_campaign=clone_repo_win" target="_blank">Atlassian SourceTree</a>
+ist ein kostenloser Git- und Mercurial-Client für Windows.
+  </p>
+  <p class="mac-text">
+      
+<a href="http://www.sourcetreeapp.com/?utm_source=internal&utm_medium=link&utm_campaign=clone_repo_win" target="_blank">Atlassian SourceTree</a>
+ist ein kostenloser Git- und Mercurial-Client für Mac.
+  </p>
+</div>
+
+</div>
+
+</div>
+
+
+      
+  <div class="aui-page-panel">
+    
+
+
+
+    <div class="aui-page-panel-inner">
+      <div id="repo-content" class="aui-page-panel-content" data-modules="repo/index">
+        <div class="aui-group">
+          <div class="aui-item section-title">
+            <h1>Wiki</h1>
+          </div>
+          <div class="aui-item page-actions">
+            
+          </div>
+        </div>
+        
+
+<section id="wiki">
+  
+    <header>
+      <h1>
+        
+          
+
+<a href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/browse/" class="root">addrezzed_lite_backend</a>
+/
+
+  
+    
+      
+        <a href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/browse/RESTful%20HTTP%20Api%20v2%20" class="pjax-trigger directory-name">RESTful HTTP Api v2 </a> /
+      
+    
+  
+
+  
+    
+      
+        <a href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/browse/RESTful%20HTTP%20Api%20v2%20/api" class="pjax-trigger directory-name">api</a> /
+      
+    
+  
+
+  
+    
+      
+        <a href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/browse/RESTful%20HTTP%20Api%20v2%20/api/v2" class="pjax-trigger directory-name">v2</a> /
+      
+    
+  
+
+  
+    
+      
+        <a href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/browse/RESTful%20HTTP%20Api%20v2%20/api/v2/me" class="pjax-trigger directory-name">me</a> /
+      
+    
+  
+
+  
+    
+      <span class="file-name">appear (POST)</span>
+    
+  
+
+        
+      </h1>
+      
+        
+
+
+  
+    <div class="wiki-toolbar">
+      <div class="aui-buttons">
+        <a href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/RESTful%20HTTP%20Api%20v2%20/api/v2/me/appear%20(POST)" class="aui-button">Anzeigen</a>
+        <a href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/history/RESTful%20HTTP%20Api%20v2%20/api/v2/me/appear%20(POST)" class="aui-button history">Verlauf</a>
+        
+          <a class="aui-button edit" aria-pressed="true">Bearbeiten</a>
+        
+      </div>
+      
+        <div class="aui-buttons">
+          <a href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/delete/RESTful%20HTTP%20Api%20v2%20/api/v2/me/appear%20(POST)" class="aui-button delete">Löschen</a>
+        </div>
+      
+    </div>
+  
+
+
+
+      
+    </header>
+
+    <section id="wiki-edit" class="wiki-editor" data-modules="repo/wiki/edit">
+    <form action="./addrezzeddevteam   addrezzed_lite_backend   wiki — Bitbucket_files/addrezzeddevteam   addrezzed_lite_backend   wiki — Bitbucket.html" class="aui" method="post">
+        <input type="hidden" name="csrfmiddlewaretoken" value="yORxb4nzOiv7a6f4tBrMTOSCpacJLuGT">
+
+        
+
+
+        
+
+
+  
+    <div id="id_path_group" class="field-group ">
+        <label for="id_path">
+          Titel<span class="aui-icon icon-required"></span><span class="content">required</span>
+        </label>
+        
+          <input class=" text long-field" id="id_path" maxlength="128" name="path" type="text" value="RESTful HTTP Api v2 /api/v2/me/appear (POST)">
+        
+      
+      
+        
+      
+    </div>
+  
+
+
+        <div class="field-group">
+          <label for="id_data">
+            Inhalt
+            <span class="aui-icon icon-required"></span>
+          </label>
+          <div class="textarea-preview wiki-syntax" data-markup-type="markdown">
+            <div class="markup-type-markdown"><div id="markItUpId_data" class="markItUp"><div class="markItUpContainer"><div class="markItUpHeader"><ul><li class="markItUpButton markdown heading-1 first"><a href="" title="Heading 1" tabindex="-1">Heading 1</a></li><li class="markItUpButton markdown heading-2 "><a href="" title="Heading 2" tabindex="-1">Heading 2</a></li><li class="markItUpButton markdown heading-3 last"><a href="" title="Heading 3" tabindex="-1">Heading 3</a></li><li class="markItUpButton markdown bold first separator"><a href="" title="Bold" tabindex="-1">Bold</a></li><li class="markItUpButton markdown italic last"><a href="" title="Italic" tabindex="-1">Italic</a></li><li class="markItUpButton markdown bulleted-list first separator"><a href="" title="Bulleted list" tabindex="-1">Bulleted list</a></li><li class="markItUpButton markdown numeric-list last"><a href="" title="Numeric list" tabindex="-1">Numeric list</a></li><li class="markItUpButton markdown code first last separator"><a href="" title="Code" tabindex="-1">Code</a></li><li class="markItUpButton markdown first link"><a href="" title="Link" tabindex="-1">Link</a></li><li class="markItUpButton creole heading-1 first"><a href="" title="Heading 1" tabindex="-1">Heading 1</a></li><li class="markItUpButton creole heading-2 "><a href="" title="Heading 2" tabindex="-1">Heading 2</a></li><li class="markItUpButton creole heading-3 last"><a href="" title="Heading 3" tabindex="-1">Heading 3</a></li><li class="markItUpButton creole bold first separator"><a href="" title="Bold" tabindex="-1">Bold</a></li><li class="markItUpButton creole italic last"><a href="" title="Italic" tabindex="-1">Italic</a></li><li class="markItUpButton creole bulleted-list first separator"><a href="" title="Bulleted list" tabindex="-1">Bulleted list</a></li><li class="markItUpButton creole numeric-list last"><a href="" title="Numeric list" tabindex="-1">Numeric list</a></li><li class="markItUpButton creole code first last separator"><a href="" title="Code" tabindex="-1">Code</a></li><li class="markItUpButton creole first link"><a href="" title="Link" tabindex="-1">Link</a></li><li class="markItUpButton rest heading-single first last"><a href="" title="Section" tabindex="-1">Section</a></li><li class="markItUpButton rest bold first separator"><a href="" title="Bold" tabindex="-1">Bold</a></li><li class="markItUpButton rest italic last"><a href="" title="Italic" tabindex="-1">Italic</a></li><li class="markItUpButton rest bulleted-list first separator"><a href="" title="Bulleted list" tabindex="-1">Bulleted list</a></li><li class="markItUpButton rest numeric-list last"><a href="" title="Numeric list" tabindex="-1">Numeric list</a></li><li class="markItUpButton rest code first last separator"><a href="" title="Code" tabindex="-1">Code</a></li><li class="markItUpButton rest first link"><a href="" title="Link" tabindex="-1">Link</a></li><li class="markItUpButton textile heading-1 first"><a href="" title="Heading 1" tabindex="-1">Heading 1</a></li><li class="markItUpButton textile heading-2 "><a href="" title="Heading 2" tabindex="-1">Heading 2</a></li><li class="markItUpButton textile heading-3 last"><a href="" title="Heading 3" tabindex="-1">Heading 3</a></li><li class="markItUpButton textile bold first separator"><a href="" title="Bold" tabindex="-1">Bold</a></li><li class="markItUpButton textile italic last"><a href="" title="Italic" tabindex="-1">Italic</a></li><li class="markItUpButton textile bulleted-list first separator"><a href="" title="Bulleted list" tabindex="-1">Bulleted list</a></li><li class="markItUpButton textile numeric-list last"><a href="" title="Numeric list" tabindex="-1">Numeric list</a></li><li class="markItUpButton textile code first last separator"><a href="" title="Code" tabindex="-1">Code</a></li><li class="markItUpButton textile first link"><a href="" title="Link" tabindex="-1">Link</a></li><li class="markItUpButton markdown image last"><a href="" title="Image" tabindex="-1">Image</a></li><li class="markItUpButton creole image last"><a href="" title="Image" tabindex="-1">Image</a></li><li class="markItUpButton rest image last"><a href="" title="Image" tabindex="-1">Image</a></li><li class="markItUpButton textile image last"><a href="" title="Image" tabindex="-1">Image</a></li><li class="markItUpButton preview first last right no-icon"><a href="" title="Preview" tabindex="-1">Preview</a></li><li class="markItUpButton language first last right no-icon"><a href="" title="Language" tabindex="-1" class="aui-dropdown2-trigger aui-dropdown2-trigger-arrowless aui-style-default" aria-haspopup="true" aria-owns="dropdown-wiki-lang" data-container="#markItUpId_data">Markdown<span class="aui-icon-dropdown"></span></a></li><li class="markItUpButton markdown help first last right"><a href="" title="Help" tabindex="-1">Help</a></li><li class="markItUpButton creole help first last right"><a href="" title="Help" tabindex="-1">Help</a></li><li class="markItUpButton rest help first last right"><a href="" title="Help" tabindex="-1">Help</a></li><li class="markItUpButton textile help first last right"><a href="" title="Help" tabindex="-1">Help</a></li></ul></div><textarea id="id_data" name="data" class="bb-mention-input markItUpEditor">## POST /me/appear ##
+
+`POST /me/appear`  
+`content-type: application/json`  
+`request body/data: pure JSON` *(see 'Things to send' below for requirements)*
+
+#### Description ####
+**Become visible to other users!** This is the central call to the server, to make a user visible to others so that they can share cards with each other.  
+The body of this `POST`-request has to contain all relevant information about the user such as her/his name, a unique id, the user's current geo-location and the card(s) to share.
+
+#### Things to Send ####
+The request's body needs to provide a JSON-object of the following schema:
+```
+{
+    userName: String,
+    unique_id: String,
+    location: {
+        lon: Number,
+        lat: Number,
+        accuracy: Number (optional)
+    },
+    cards: [{
+        "title": String,
+        "version": String,   
+        "last_updated": Number,
+        "style": {
+            "color": String,
+            "type":  String
+        },
+        "contact_details": [{}]
+    }]
+ }
+```
+
+* The ```unique_id```parameter needs to some hash-value or other cryptic information that is likely to be unique (world-wide). While it is not specified by the API, ***the client*** is responsible for creating an appropriate String on its own behalf. The unique id's purpose is to be able to tell apart the user himself and others when the list of nearby users is provided by the response to the ```PING```request (see below...).
+* The ```accuracy``` parameter is *optional*, which means, that you do not have to provide it. In this case the user will use a default accuracy (about 1000m)
+* The ```version``` parameter must be a semantic Versioning String ([info](http://semver.org/)
+* The ```last_updated``` parameter should contain a Milliseconds Timestamp. (similiar to the Javascript Date.now(), e.g. 1423828348885)
+* The ```color``` parameter can be expressed as String value containing a Hex-Colorvalue (e.g. "#fa0000")
+* The ```contact_details``` should one or multiple Objects formatted accordingly to the Data-Model definition: [Data-Model](http://wiki.addrezzed.com/index.php?title=DataModel:_JSON_Objects_for_Server_API)
+
+*Want to see an example JSON?* [Go for it!](Example%20JSON%20for%20POST%20/me/appear)
+
+**Important: don't forget to set the content-type of your HTTP POST request to 'application/json' !!!**
+
+#### What Gets Returned? ####
+
+If everything goes well, a JSON-Object of the following structure will be sent back to the client:
+
+```
+{
+     message: 'You have successfully entered the share-mode!',
+     user_id: String,
+     unique_id: String,
+     user: Object
+}
+```
+The user_id can (and needs to) be used later on by the client to send PING-messages to the server regularly. So, **save it on the client** for using it during the rest of the 'share-session'.
+
+*Want to see an example JSON of the response?* [Go for it!](Example%20JSON%20for%20POST%20/me/appear%20Response)
+
+In case of an **error** the client gets a response with detailed information about what went wrong.
+
+Just to give you two examples:
+```
+{ 
+    message: "ERROR: an error occured while trying to enter the share mode!",
+     error: "No user name ('user_name') was provided by the client!"
+}
+```
+
+```
+{
+    message: "ERROR: an error occured while trying to create a new user in the database!",
+    error: String
+}
+```
+
+#### Example Request ####
+`POST http://addrezzed-lite.herokuapp.com/me/appear`
+</textarea><div class="markItUpFooter"></div></div></div></div>
+            <div class="preview-container wiki-content" id="wiki-content"><!-- loaded via ajax --></div>
+            <div class="mask"></div>
+            <div id="dropdown-wiki-lang" class="aui-dropdown2 aui-style-default">
+              <ul>
+                <li><a href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/edit/RESTful%20HTTP%20Api%20v2%20/api/v2/me/appear%20(POST)#markdown" data-markup-lang="markdown">Markdown</a></li>
+                <li><a href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/edit/RESTful%20HTTP%20Api%20v2%20/api/v2/me/appear%20(POST)#creole" data-markup-lang="creole">Creole</a></li>
+                <li><a href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/edit/RESTful%20HTTP%20Api%20v2%20/api/v2/me/appear%20(POST)#rest" data-markup-lang="rest">reStructuredText</a></li>
+                <li><a href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/edit/RESTful%20HTTP%20Api%20v2%20/api/v2/me/appear%20(POST)#textile" data-markup-lang="textile">Textile</a></li>
+              </ul>
+            </div>
+          </div>
+          
+        </div>
+        
+
+
+  
+    <div id="id_message_group" class="field-group ">
+        <label for="id_message">
+          Commit-Nachricht
+        </label>
+        
+          <input class=" text long-field" id="id_message" maxlength="255" name="message" placeholder="Fügen Sie eine optionale Nachricht hinzu" type="text">
+        
+      
+      
+        
+      
+    </div>
+  
+
+
+
+        
+
+
+  <input class=" " id="id_filehash" name="filehash" type="hidden" value="3dd2fc3afa4dee497039383dde4ba036e4d5cf13">
+  
+    
+  
+
+
+        
+
+
+  <input class=" " id="id_tabstop" name="tabstop" type="hidden" value="spaces">
+  
+    
+  
+
+
+        
+
+
+  <input class=" " id="id_endings" name="endings" type="hidden" value="lf">
+  
+    
+  
+
+
+        
+
+
+  <input class=" " id="id_markup_type" name="markup_type" type="hidden" value="markdown">
+  
+    
+  
+
+
+
+        
+
+        <div class="buttons-container">
+          <div class="buttons">
+            <button type="submit" name="submit-action" value="Save" class="aui-button aui-button-primary">Speichern</button>
+            <a href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/RESTful%20HTTP%20Api%20v2%20/api/v2/me/appear%20(POST)" class="cancel">Abbrechen</a>
+          </div>
+        </div>
+      </form>
+    </section>
+  
+</section>
+
+
+
+
+  <div id="recently-mentioned-3641042" data-value="[{&quot;last_name&quot;: &quot;Manke&quot;, &quot;username&quot;: &quot;derfeli&quot;, &quot;first_name&quot;: &quot;Felix&quot;, &quot;avatar_url&quot;: &quot;https://bitbucket-assetroot.s3.amazonaws.com/c/photos/2014/Jul/28/derfeli-avatar-1631293494-0_avatar.png&quot;, &quot;display_name&quot;: &quot;Felix Manke&quot;, &quot;keywords&quot;: [&quot;felix.manke&quot;], &quot;is_teammate&quot;: true, &quot;is_team&quot;: false}]"></div>
+
+
+
+
+        
+        
+        
+          <script id="image-upload-template" type="text/html">
+  
+
+<form id="upload-image" method="POST"
+      action="/xhr/addrezzeddevteam/addrezzed_lite_backend/image-upload/">
+  <input type='hidden' name='csrfmiddlewaretoken' value='yORxb4nzOiv7a6f4tBrMTOSCpacJLuGT' />
+
+  <div class="drop-target">
+    <p class="centered">Drag image here</p>
+  </div>
+
+  
+  <div>
+    <button class="aui-button click-target">Select an image</button>
+    <input name="file" type="file" class="hidden file-target"
+           accept="image/jpeg, image/gif, image/png" />
+    <input type="submit" class="hidden">
+  </div>
+</form>
+
+
+</script>
+        
+      </div>
+    </div>
+  </div>
+
+    </div>
+  </div>
+
+  <footer id="footer" role="contentinfo" data-modules="components/footer">
+    <section class="footer-body">
+      
+  <ul>
+  <li>
+    <a class="support-ga" target="_blank" data-support-gaq-page="Blog" href="http://blog.bitbucket.org/" original-title="">Blog</a>
+  </li>
+  <li>
+    <a class="support-ga" target="_blank" data-support-gaq-page="Home" href="https://bitbucket.org/support" original-title="">Unterstützung</a>
+  </li>
+  <li>
+    <a class="support-ga" data-support-gaq-page="PlansPricing" href="https://bitbucket.org/plans" original-title="">Tarife &amp; Preise</a>
+  </li>
+  <li>
+    <a class="support-ga" target="_blank" data-support-gaq-page="DocumentationHome" href="https://confluence.atlassian.com/display/BITBUCKET" original-title="">Dokumentation</a>
+  </li>
+  <li>
+    <a class="support-ga" target="_blank" data-support-gaq-page="DocumentationAPI" href="https://confluence.atlassian.com/x/IYBGDQ" original-title="">API</a>
+  </li>
+  <li>
+    <a class="support-ga" target="_blank" data-support-gaq-page="SiteStatus" href="http://status.bitbucket.org/" original-title="">Server-Status</a>
+  </li>
+  <li>
+    <a class="support-ga" id="meta-info" data-support-gaq-page="MetaInfo" href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/edit/RESTful%20HTTP%20Api%20v2%20/api/v2/me/appear%20(POST)#" original-title="">Versions Informationen</a>
+  </li>
+  <li>
+    <a class="support-ga" target="_blank" data-support-gaq-page="EndUserAgreement" href="https://www.atlassian.com/end-user-agreement?utm_source=bitbucket&utm_medium=link&utm_campaign=footer" original-title="">Nutzungsbedingungen</a>
+  </li>
+  <li>
+    <a class="support-ga" target="_blank" data-support-gaq-page="PrivacyPolicy" href="https://www.atlassian.com/company/privacy?utm_source=bitbucket&utm_medium=link&utm_campaign=footer" original-title="">Datenschutz</a>
+  </li>
+</ul>
+<div id="meta-info-content" style="display: none;">
+  <ul>
+    
+      <li><a href="https://bitbucket.org/account/user/ben_sauer/" class="view-language-link" original-title="">Deutsch</a></li>
+    
+    <li>
+      <a class="support-ga" target="_blank" data-support-gaq-page="GitDocumentation" href="http://git-scm.com/" original-title="">Git 2.1.1</a>
+    </li>
+    <li>
+      <a class="support-ga" target="_blank" data-support-gaq-page="HgDocumentation" href="http://mercurial.selenic.com/" original-title="">Mercurial 2.9</a>
+    </li>
+    <li>
+      <a class="support-ga" target="_blank" data-support-gaq-page="DjangoDocumentation" href="https://www.djangoproject.com/" original-title="">Django 1.6.5</a>
+    </li>
+    <li>
+      <a class="support-ga" target="_blank" data-support-gaq-page="PythonDocumentation" href="http://www.python.org/" original-title="">Python 2.7.3</a>
+    </li>
+    <li>
+      <a class="support-ga" target="_blank" data-support-gaq-page="DeployedVersion" href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/edit/RESTful%20HTTP%20Api%20v2%20/api/v2/me/appear%20(POST)#" original-title="">ea3e1b4305e7 / 7cb54ff512e6 @ app19</a>
+    </li>
+  </ul>
+</div>
+<ul class="atlassian-links">
+  <li>
+    <a id="atlassian-jira-link" target="_blank" href="http://www.atlassian.com/software/jira?utm_source=bitbucket&utm_medium=link&utm_campaign=bitbucket_footer" original-title="Verfolge alles - Fehler, Aufgaben, Deadlines, Code - und pulle Benachrichtungen um auf dem Laufenden zu bleiben.">JIRA</a>
+  </li>
+  <li>
+    <a id="atlassian-confluence-link" target="_blank" href="http://www.atlassian.com/software/confluence/overview/team-collaboration-software?utm_source=bitbucket&utm_medium=link&utm_campaign=bitbucket_footer" original-title="Inhaltserstellung, Zusammenarbeit und Erfahrungsaustausch für Teams.">Confluence</a>
+  </li>
+  <li>
+    <a id="atlassian-bamboo-link" target="_blank" href="http://www.atlassian.com/software/bamboo/overview?utm_source=bitbucket&utm_medium=link&utm_campaign=bitbucket_footer" original-title="Continuous Integration und Deployment, Release Management.">Bamboo</a>
+  </li>
+  <li>
+    <a id="atlassian-stash-link" target="_blank" href="http://www.atlassian.com/software/stash?utm_source=bitbucket&utm_medium=link&utm_campaign=bitbucket_footer" original-title="Git Repository-Verwaltung, hinter Ihrer Firewall und unternehmensfreundlich.">Stash</a>
+  </li>
+  <li>
+    <a id="atlassian-sourcetree-link" target="_blank" href="http://www.sourcetreeapp.com/?utm_source=bitbucket&utm_medium=link&utm_campaign=bitbucket_footer" original-title="Kostenloser Git und Mercurial Desktop Client für Mac oder Windows.">SourceTree</a>
+  </li>
+  <li>
+    <a id="atlassian-hipchat-link" target="_blank" href="http://www.hipchat.com/?utm_source=bitbucket&utm_medium=link&utm_campaign=bitbucket_footer" original-title="Group chat and IM built for teams.">HipChat</a>
+  </li>
+</ul>
+<div id="footer-logo">
+  <a target="_blank" href="http://www.atlassian.com/?utm_source=bitbucket&utm_medium=logo&utm_campaign=bitbucket_footer" original-title="Bitbucket wird von Atlassian aus San Francisco entwickelt.">Atlassian</a>
+</div>
+
+    </section>
+  </footer>
+</div>
+
+
+  
+<script src="./addrezzeddevteam   addrezzed_lite_backend   wiki — Bitbucket_files/djangojs.js" defer=""></script>
+
+  <script src="./addrezzeddevteam   addrezzed_lite_backend   wiki — Bitbucket_files/main.js" data-main="https://d3oaxc4q5k2d6q.cloudfront.net/m/7cb54ff512e6/amd/build/main" defer=""></script>
+
+
+
+<script>
+  (function () {
+    var ga = document.createElement('script');
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    ga.setAttribute('async', 'true');
+    document.documentElement.firstChild.appendChild(ga);
+  }());
+</script>
+
+
+  
+
+<div data-modules="components/mentions/index">
+  <script id="mention-result" type="text/html">
+    
+<div class="aui-avatar aui-avatar-small">
+  <div class="aui-avatar-inner">
+    <img src="[[avatar_url]]">
+  </div>
+</div>
+[[#display_name]]
+  <span class="display-name">[[&display_name]]</span> <small class="username">[[&username]]</small>
+[[/display_name]]
+[[^display_name]]
+  <span class="username">[[&username]]</span>
+[[/display_name]]
+[[#is_teammate]][[^is_team]]
+  <span class="aui-lozenge aui-lozenge-complete aui-lozenge-subtle">Teammitglied</span>
+[[/is_team]][[/is_teammate]]
+
+  </script>
+  <script id="mention-call-to-action" type="text/html">
+    
+[[^query]]
+<li class="bb-typeahead-item">Text eingeben, um nach einem Benutzer zu suchen</li>
+[[/query]]
+[[#query]]
+<li class="bb-typeahead-item">Text eingeben, um nach einem Benutzer zu suchen</li>
+[[/query]]
+
+  </script>
+  <script id="mention-no-results" type="text/html">
+    
+[[^searching]]
+<li class="bb-typeahead-item">Keine entsprechenden Benutzer gefunden für <em>[[query]]</em>.</li>
+[[/searching]]
+[[#searching]]
+<li class="bb-typeahead-item bb-typeahead-searching">Suche nach <em>[[query]]</em>.</li>
+[[/searching]]
+
+  </script>
+</div>
+
+  <div data-modules="components/typeahead/emoji/index">
+    <script id="emoji-result" type="text/html">
+    
+<div class="aui-avatar aui-avatar-small">
+  <div class="aui-avatar-inner">
+    <img src="[[src]]">
+  </div>
+</div>
+<span class="name">[[&name]]</span>
+
+  </script>
+  </div>
+
+
+<div data-modules="components/repo-typeahead/index">
+  <script id="repo-typeahead-result" type="text/html">
+    <span class="aui-avatar aui-avatar-project aui-avatar-xsmall">
+  <span class="aui-avatar-inner">
+    <img src="[[avatar]]">
+  </span>
+</span>
+<span class="owner">[[&owner]]</span>/<span class="slug">[[&slug]]</span>
+
+  </script>
+</div>
+<script id="share-form-template" type="text/html">
+    
+
+<div class="error aui-message hidden">
+  <span class="aui-icon icon-error"></span>
+  <div class="message"></div>
+</div>
+<form class="aui">
+  <table class="widget bb-list aui">
+    <thead>
+    <tr class="assistive">
+      <th class="user">Benutzer</th>
+      <th class="role">Rolle</th>
+      <th class="actions">Aktionen</th>
+    </tr>
+    </thead>
+    <tbody>
+      <tr class="form">
+        <td colspan="2">
+          <input type="text" class="text bb-user-typeahead user-or-email"
+                 placeholder="Benutzername oder E-Mail-Adresse"
+                 autocomplete="off"
+                 data-bb-typeahead-focus="false"
+                 [[#disabled]]disabled[[/disabled]]>
+        </td>
+        <td class="actions">
+          <button type="submit" class="aui-button" disabled>Hinzufügen</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+
+  </script>
+<script id="share-detail-template" type="text/html">
+    
+
+[[#username]]
+<td class="user
+           [[#hasCustomGroups]]custom-groups[[/hasCustomGroups]]"
+    [[#error]]data-error="[[error]]"[[/error]]>
+  <div title="[[displayName]]">
+    <a href="/[[username]]" class="user">
+      <img class="avatar avatar16" src="[[avatar]]" />
+      <span>[[displayName]]</span>
+    </a>
+  </div>
+</td>
+[[/username]]
+[[^username]]
+<td class="email
+           [[#hasCustomGroups]]custom-groups[[/hasCustomGroups]]"
+    [[#error]]data-error="[[error]]"[[/error]]>
+  <div title="[[email]]">
+    <span class="aui-icon aui-icon-small aui-iconfont-email"></span>
+    [[email]]
+  </div>
+</td>
+[[/username]]
+<td class="role
+           [[#hasCustomGroups]]custom-groups[[/hasCustomGroups]]">
+  <div>
+    [[#group]]
+      [[#hasCustomGroups]]
+        <select class="group [[#noGroupChoices]]hidden[[/noGroupChoices]]">
+          [[#groups]]
+            <option value="[[slug]]"
+                    [[#isSelected]]selected[[/isSelected]]>
+              [[name]]
+            </option>
+          [[/groups]]
+        </select>
+      [[/hasCustomGroups]]
+      [[^hasCustomGroups]]
+      <label>
+        <input type="checkbox" class="admin"
+               [[#isAdmin]]checked[[/isAdmin]]>
+        Administrator
+      </label>
+      [[/hasCustomGroups]]
+    [[/group]]
+    [[^group]]
+      <ul>
+        <li class="permission aui-lozenge aui-lozenge-complete
+                   [[^read]]aui-lozenge-subtle[[/read]]"
+            data-permission="read">
+          lesen
+        </li>
+        <li class="permission aui-lozenge aui-lozenge-complete
+                   [[^write]]aui-lozenge-subtle[[/write]]"
+            data-permission="write">
+          schreiben
+        </li>
+        <li class="permission aui-lozenge aui-lozenge-complete
+                   [[^admin]]aui-lozenge-subtle[[/admin]]"
+            data-permission="admin">
+          Admin
+        </li>
+      </ul>
+    [[/group]]
+  </div>
+</td>
+<td class="actions
+           [[#hasCustomGroups]]custom-groups[[/hasCustomGroups]]">
+  <div>
+    <a href="#" class="delete">
+      <span class="aui-icon aui-icon-small aui-iconfont-remove">Löschen</span>
+    </a>
+  </div>
+</td>
+
+  </script>
+<script id="share-team-template" type="text/html">
+    
+
+<div class="clearfix">
+  <span class="team-avatar-container">
+    <img src="[[avatar]]" alt="[[display_name]]" title="[[display_name]]" class="avatar avatar32" />
+  </span>
+  <span class="team-name-container">
+    [[display_name]]
+  </span>
+</div>
+<p class="helptext">
+  
+    Existing users are granted access to this team immediately.
+    New users will be sent an invitation.
+  
+</p>
+<div class="share-form"></div>
+
+  </script>
+
+
+  
+
+
+
+
+<aui-inline-dialog2 id="super-touch-point-dialog" class="aui-layer aui-inline-dialog __skate" data-aui-alignment="bottom right" data-aui-alignment-static="true" data-aui-responds-to="toggle" data-modules="header/help-menu" aria-hidden="true">
+  <div class="aui-inline-dialog-contents">
+    <div id="ace-stp-section">
+      <div id="ace-stp-help-section">
+        <h1 class="ace-stp-heading">Hilfe</h1>
+
+        <form id="ace-stp-search-form" class="aui" target="_blank" method="get" action="https://support.atlassian.com/customer/search">
+          <span id="stp-search-icon" class="aui-icon aui-icon-large aui-iconfont-search"></span>
+          <input id="ace-stp-search-form-input" name="q" class="text" type="text" placeholder="Ask a question">
+        </form>
+
+        <ul id="ace-stp-help-links">
+          <li>
+            <a class="support-ga" data-support-gaq-page="DocumentationHome" href="https://confluence.atlassian.com/x/bgozDQ" target="_blank">
+              Online help
+            </a>
+          </li>
+          <li>
+            <a class="support-ga" data-support-gaq-page="GitTutorials" href="https://www.atlassian.com/git?utm_source=bitbucket&utm_medium=link&utm_campaign=help_dropdown&utm_content=learn_git" target="_blank">
+              Learn Git
+            </a>
+          </li>
+          <li>
+            <a id="keyboard-shortcuts-link" href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/edit/RESTful%20HTTP%20Api%20v2%20/api/v2/me/appear%20(POST)#">Keyboard shortcuts</a>
+          </li>
+          <li>
+            <a href="https://bitbucket.org/whats-new" id="features-link">
+              Neuste Funktionen
+            </a>
+          </li>
+          <li>
+            <a class="support-ga" data-support-gaq-page="Documentation101" href="https://confluence.atlassian.com/x/cgozDQ" target="_blank">
+              Bitbucket 101
+            </a>
+          </li>
+          <li>
+            <a class="support-ga" data-support-gaq-page="Home" href="https://bitbucket.org/support">
+              Unterstützung
+            </a>
+          </li>
+
+        </ul>
+      </div>
+
+      
+        <div id="ace-stp-message-section">
+          
+<div class="ap-container" id="ap-c7934e0c-a4fb-4d9c-aa39-9366f091f2c1" data-source="https://ace-cdn.atlassian.com/stp/current/dialog/ace-stp-dialog-bitbucket.html?xdm_e=https%3A%2F%2Fbitbucket.org&amp;xdm_c=channel-c7934e0c-a4fb-4d9c-aa39-9366f091f2c1&amp;jwt=eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJpc3MiOiAiY29ubmVjdGlvbjozODc3OCIsICJpYXQiOiAxNDIzODI4NTk5LCAicXNoIjogIjE3YzQ3OWEzYTQ4MTQ1YzcyM2Q4NjE4ODliNzFiNDBjMGQ5MDdlYWNmODA5YmM0NmZlMTk3ZDQ3Mzc0OTdkYmIiLCAiYXVkIjogImNvbm5lY3Rpb246Mzg3NzgiLCAiZXhwIjogMTQyNzQyODU5OX0.BfDxi76k6CmO9CzKr4gb3tTgcBmgHN8buY8SKjzcHYU" data-key="help-panel" data-width="649" data-height="370" data-dlg="False" data-general="True">
+  <div class="ap-content iframe-init" id="embedded-c7934e0c-a4fb-4d9c-aa39-9366f091f2c1"><iframe id="easyXDM_embedded-c7934e0c-a4fb-4d9c-aa39-9366f091f2c1_provider" name="eyJpc0dlbmVyYWwiOnRydWUsImlzRGlhbG9nIjp0cnVlfQ==" frameborder="0" width="649" height="370" rel="nofollow" src="./addrezzeddevteam   addrezzed_lite_backend   wiki — Bitbucket_files/ace-stp-dialog-bitbucket.html"></iframe></div>
+  <div class="ap-stats">
+    <div class="ap-loading ap-status hidden">
+      <small>
+        <div class="small-spinner"><div class="spinner" role="progressbar" style="position: relative; width: 0px; z-index: 1; left: 324px; top: 0px;"><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-0-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(0deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-1-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(30deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-2-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(60deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-3-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(90deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-4-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(120deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-5-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(150deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-6-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(180deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-7-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(210deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-8-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(240deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-9-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(270deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-10-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(300deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-11-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(330deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div></div></div>
+        <div class="description">
+          
+            Loading add-on <a href="https://ace-cdn.atlassian.com/" class="ap-doc-url" target="_blank">help panel</a>.
+          
+        </div>
+      </small>
+    </div>
+    <div class="ap-load-timeout ap-status hidden">
+      <small>
+        <div class="small-spinner"><div class="spinner" role="progressbar" style="position: relative; width: 0px; z-index: 1; left: 0px; top: 0px;"><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-0-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(0deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-1-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(30deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-2-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(60deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-3-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(90deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-4-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(120deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-5-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(150deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-6-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(180deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-7-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(210deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-8-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(240deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-9-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(270deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-10-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(300deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div><div style="position: absolute; top: -2px; opacity: 0.25; -webkit-animation: opacity-100-25-11-12 1s linear infinite;"><div style="position: absolute; width: 12px; height: 5px; -webkit-box-shadow: rgba(0, 0, 0, 0.0980392) 0px 0px 1px; -webkit-transform-origin: 0% 50%; -webkit-transform: rotate(330deg) translate(10px, 0px); border-radius: 2px; background: rgb(112, 112, 112);"></div></div></div></div>
+        <div class="description">
+          
+            Add-on <a href="https://ace-cdn.atlassian.com/" class="ap-doc-url" target="_blank">help panel</a> is not responding.
+            Wait or <a href="https://bitbucket.org/addrezzeddevteam/addrezzed_lite_backend/wiki/edit/RESTful%20HTTP%20Api%20v2%20/api/v2/me/appear%20(POST)#" class="ap-btn-cancel">cancel</a>?
+          
+        </div>
+      </small>
+    </div>
+    <div class="ap-load-error ap-status hidden">
+      <small>
+        <div class="description">
+          
+            Add-on <a href="https://ace-cdn.atlassian.com/" class="ap-doc-url" target="_blank">help panel</a> failed to load.
+          
+        </div>
+      </small>
+    </div>
+  </div>
+</div>
+
+        </div>
+      
+    </div>
+  </div>
+</aui-inline-dialog2>
+  
+
+
+  <div class="omnibar" data-modules="js/components/omnibar/index">
+    <form class="omnibar-form aui"></form>
+  </div>
+  <script id="omnibar-form-template" type="text/html">
+    <div class="omnibar-input-container">
+  <input class="omnibar-input" type="text">
+</div>
+<ul class="omnibar-result-group-list"></ul>
+
+  </script>
+  <script id="omnibar-blank-slate-template" type="text/html">
+    
+
+<div class="omnibar-blank-slate">No results found</div>
+
+  </script>
+  <script id="omnibar-result-group-list-item-template" type="text/html">
+    <div class="omnibar-result-group-header clearfix">
+  <h2 class="omnibar-result-group-label" title="[[label]]">[[label]]</h2>
+  <span class="omnibar-result-group-context" title="[[context]]">[[context]]</span>
+</div>
+<ul class="omnibar-result-list unstyled-list"></ul>
+
+  </script>
+  <script id="omnibar-result-list-item-template" type="text/html">
+    <span class="omnibar-result-label">[[&label]]</span>
+[[#context]]
+  <span class="omnibar-result-context">[[context]]</span>
+[[/context]]
+
+  </script>
+
+
+
+
+
+<div id="textarea_simulator" contenteditable="true" style="position: absolute; top: 0px; left: 0px; visibility: hidden;"></div><div id="gm-bubble-content" data-state="disabled" data-hideoption="true" style="right:81px; top:100px; ">
+	<style>
+
+	@media print {
+	    #gm-bubble-content {
+	        display: none !important;
+	    }
+	}
+
+	#gm-bubble-content {		
+		position: fixed;
+		right: 100px;
+		bottom: 100px;
+		
+		transition: opacity 0.5s ease;
+		opacity: 0.25;	
+		width: 64px;
+		height: 64px;	
+		z-index: 2000000000;
+
+		-webkit-user-select: none;
+	}
+
+	#gm-bubble-content * {
+		box-sizing: initial;
+		transition: opacity 0.45s ease, -webkit-transform 0.45s;
+		-webkit-user-select: none;
+		text-align: left;
+	}
+	
+
+	.gm-bubble {
+		border-radius: 50%;
+		background-color: #fb8521 !important;
+	    margin: 0 auto;	
+	    cursor: pointer;	
+	    transition: -webkit-transform 0.50s;
+	}
+
+	[data-state="disabled"] .gm-bubble {
+		transition: background-color 0 1s;
+		background-color: #333 !important;
+	}
+
+	[data-state="disabled"][data-hideoption="true"] {
+		display: none;
+	}
+
+	#gm-bubble-main {	
+		position: absolute;	
+		width: 56px;
+		height: 56px;
+		background-repeat:no-repeat;
+		background-position:center; 
+		background-size: 70%;
+		z-index: 999;
+		top: 4px;
+		left: 4px;
+	}
+
+	#gm-bubble-content:not([data-state="disabled"]):hover {
+		transition: opacity 0.5s ease;
+		opacity: 1.0;
+		padding:64px 64px 32px 64px !important;
+		margin:-64px -64px -32px -64px !important;
+		width: 192px;
+		height: 160px;
+		box-sizing: border-box;
+	}
+
+	#gm-bubble-content:not([data-state="disabled"]).gm-bubble-notify {
+		transition: opacity 0.5s ease;
+		opacity: 1.0;
+	}
+
+	#gm-bubble-content:not([data-state="disabled"]):hover > #gm-bubble-container {
+		position: absolute;
+		top: 64px;
+		left: 64px;
+		width: 64px;
+		height: 64px;
+	}
+
+	.gm-bubblecontrol {
+		position: absolute;
+		top: 30%;
+		left: calc(50% - 17px);
+		width: 34px;
+		height: 34px;
+		z-index: 975;
+		opacity: 0;
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: 65%;
+		border: 3px solid transparent;
+		margin: -3px;
+	    transform: scale(.2);
+	}
+
+	.gm-bubblecontrol:hover {	
+/*		border-color:white;
+		box-shadow: 0 0 3px #fb8521;*/
+	}
+
+	.gm-bubblecontrol:active {
+		box-shadow: 0 0 3px 1px #fb8521;
+	}
+
+	.gm-bubble-button {
+		background-color: #333 !important;
+		width: 22px;
+		height: 22px;
+		border: 3px solid white;
+		margin: -3px;
+		left: calc(50% - 11px);
+	}
+
+	.gm-bubble-button:hover {
+		box-shadow: 0 0 3px 1px #3c3c3c;
+		z-index: 1000;
+	}
+
+	#gm-bubble-content .gm-bubble-small {
+		transition: -webkit-transform 0.70s 0.25s;
+		width: 22px;
+		height: 22px;
+		left: calc(50% - 11px);		
+		opacity: 0;
+	}
+
+	.gm-bubble-small:hover {
+		z-index: 1000;
+	}
+
+	.gm-bubble-button:hover #gm-bubble-blacklist:before {
+		font-family: sans-serif;
+		display: inline-block;
+		width: 75px;
+		float: right;
+		color: white;
+		background: #333;
+		margin-right: 30px;
+		text-align: right;
+		padding: 2px 7px;
+		border-radius: 3px;
+		top: 10px;
+		border: 2px solid white;
+	}
+
+	#gm-bubble-content:not([data-state="disabled"]):hover .gm-bubblecontrol {
+		opacity: 1;
+		box-shadow: 0 1px 2px rgba(0,0,0,0.35);
+	}
+
+	/* Play	icon */
+	#gm-bubble-playPause > svg {
+		opacity: 0;
+		transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	/* Pause icon */
+	[data-state="playing"] #gm-bubble-pause {
+		opacity: 1;
+		-webkit-transform: rotate(360deg);
+		transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	#gm-bubble-content:not([data-state="playing"]) #gm-bubble-play {
+		opacity: 1;
+		-webkit-transform: rotate(360deg);
+		transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+
+	/* Play-pause button */
+	#gm-bubble-content:not([data-state="disabled"]):hover #gm-bubble-playPause {
+		transition: -webkit-transform 0.50s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.30s, border-color 0.25s;	
+		-webkit-transform:translate(0, -65px) rotate(0deg);	
+	}
+
+	/* Next button */
+	#gm-bubble-content:not([data-state="disabled"]):hover #gm-bubble-next {
+		transition: -webkit-transform 0.50s cubic-bezier(0.4, 0, 0.2, 1) 0.1s, opacity 0.30s, border-color 0.25s;
+		-webkit-transform:translate(50px, -40px) rotate(0deg);	
+	}
+	/* Prev button */
+	#gm-bubble-content:not([data-state="disabled"]):hover #gm-bubble-prev {
+		transition: -webkit-transform 0.50s cubic-bezier(0.4, 0, 0.2, 1) 0.1s, opacity 0.30s, border-color 0.25s;
+		-webkit-transform:translate(-50px, -40px) rotate(0deg);
+	}
+
+	/* Thumbs up */
+	#gm-bubble-content:not([data-state="disabled"]) #gm-bubble-main:hover:not(:active) ~ #gm-bubble-like, #gm-bubble-like:hover {
+		transition: -webkit-transform 0.70s 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+		-webkit-transform:translate(-28px, 28px);
+		opacity: 1;
+	}
+
+	/* Thumbs down */
+	#gm-bubble-content:not([data-state="disabled"]) #gm-bubble-main:hover:not(:active) ~ #gm-bubble-dislike, #gm-bubble-dislike:hover {
+		transition: -webkit-transform 0.70s 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s;
+		-webkit-transform:translate(28px, 28px);
+		opacity: 1;
+	}
+
+/*	#gm-bubble-content:not([data-state="disabled"]):hover #gm-bubble-layer:not(:hover) ~ .gm-bubble-button, #gm-bubble-main:not(:active) ~ .gm-bubble-button {
+		transition-delay: 1s;
+	}
+*/
+	/* Blacklist button */
+	#gm-bubble-main:active ~ #gm-bubble-blacklist, #gm-bubble-layer:hover ~ #gm-bubble-blacklist, #gm-bubble-blacklist:hover {
+		transition: -webkit-transform 0.70s 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+		-webkit-transform:translate(28px, 28px);
+		opacity: 1;
+	}
+
+	/* Move button */
+	#gm-bubble-main:active ~ #gm-bubble-drag, #gm-bubble-layer:hover ~ #gm-bubble-drag, #gm-bubble-drag:hover, #gm-bubble-drag:active {
+		transition: -webkit-transform 0.70s 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+		-webkit-transform:translate(-28px, 28px);
+
+		opacity: 1;
+		cursor: move;
+	}
+	
+	#gm-bubble-progress-container {
+		top: 0;
+		left: 0;
+		position: absolute;
+		border-radius: 50%;
+		z-index: 950;		
+		width: 64px;
+		height: 64px;
+		box-shadow: 0 1px 2px rgba(0,0,0,0.35);
+	}
+
+
+	#gm-bubble-main:active ~ #gm-bubble-layer, #gm-bubble-layer:hover {
+	    transition: all 0 0.4s;
+	    z-index: 10000;
+	    position: absolute;
+	    top: 0;
+	    left:0;
+	    width: 64px;
+	    height: 64px;
+	    border-radius: 50%;
+	}
+
+	#gm-bubble-main:active ~ #gm-bubble-progress-container {
+		transition: box-shadow 0.4s;
+		box-shadow: 0 0 7px #333;
+	}
+
+	#gm-bubble-like svg > path {
+		fill: rgba(255,255,255,0.5);
+	}
+	
+	#gm-bubble-dislike svg > path {
+		fill: rgba(255,255,255,0.5);
+	}
+	
+	[data-rating="liked"] #gm-bubble-like svg > path {
+		fill: white;
+		transition: fill 0.15s ease;
+	}
+
+	[data-rating="disliked"] #gm-bubble-dislike svg > path {
+		fill: white;		
+		transition: fill 0.15s ease;
+	}
+
+	#gm-bubble-progress {
+		margin: 0;
+		padding: 0;
+		top: 0;
+		left: 0;
+		position: initial;		
+	}
+
+	#gm-bubble-label {
+		transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+	    background: #fff;
+	    display: inline-block;    	    	    
+	    box-sizing: border-box;
+	    position: absolute;	
+	    height: 48px;
+	    margin: 0 -64px;
+	    width: 192px;
+		top: 135px;
+	    opacity: 0;
+	    box-shadow: 0 1px 4px -1px #333;
+	    visibility: hidden;	  
+	    overflow: hidden;
+	    max-width: none;
+	    transform: scale(0.95);	    
+	}
+
+	#gm-bubble-label > div {
+		display: table-cell;
+	}
+
+	#gm-bubble-label > .gm-bubble-album-art-container {
+		width: 48px;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+
+	#gm-bubble-label > .gm-bubble-song-data-container {
+		position: absolute;
+		left: 48px;
+		top: 0;
+		padding: 4px 0;
+	}
+
+	#gm-bubble-content:not([data-state="disabled"]):hover #gm-bubble-label[data-active="true"], #gm-bubble-content.gm-bubble-notify #gm-bubble-label {
+	    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+	    opacity: 1;	
+	    visibility: initial;
+	    width: 192px;
+	    transform: translateY(-50px) scale(1);
+	}
+
+	#gm-bubble-label > div > div {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;		
+		line-height: 20px;
+		padding: 0 5px;
+		font-family: 'Segoe UI', 'Helvetica' sans-serif;
+		font-weight: 400;
+		max-width: 144px;
+		box-sizing: border-box;
+		text-align: left;
+	}
+
+	#gm-bubble-song-title {
+		font-size: 13px;
+		color: #333;
+		-webkit-text-stroke-width: 0.5px;
+	}
+
+	#gm-bubble-artist {
+		font-size: 12px;
+		color: #707070;
+	}	
+
+	#gm-bubble-album-art {
+	    width: 48px;
+	    height: 48px;
+	    vertical-align: top;
+	}
+
+	#gm-bubble-content svg {
+		position: absolute;
+		left: 0;
+		right: 0;
+		margin: auto;
+		padding: 3px;
+		
+	}
+
+	#gm-bubble-main > svg {
+		padding: 0;
+		transform: scale(0.66);
+	}
+
+	.gm-bubblecontrol:after {
+		box-shadow: 0 0 0 2px #fff;
+		transition: transform 0.01s 0.3s, opacity 0.3s;
+		transform: scale(.8);
+		opacity: 0;
+		pointer-events: none;
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		border-radius: 50%;
+		content: '';
+		box-sizing: content-box;
+	}
+
+	.gm-bubblecontrol:hover:after {
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		transform: scale(1);
+		opacity: 1;
+
+	}
+
+	.gm-bubblecontrol:active:after {
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		transform: scale(1.1);
+	}
+	</style>
+
+
+
+	<div id="gm-bubble-container">
+		<div id="gm-bubble-main" class="gm-bubble">
+			<svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="56px" height="56px" viewBox="0 0 300.000000 300.000000" preserveAspectRatio="xMidYMid meet">
+			<metadata>
+			Created by potrace 1.11, written by Peter Selinger 2001-2013
+			</metadata>
+			<g transform="translate(0.000000,300.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none">
+			<path fill="#fff" d="M1277 2985 c-634 -103 -1113 -559 -1249 -1189 -18 -83 -22 -134 -22
+			-291 -1 -180 1 -201 37 -385 21 -107 61 -319 90 -470 l53 -275 95 -3 95 -3 11
+			-62 c6 -34 19 -105 29 -157 14 -77 22 -100 45 -122 l27 -28 247 0 c273 0 293
+			4 348 70 57 67 57 62 -47 617 -105 557 -107 563 -186 603 -68 35 -111 27 -325
+			-55 -238 -91 -255 -99 -269 -136 -10 -27 -12 -20 -33 88 -12 65 -25 162 -29
+			216 l-7 97 121 0 c69 0 132 5 146 11 33 15 52 59 59 135 21 215 172 479 360
+			629 553 442 1369 193 1581 -484 15 -46 29 -111 33 -145 7 -76 26 -120 59 -135
+			14 -6 77 -11 146 -11 l121 0 -7 -97 c-4 -54 -17 -151 -29 -216 -21 -108 -23
+			-115 -34 -88 -13 37 -30 45 -268 136 -214 82 -257 90 -325 55 -79 -40 -81 -46
+			-186 -603 -104 -555 -104 -550 -47 -617 55 -66 75 -70 348 -70 l247 0 27 28
+			c23 22 31 45 45 122 10 52 23 123 29 157 l11 62 95 3 95 3 53 275 c29 151 69
+			363 90 470 36 184 38 205 37 385 0 157 -4 208 -22 291 -130 601 -574 1047
+			-1171 1175 -128 27 -398 34 -524 14z"></path>
+			</g>
+			</svg>
+		</div>
+		<div id="gm-bubble-progress-container" class="gm-bubble"><canvas id="gm-bubble-progress" width="64px" height="64px"></canvas></div>
+		<span id="gm-bubble-playPause" class="gm-bubble gm-bubblecontrol" data-rotate="90">
+			<svg id="gm-bubble-play" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 48 48">
+			    <path d="M-838-2232H562v3600H-838z" fill="none"></path>
+			    <path d="M16 10v28l22-14z" fill="#fff"></path>
+			    <path d="M0 0h48v48H0z" fill="none"></path>
+			</svg>
+			<svg id="gm-bubble-pause" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 48 48">
+			    <path d="M12 38h8V10h-8v28zm16-28v28h8V10h-8z" fill="#fff"></path>
+			    <path d="M0 0h48v48H0z" fill="none"></path>
+			</svg>
+		</span>
+		<span id="gm-bubble-next" class="gm-bubble gm-bubblecontrol">
+			<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 48 48">
+			    <path d="M12 36l17-12-17-12v24zm20-24v24h4V12h-4z" fill="#fff"></path>
+			    <path d="M0 0h48v48H0z" fill="none"></path>
+			</svg>
+		</span>
+		<span id="gm-bubble-prev" class="gm-bubble gm-bubblecontrol" data-rotate="-90">
+			<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 48 48">
+			    <path d="M12 12h4v24h-4zm7 12l17 12V12z" fill="#fff"></path>
+			    <path d="M0 0h48v48H0z" fill="none"></path>
+			</svg>
+		</span>
+		<span id="gm-bubble-like" class="gm-bubble gm-bubblecontrol gm-bubble-small">
+			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 48 48">
+			    <path d="M2 42h8v-24h-8v24zm44-22c0-2.21-1.79-4-4-4h-12.63l1.91-9.14c.04-.2.07-.41.07-.63 0-.83-.34-1.58-.88-2.12l-2.13-2.11-13.17 13.17c-.72.73-1.17 1.73-1.17 2.83v20c0 2.21 1.79 4 4 4h18c1.66 0 3.08-1.01 3.68-2.44l6.03-14.1c.18-.46.29-.95.29-1.46v-3.83l-.02-.02.02-.15z" fill="white"></path>
+			</svg>
+		</span>
+		<span id="gm-bubble-dislike" class="gm-bubble gm-bubblecontrol gm-bubble-small">
+			<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 32 32">
+				<path d="M20 4h-12c-1.107 0-2.053 0.673-2.453 1.627l-4.020 9.4c-0.12 0.307-0.193 0.633-0.193 0.973v2.553l0.013 0.013-0.013 0.1c0 1.473 1.193 2.667 2.667 2.667h8.42l-1.273 6.093c-0.027 0.133-0.047 0.273-0.047 0.42 0 0.553 0.227 1.053 0.587 1.413l1.42 1.407 8.78-8.78c0.48-0.487 0.78-1.153 0.78-1.887v-13.333c0-1.473-1.193-2.667-2.667-2.667zM25.333 4v16h5.333v-16h-5.333z" fill="white"></path>
+			</svg>
+		</span>		
+	 	<span id="gm-bubble-layer"></span>
+		<span id="gm-bubble-blacklist" class="gm-bubble gm-bubble-button gm-bubblecontrol" title="Blacklist Site">
+			<svg height="16" style="enable-background:new 0 0 28 28;" version="1.1" viewBox="0 0 28 28" width="16" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+				<g>
+					<polygon points="28,22.398 19.594,14 28,5.602 22.398,0 14,8.402 5.598,0 0,5.602 8.398,14 0,22.398 5.598,28 14,19.598 22.398,28" style="fill:#FFFFFF;"></polygon>
+				</g>
+			</svg>
+		</span>
+		<span id="gm-bubble-drag" class="gm-bubble gm-bubble-button gm-bubblecontrol" title="Move">
+			<svg height="16" style="enable-background:new 0 0 32 32;" version="1.1" viewBox="0 0 32 32" width="16" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+				<g>
+					<polygon points="18,20 18,26 22,26 16,32 10,26 14,26 14,20" style="fill:#ffffff;"></polygon>
+					<polygon points="14,12 14,6 10,6 16,0 22,6 18,6 18,12" style="fill:#ffffff;"></polygon>
+					<polygon points="12,18 6,18 6,22 0,16 6,10 6,14 12,14" style="fill:#ffffff;"></polygon>
+					<polygon points="20,14 26,14 26,10 32,16 26,22 26,18 20,18" style="fill:#ffffff;"></polygon>
+				</g>
+				
+			</svg>
+		</span>
+		<span id="gm-bubble-label">
+			<div class="gm-bubble-album-art-container">
+				<img id="gm-bubble-album-art">
+			</div>
+			<div class="gm-bubble-song-data-container">
+				<div id="gm-bubble-song-title"></div>
+				<div id="gm-bubble-artist"></div>
+			</div>
+		</span>
+	</div>
+</div>
+
+<div class="bb-typeahead-suggestions aui-dropdown2 aui-style-default aui-dropdown2-tailed" id="bb-typeahead-suggestions-11" style="z-index: 5000;"><ul></ul></div><div class="bb-typeahead-suggestions aui-dropdown2 aui-style-default" id="bb-typeahead-suggestions-14" style="z-index: 5000;"><ul></ul></div><div class="bb-typeahead-suggestions aui-dropdown2 aui-style-default" id="bb-typeahead-suggestions-17" style="z-index: 5000;"><ul></ul></div><div class="bb-typeahead-suggestions aui-dropdown2 aui-style-default aui-dropdown2-tailed" id="bb-typeahead-suggestions-20" style="z-index: 5000;"><ul></ul></div><div class="bb-typeahead-suggestions aui-dropdown2 aui-style-default" id="bb-typeahead-suggestions-25" style="z-index: 5000;"><ul></ul></div><script src="./addrezzeddevteam   addrezzed_lite_backend   wiki — Bitbucket_files/nr-515.min.js"></script><script type="text/javascript" src="./addrezzeddevteam   addrezzed_lite_backend   wiki — Bitbucket_files/a2cef8c3d3"></script></body></html>

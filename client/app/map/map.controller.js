@@ -26,6 +26,11 @@ angular.module('geovalApp')
                     rotate: false,
                     attribution: false
                 }
+            },
+            functions:{
+                onClick:function(){
+                    console.log('test');
+                }
             }
         });
     });
