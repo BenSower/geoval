@@ -1,29 +1,32 @@
 'use strict';
 
 angular.module('geovalApp')
-    .controller('MapCtrl', function($scope) {
+    .controller('MapCtrl', function($scope, $http) {
 
-        angular.extend($scope, {
-            ita: {
+        $http.get('/api/trajectories').success(function(data) {
+
+            $scope.trajectories = {
                 source: {
                     type: 'GeoJSON',
                     geojson: {
-                        //object: italy,
+                        object: {
+                            'type': 'FeatureCollection',
+                            'features': data,
+                        },
                         projection: 'EPSG:3857'
                     },
-                    url: '/assets/json/ITA.geo.json'
-
                 },
                 style: {
-                    fill: {
-                        color: 'rgba(255, 0, 0, 0.6)'
-                    },
                     stroke: {
-                        color: 'white',
+                        color: 'red',
                         width: 3
                     }
                 }
-            },
+            };
+        });
+
+        angular.extend($scope, {
+            trajectories: {},
             center: {
                 lat: 0,
                 lon: 0,

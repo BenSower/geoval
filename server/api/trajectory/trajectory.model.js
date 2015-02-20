@@ -4,8 +4,10 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var TrajectorySchema = new Schema({
-    name: String,
+    id: String,
     time: [Date],
+    type: {type: String, default: 'Feature'},
+    properties: {},
     geometry: {
         type: {
             type: String
