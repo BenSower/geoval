@@ -1,14 +1,14 @@
 {
-    type: "FeatureCollection",
-    features: [{
-        type: "Feature",
-        id: "ITA",
-        properties: {
-            name: "Italy"
+    "type": "FeatureCollection",
+    "features": [{
+        "type": "Feature",
+        "id": "ITA",
+        "properties": {
+            "name": "Italy"
         },
-        geometry: {
-            type: "MultiPolygon",
-            coordinates: [
+        "geometry": {
+            "type": "MultiPolygon",
+            "coordinates": [
                 [
                     [
                         [
