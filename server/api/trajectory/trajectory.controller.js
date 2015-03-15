@@ -83,25 +83,36 @@ exports.destroy = function(req, res) {
 exports.importMediaQ = function(req, res) {
     console.log('importing trajectories from mediaQ');
 
-    var query = 'SELECT UserName,' +
-        ' DeviceOs, LastActivityDate, count(VideoId) AS \'Uploaded Videos\'' +
-        ' FROM MediaQ_V2.VIDEO_INFO' +
-        ' INNER JOIN MediaQ_V2.VIDEO_USER USING(VideoId)' +
-        ' INNER JOIN MediaQ_V2.USERS_PROFILES USING(UserId)' +
-        ' GROUP BY UserName;';
+    var query = 'SELECT VideoId, PLat, Plng, TimeCode FROM MediaQ_V2.VIDEO_METADATA;'
 
     queryMediaQ(query, function(rows) {
-        console.log(rows);
+        var results = {};
+        for (var i = 0; i < rows.length; i++) {
+            var videoSlice = rows[i];
+            if (results[videoSlice.VideoId] === undefined) {
+                results[videoSlice.VideoId] = {
+                    videoId: videoSlice.VideoId,
+                    timestamp: videoSlice.TimeCode,
+                    location: [
+                        [videoSlice.Plng, videoSlice.PLat]
+                    ]
+                }
+            } else {
+                results[videoSlice.VideoId].location.push(
+                    [videoSlice.Plng, videoSlice.PLat]
+                );
+            }
+        }
         var fs = require('fs');
-        fs.writeFile('/tmp/test', JSON.stringify(rows), function(err) {
+        fs.writeFile('/tmp/test', JSON.stringify(results), function(err) {
             if (err) {
                 return console.log(err);
             }
 
             console.log('The file was saved!');
+            return res.send(200);
         });
     });
-    return res.send(200);
 
 };
 
