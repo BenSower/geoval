@@ -1,6 +1,9 @@
 div(ng-include='"components/navbar/navbar.html"')
 .container
   p
+    | Import all video-trajectories from MediaQ: 
+    button(type="button", class="btn btn-md btn-default", ng-click='importMediaQ()', ladda="loading", data-style="zoom-out") {{mediaq}}
+  p
     | The delete user and user index api routes are restricted to users with the 'admin' role.
   ul.list-group
     li.list-group-item(ng-repeat='user in users')

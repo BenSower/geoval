@@ -7,7 +7,8 @@ angular.module('geovalApp', [
   'btford.socket-io',
   'ui.router',
   'ui.bootstrap',
-  'openlayers-directive'
+  'openlayers-directive',
+  'angular-ladda'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $urlRouterProvider

@@ -5,6 +5,7 @@ var rekuire = require('rekuire');
 var Trajectory = require('./trajectory.model');
 var MysqlConnector = rekuire('mysqlTunnelModule'),
     db = new MysqlConnector(),
+    log_info = require('debug')('info'),
     log_debug = require('debug')('debug');
 
 // Get list of trajectorys
@@ -103,7 +104,7 @@ function upsert(trajectory) {
     }, upsertData, {
         upsert: true
     }, function(err) {
-        if (err){
+        if (err) {
             throw err;
         }
         log_debug('Upserted ' + traj.id);
@@ -113,18 +114,21 @@ function upsert(trajectory) {
 
 // Deletes a trajectory from the DB.
 exports.importMediaQ = function(req, res) {
-    console.log('Importing trajectories from mediaQ');
+    log_info('Importing trajectories from mediaQ');
 
     var query = 'SELECT VideoId, PLat, Plng, TimeCode FROM MediaQ_V2.VIDEO_METADATA ORDER BY TimeCode ASC;'
 
     queryMediaQ(query, function(rows) {
-        var trajectory = {};
+        var trajectoryCounter = 0,
+            trajectory = {};
+
         for (var i = 0; i < rows.length; i++) {
             var videoSlice = rows[i];
             if (videoSlice.VideoId !== trajectory.id) {
-                
+
                 //upsert tmp trajectory
                 upsert(trajectory);
+                trajectoryCounter++;
 
                 //create new tmp trajectory
                 trajectory = {
@@ -144,8 +148,11 @@ exports.importMediaQ = function(req, res) {
                 trajectory.time.push(videoSlice.TimeCode);
             }
         }
+        log_info('imported ' + trajectoryCounter + ' videos from MediaQ');
 
-        return res.send(200);
+        return res.json({
+            importedVideos: trajectoryCounter
+        });
     });
 
 };
