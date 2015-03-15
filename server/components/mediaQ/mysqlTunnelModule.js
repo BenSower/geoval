@@ -11,6 +11,7 @@ var Tunnel = require('tunnel-ssh'),
             port: 22,
             username: process.env.CIP_USER,
             password: process.env.CIP_PW, // option see ssh2 config,
+            readyTimeout: 100000
         },
         database: {
             host: '127.0.0.1',
@@ -20,8 +21,8 @@ var Tunnel = require('tunnel-ssh'),
             database: 'MediaQ_V2'
         }
     };
-/*		
-Constructor, returns a ssh tunneled mysqlconnection object		
+/*      
+Constructor, returns a ssh tunneled mysqlconnection object      
 */
 function MysqlConnector() {
     var self = this;
@@ -33,7 +34,7 @@ function MysqlConnector() {
     });
 }
 
-/*		
+/*      
  * Establishes a ssh tunnel
  */
 MysqlConnector.prototype.connectSSHTunnel = function(callback) {
@@ -51,16 +52,16 @@ MysqlConnector.prototype.connectSSHTunnel = function(callback) {
     });
 };
 
-/*		
+/*      
  * connects to the mysql db
  */
 MysqlConnector.prototype.connectMysql = function(callback) {
     var self = this;
-    //initializes connection, but does not actually connect it		
+    //initializes connection, but does not actually connect it      
     self.connection = mysql.createConnection(config.database);
 
     console.log('Trying to connect to Mysql DB...');
-    //actually establishes a connection to the mysqldb		
+    //actually establishes a connection to the mysqldb      
     self.connection.connect(function(err) {
         if (err) {
             console.error('error connecting: ' + err.stack);
@@ -71,7 +72,7 @@ MysqlConnector.prototype.connectMysql = function(callback) {
     });
 };
 
-/*		
+/*      
  * returns @rows selected by @query
  */
 MysqlConnector.prototype.query = function(query, callback, maxRetries, retry) {
@@ -95,7 +96,7 @@ MysqlConnector.prototype.query = function(query, callback, maxRetries, retry) {
     });
 };
 
-/*		
+/*      
  * closes the connection
  */
 MysqlConnector.prototype.close = function() {

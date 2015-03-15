@@ -82,15 +82,24 @@ exports.destroy = function(req, res) {
 // Deletes a trajectory from the DB.
 exports.importMediaQ = function(req, res) {
     console.log('importing trajectories from mediaQ');
-    
+
     var query = 'SELECT UserName,' +
         ' DeviceOs, LastActivityDate, count(VideoId) AS \'Uploaded Videos\'' +
         ' FROM MediaQ_V2.VIDEO_INFO' +
         ' INNER JOIN MediaQ_V2.VIDEO_USER USING(VideoId)' +
-        ' INNER JOIN MediaQ_V2.USERS_PROFILES USING(UserId);';
-    
+        ' INNER JOIN MediaQ_V2.USERS_PROFILES USING(UserId)' +
+        ' GROUP BY UserName;';
+
     queryMediaQ(query, function(rows) {
-        console.log(rows[0]);
+        console.log(rows);
+        var fs = require('fs');
+        fs.writeFile('/tmp/test', JSON.stringify(rows), function(err) {
+            if (err) {
+                return console.log(err);
+            }
+
+            console.log('The file was saved!');
+        });
     });
     return res.send(200);
 
