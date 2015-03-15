@@ -4,7 +4,8 @@ var _ = require('lodash');
 var rekuire = require('rekuire');
 var Trajectory = require('./trajectory.model');
 var MysqlConnector = rekuire('mysqlTunnelModule'),
-    db = new MysqlConnector();
+    db = new MysqlConnector(),
+    log_debug = require('debug')('debug');
 
 // Get list of trajectorys
 exports.index = function(req, res) {
@@ -29,15 +30,26 @@ exports.show = function(req, res) {
     });
 };
 
+
 // Creates a new trajectory in the DB.
-exports.create = function(req, res) {
+//returns 201 and the trajectory if everything went fine
+//returns the trajectory if no response header was specified.
+function createTrajectory(req, res) {
     Trajectory.create(req.body, function(err, trajectory) {
         if (err) {
             return handleError(res, err);
         }
-        return res.json(201, trajectory);
+        if (res !== null) {
+            return res.json(201, trajectory);
+        } else {
+            return trajectory
+        }
     });
-};
+}
+
+exports.create = createTrajectory;
+
+
 
 // Updates an existing trajectory in the DB.
 exports.update = function(req, res) {
@@ -61,6 +73,7 @@ exports.update = function(req, res) {
     });
 };
 
+
 // Deletes a trajectory from the DB.
 exports.destroy = function(req, res) {
     Trajectory.findById(req.params.id, function(err, trajectory) {
@@ -79,45 +92,65 @@ exports.destroy = function(req, res) {
     });
 };
 
+
+function upsert(trajectory) {
+    var traj = new Trajectory(trajectory),
+        upsertData = traj.toObject();
+
+    delete upsertData._id;
+    Trajectory.update({
+        id: traj.id
+    }, upsertData, {
+        upsert: true
+    }, function(err) {
+        if (err){
+            throw err;
+        }
+        log_debug('Upserted ' + traj.id);
+    });
+
+}
+
 // Deletes a trajectory from the DB.
 exports.importMediaQ = function(req, res) {
-    console.log('importing trajectories from mediaQ');
+    console.log('Importing trajectories from mediaQ');
 
-    var query = 'SELECT VideoId, PLat, Plng, TimeCode FROM MediaQ_V2.VIDEO_METADATA;'
+    var query = 'SELECT VideoId, PLat, Plng, TimeCode FROM MediaQ_V2.VIDEO_METADATA ORDER BY TimeCode ASC;'
 
     queryMediaQ(query, function(rows) {
-        var results = {};
+        var trajectory = {};
         for (var i = 0; i < rows.length; i++) {
             var videoSlice = rows[i];
-            if (results[videoSlice.VideoId] === undefined) {
-                results[videoSlice.VideoId] = {
-                    videoId: videoSlice.VideoId,
-                    timestamp: videoSlice.TimeCode,
-                    location: [
-                        [videoSlice.Plng, videoSlice.PLat]
-                    ]
+            if (videoSlice.VideoId !== trajectory.id) {
+                
+                //upsert tmp trajectory
+                upsert(trajectory);
+
+                //create new tmp trajectory
+                trajectory = {
+                    id: videoSlice.VideoId,
+                    time: [videoSlice.TimeCode],
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: [
+                            [videoSlice.Plng, videoSlice.PLat]
+                        ]
+                    }
                 }
             } else {
-                results[videoSlice.VideoId].location.push(
+                trajectory.geometry.coordinates.push(
                     [videoSlice.Plng, videoSlice.PLat]
                 );
+                trajectory.time.push(videoSlice.TimeCode);
             }
         }
-        var fs = require('fs');
-        fs.writeFile('/tmp/test', JSON.stringify(results), function(err) {
-            if (err) {
-                return console.log(err);
-            }
 
-            console.log('The file was saved!');
-            return res.send(200);
-        });
+        return res.send(200);
     });
 
 };
 
 function queryMediaQ(query, fn) {
-
     db.query(query, function(rows, fields) {
         fn(rows, fields);
     }, 10);

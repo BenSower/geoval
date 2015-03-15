@@ -10,8 +10,9 @@ var TrajectorySchema = new Schema({
     properties: {},
     geometry: {
         type: {
-            type: String
-        },
+            type: String,
+            default: 'LineString'
+        }, 
         coordinates: [],
     }
 });
