@@ -21,18 +21,20 @@ angular.module('geovalApp')
                         color: 'red',
                         width: 3
                     }
-                }
+                },
+
             };
         });
 
         angular.extend($scope, {
             trajectories: {},
             center: {
-                lat: 0,
-                lon: 0,
-                autodiscover: true,
-                projection: 'EPSG:4326'
-            },
+                    'lat': 48.13650696913464,
+                    'lon': 11.606172461258842,
+                    'zoom': 12,
+                    'projection': 'EPSG:4326',
+                    autodiscover : false
+                },
             defaults: {
                 layers: {
                     main: {

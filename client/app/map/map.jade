@@ -1,4 +1,3 @@
 div(ng-include='"components/navbar/navbar.html"')
 openlayers(id='map',ng-click="functions.onClick()", ol-center='center', ol-defaults="defaults")
 	ol-layer(ol-layer-properties='trajectories')
-pre(ng-bind='trajectories | json')
