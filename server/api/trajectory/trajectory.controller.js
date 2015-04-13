@@ -8,13 +8,13 @@ var MysqlConnector = rekuire('mysqlTunnelModule'),
     log_info = require('debug')('info'),
     log_debug = require('debug')('debug');
 
-// Get list of trajectorys
+// Get list of trajectories
 exports.index = function(req, res) {
-    Trajectory.find(function(err, trajectorys) {
+    Trajectory.find(function(err, trajectories) {
         if (err) {
             return handleError(res, err);
         }
-        return res.json(200, trajectorys);
+        return res.json(200, trajectories);
     });
 };
 
@@ -120,26 +120,22 @@ exports.importMediaQ = function(req, res) {
 
     queryMediaQ(query, function(rows) {
         var trajectoryCounter = 0,
-            trajectory = {};
+            trajectory = null;
 
         for (var i = 0; i < rows.length; i++) {
             var videoSlice = rows[i];
+                
+            //create initial tmp trajectory
+            if (trajectory === null){
+                trajectory = createNewTmpTrajectory(videoSlice);
+            }
             if (videoSlice.VideoId !== trajectory.id) {
                 //upsert tmp trajectory
                 upsert(trajectory);
                 trajectoryCounter++;
 
                 //create new tmp trajectory
-                trajectory = {
-                    id: videoSlice.VideoId,
-                    time: [videoSlice.TimeCode],
-                    geometry: {
-                        type: 'LineString',
-                        coordinates: [
-                            [videoSlice.Plng, videoSlice.PLat]
-                        ]
-                    }
-                }
+                trajectory = createNewTmpTrajectory(videoSlice);
             } else {
                 trajectory.geometry.coordinates.push(
                     [videoSlice.Plng, videoSlice.PLat]
@@ -153,8 +149,25 @@ exports.importMediaQ = function(req, res) {
             importedVideos: trajectoryCounter
         });
     });
-
 };
+
+/*
+    Creates a new Trajectory object
+*/
+function createNewTmpTrajectory(videoSlice) {
+    var trajectory = {
+        id: videoSlice.VideoId,
+        time: [videoSlice.TimeCode],
+        geometry: {
+            type: 'LineString',
+            coordinates: [
+                [videoSlice.Plng, videoSlice.PLat]
+            ]
+        }
+    }
+    return trajectory;
+}
+
 
 function queryMediaQ(query, fn) {
     db.query(query, function(rows, fields) {

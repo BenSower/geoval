@@ -4,6 +4,8 @@ angular.module('geovalApp')
     .controller('MapCtrl', function($scope, $http) {
 
         $http.get('/api/trajectories').success(function(data) {
+            //console.log(data.splice(0, 1));
+            //console.log(data);
 
             $scope.trajectories = {
                 source: {
