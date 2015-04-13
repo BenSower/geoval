@@ -116,7 +116,7 @@ function upsert(trajectory) {
 exports.importMediaQ = function(req, res) {
     log_info('Importing trajectories from mediaQ');
 
-    var query = 'SELECT VideoId, PLat, Plng, TimeCode FROM MediaQ_V2.VIDEO_METADATA ORDER BY TimeCode ASC;'
+    var query = 'SELECT VideoId, PLat, Plng, TimeCode FROM MediaQ_V2.VIDEO_METADATA ORDER BY VideoId ASC, TimeCode ASC;';
 
     queryMediaQ(query, function(rows) {
         var trajectoryCounter = 0,
@@ -125,7 +125,6 @@ exports.importMediaQ = function(req, res) {
         for (var i = 0; i < rows.length; i++) {
             var videoSlice = rows[i];
             if (videoSlice.VideoId !== trajectory.id) {
-
                 //upsert tmp trajectory
                 upsert(trajectory);
                 trajectoryCounter++;

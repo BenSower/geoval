@@ -18,7 +18,8 @@ var Tunnel = require('tunnel-ssh'),
             port: 31337,
             user: process.env.MEDIAQ_USER,
             password: process.env.MEDIAQ_PW,
-            database: 'MediaQ_V2'
+            database: 'MediaQ_V2',
+            forceIPv4: true
         }
     };
 /*      
