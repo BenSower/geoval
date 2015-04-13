@@ -1,29 +1,28 @@
 'use strict';
 
 angular.module('geovalApp')
-    .controller('AdminCtrl', function($scope, $http, Auth, User) {
-
+    .config(function(laddaProvider) {
+        laddaProvider.setOption({
+            style: 'zoom-out'
+        });
+    })
+    .controller('AdminCtrl', function($scope, $http, $timeout, Auth, User) {
         // Use the User $resource to fetch all users
         $scope.users = User.query();
         $scope.mediaq = 'Import MediaQ Trajectories';
 
-        $scope.delete = function(user) {
-            User.remove({
-                id: user._id
-            });
-            angular.forEach($scope.users, function(u, i) {
-                if (u === user) {
-                    $scope.users.splice(i, 1);
-                }
-            });
-        };
-
         $scope.importMediaQ = function() {
-            $scope.loading = true; // start loading
-            $.get('/api/trajectories/importMediaQ', function(data) {
-                $scope.loading = false;
+            //$scope.loading = "true"; // start loading
+            $scope.loading = true
+
+            $.getJSON('/api/trajectories/importMediaQ', function(data) {
                 $scope.mediaq = 'Imported ' + data.importedVideos + ' trajectories';
+                //forces a redraw
+                $timeout(function() {
+                    $scope.loading = false;
+                }, 0);
             });
+
         };
 
     });

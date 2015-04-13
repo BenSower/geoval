@@ -4,7 +4,6 @@ angular.module('geovalApp', [
   'ngCookies',
   'ngResource',
   'ngSanitize',
-  'btford.socket-io',
   'ui.router',
   'ui.bootstrap',
   'openlayers-directive',
