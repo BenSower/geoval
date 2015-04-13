@@ -22,7 +22,38 @@ angular.module('geovalApp')
                     $scope.loading = false;
                 }, 0);
             });
-
         };
 
+
+        var id
+
+        $scope.recordTrajectory = function() {
+            var options;
+
+            $scope.locations = "";
+
+            function success(pos) {
+                var crd = pos.coords;
+                var crdString = crd.latitude + ' ' + crd.longitude
+                
+                $scope.locations = $scope.locations + '\n' + crdString;
+            };
+
+
+            function error(err) {
+                console.warn('ERROR(' + err.code + '): ' + err.message);
+            };
+
+            options = {
+                enableHighAccuracy: true,
+                timeout: 100000,
+                maximumAge: 0
+            };
+
+            id = navigator.geolocation.watchPosition(success, error, options);
+        }
+
+        $scope.stopRecord = function() {
+            navigator.geolocation.clearWatch(id);
+        }
     });
