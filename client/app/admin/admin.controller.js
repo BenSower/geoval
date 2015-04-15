@@ -13,7 +13,7 @@ angular.module('geovalApp')
 
         $scope.importMediaQ = function() {
             //$scope.loading = "true"; // start loading
-            $scope.loading = true
+            $scope.loading = true;
 
             $.getJSON('/api/trajectories/importMediaQ', function(data) {
                 $scope.mediaq = 'Imported ' + data.importedVideos + ' trajectories';
@@ -25,24 +25,23 @@ angular.module('geovalApp')
         };
 
 
-        var id
-
+        var id;
         $scope.recordTrajectory = function() {
             var options;
 
-            $scope.locations = "";
+            $scope.locations = '';
 
             function success(pos) {
                 var crd = pos.coords;
-                var crdString = crd.latitude + ' ' + crd.longitude
+                var crdString = crd.latitude + ' ' + crd.longitude;
                 
                 $scope.locations = $scope.locations + '\n' + crdString;
-            };
+            }
 
 
             function error(err) {
                 console.warn('ERROR(' + err.code + '): ' + err.message);
-            };
+            }
 
             options = {
                 enableHighAccuracy: true,
@@ -51,9 +50,9 @@ angular.module('geovalApp')
             };
 
             id = navigator.geolocation.watchPosition(success, error, options);
-        }
+        };
 
         $scope.stopRecord = function() {
             navigator.geolocation.clearWatch(id);
-        }
+        };
     });

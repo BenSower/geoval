@@ -16,7 +16,7 @@
     "lodash": "~2.4.1",
     "angular-socket-io": "~0.6.0",
     "angular-ui-router": "~0.2.10",
-    "angular-openlayers-directive": "~0.0.3",
+    "angular-openlayers-directive": "~0.0.4",
     "openlayers3": "~3.0.0",
     "angular-ladda": "~0.2.2"
   },
