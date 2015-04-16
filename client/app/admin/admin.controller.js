@@ -1,11 +1,12 @@
 'use strict';
 
 angular.module('geovalApp')
-    .config(function(laddaProvider) {
+/*    .config(function(laddaProvider) {
         laddaProvider.setOption({
             style: 'zoom-out'
         });
     })
+*/
     .controller('AdminCtrl', function($scope, $http, $timeout, Auth, User) {
         // Use the User $resource to fetch all users
         $scope.users = User.query();
