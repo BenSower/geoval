@@ -5,6 +5,8 @@ var rekuire = require('rekuire');
 var Trajectory = require('./trajectory.model');
 var MysqlConnector = rekuire('mysqlTunnelModule'),
     db = new MysqlConnector(),
+    formidable = require('formidable'),
+    util = require('util'),
     log_info = require('debug')('info'),
     log_debug = require('debug')('debug');
 
@@ -109,8 +111,26 @@ function upsert(trajectory) {
         }
         log_debug('Upserted ' + traj.id);
     });
-
 }
+
+// Updates an existing trajectory in the DB.
+exports.parseGPXandImportData = function(req, res) {
+
+    var form = new formidable.IncomingForm();
+    //form.uploadDir = '../uploads';
+    form.parse(req, function(err, fields, files) {
+        log_info('uploaded file: ' + files.upload.name);
+        res.writeHead(200, {
+            'content-type': 'text/plain'
+        });
+        res.write('received upload:\n\n');
+        res.end(util.inspect({
+            fields: fields,
+            files: files
+        }));
+    });
+};
+
 
 // Deletes a trajectory from the DB.
 exports.importMediaQ = function(req, res) {
@@ -124,9 +144,9 @@ exports.importMediaQ = function(req, res) {
 
         for (var i = 0; i < rows.length; i++) {
             var videoSlice = rows[i];
-                
+
             //create initial tmp trajectory
-            if (trajectory === null){
+            if (trajectory === null) {
                 trajectory = createNewTmpTrajectory(videoSlice);
             }
             if (videoSlice.VideoId !== trajectory.id) {
@@ -150,6 +170,9 @@ exports.importMediaQ = function(req, res) {
         });
     });
 };
+
+
+
 
 /*
     Creates a new Trajectory object
