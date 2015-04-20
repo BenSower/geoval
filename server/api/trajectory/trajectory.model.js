@@ -7,7 +7,10 @@ var TrajectorySchema = new Schema({
     id: String,
     time: [Date],
     type: {type: String, default: 'Feature'},
-    properties: {},
+    properties: {
+        time:Date,
+        coordTimes: [Date]
+    },
     geometry: {
         type: {
             type: String,
