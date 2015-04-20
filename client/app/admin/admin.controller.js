@@ -11,10 +11,15 @@ angular.module('geovalApp')
       input(type='submit',class="btn btn-md btn-default", value='Upload')
     */
     .controller('AdminCtrl', function($scope, $http, $timeout, Auth, User) {
+        
+        // set file-input options
         $("#input-1a").fileinput({
             'allowedFileExtensions': ['gpx'],
             'browseClass' : "btn btn-md btn-default",
+            'data-show-preview' : 'false',
+            'maxFileCount': 10
         });
+
         // Use the User $resource to fetch all users
         $scope.users = User.query();
         $scope.mediaq = 'Import MediaQ Trajectories';

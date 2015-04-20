@@ -136,12 +136,7 @@ exports.parseGPXandImportData = function(req, res) {
 
         log_debug(JSON.stringify(geoJson));
         log_info('uploaded file: ' + files.upload.name);
-
-        res.writeHead(200, {
-            'content-type': 'text/plain'
-        });
-        res.write('received upload:\n\n');
-        res.end(files.upload.name);
+        res.send(200);
     });
 };
 
