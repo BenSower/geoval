@@ -1,13 +1,20 @@
 'use strict';
 
 angular.module('geovalApp')
-/*    .config(function(laddaProvider) {
-        laddaProvider.setOption({
-            style: 'zoom-out'
-        });
-    })
-*/
+    /*    .config(function(laddaProvider) {
+            laddaProvider.setOption({
+                style: 'zoom-out'
+            });
+        })
+              input(type='file',class="btn btn-md btn-default", name='upload', multiple='multiple')
+      | 
+      input(type='submit',class="btn btn-md btn-default", value='Upload')
+    */
     .controller('AdminCtrl', function($scope, $http, $timeout, Auth, User) {
+        $("#input-1a").fileinput({
+            'allowedFileExtensions': ['gpx'],
+            'browseClass' : "btn btn-md btn-default",
+        });
         // Use the User $resource to fetch all users
         $scope.users = User.query();
         $scope.mediaq = 'Import MediaQ Trajectories';
@@ -35,7 +42,7 @@ angular.module('geovalApp')
             function success(pos) {
                 var crd = pos.coords;
                 var crdString = crd.latitude + ' ' + crd.longitude;
-                
+
                 $scope.locations = $scope.locations + '\n' + crdString;
             }
 
