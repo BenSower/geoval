@@ -7,9 +7,7 @@ div(ng-include='"components/navbar/navbar.html"')
       span( class="ladda-label") {{mediaq}}
   p
     h4 Upload a gpx trajectory: 
-    form(action='/api/trajectories/gpx', enctype='multipart/form-data', method='post')
-      input(id="input-1a", name='upload', type="file", class="file")
-
+    input(id="input-1a", name='upload', type="file", class="file", multiple)
   p
     | The delete user and user index api routes are restricted to users with the 'admin' role.
   ul.list-group

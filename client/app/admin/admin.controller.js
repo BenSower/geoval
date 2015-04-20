@@ -5,7 +5,7 @@ angular.module('geovalApp')
             laddaProvider.setOption({
                 style: 'zoom-out'
             });
-        })
+        })sauer.benjamin@gmail.com
               input(type='file',class="btn btn-md btn-default", name='upload', multiple='multiple')
       | 
       input(type='submit',class="btn btn-md btn-default", value='Upload')
@@ -14,10 +14,11 @@ angular.module('geovalApp')
         
         // set file-input options
         $("#input-1a").fileinput({
+            'uploadUrl': '/api/trajectories/gpx',
+            'uploadAsync': true, 
             'allowedFileExtensions': ['gpx'],
             'browseClass' : "btn btn-md btn-default",
-            'data-show-preview' : 'false',
-            'maxFileCount': 10
+            'maxFileCount': 10,
         });
 
         // Use the User $resource to fetch all users

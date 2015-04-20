@@ -5,13 +5,14 @@ var rekuire = require('rekuire');
 var Trajectory = require('./trajectory.model');
 var MysqlConnector = rekuire('mysqlTunnelModule'),
     db = new MysqlConnector(),
-    formidable = require('formidable'),
+    Busboy = require('busboy'),
     util = require('util'),
     log_info = require('debug')('info'),
     log_debug = require('debug')('debug'),
     ToGeoJson = require('togeojson'),
     jsdom = require('jsdom').jsdom,
     fs = require('fs'),
+    os = require('os'),
     path = require('path');
 
 // Get list of trajectories
@@ -117,27 +118,82 @@ function upsert(trajectory) {
     });
 }
 
+function convertGpxToGeoJson(gpxFilePath) {
+    //load file
+    var gpxFileObj = fs.readFileSync(gpxFilePath, 'utf8');
+    //get dom tree from gpx file
+    var gpx = jsdom(gpxFileObj);
+
+    //convert from gpx to geojson
+    var converted = ToGeoJson.gpx(gpx, {
+        styles: true
+    });
+    log_info('file converted to geoJson');
+    log_debug('Raw data: ', converted);
+
+    //Selecting first/only trajectory in file
+    var geoJson = converted.features[0];
+
+    //setting the filename
+    geoJson.id = path.basename(gpxFilePath);
+
+    return geoJson;
+}
+
 // Updates an existing trajectory in the DB.
 exports.parseGPXandImportData = function(req, res) {
 
-    var form = new formidable.IncomingForm();
-    //form.uploadDir = '../uploads';
-    form.parse(req, function(err, fields, files) {
-        //read and parse gpx file
-        var gpxFilePath = files.upload.path;
-        var gpxFileObj = fs.readFileSync(gpxFilePath, 'utf8');
-        var gpx = jsdom(gpxFileObj);
-
-        //convert from gpx to geojson
-        var converted = ToGeoJson.gpx(gpx, { styles: true });
-        var geoJson = converted.features[0];
-        geoJson.id = files.upload.name;
-        upsert(geoJson);
-
-        log_debug(JSON.stringify(geoJson));
-        log_info('uploaded file: ' + files.upload.name);
-        res.send(200);
+    var busboy = new Busboy({
+        headers: req.headers
     });
+    
+
+    busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+
+        log_info('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
+
+        //create filename
+        var timestamp = new Date().toISOString();
+        var gpxFilePath = path.join(os.tmpDir(), timestamp + '_' + path.basename(filename));
+
+        //create writestream
+        var writeStream = fs.createWriteStream(gpxFilePath);
+
+        //attach writestream to file
+        file.pipe(writeStream);
+
+        //parse json file when file is written
+        writeStream.on('finish', function() {
+            
+            log_info('File was written, starting gpx to geoJson conversion.');
+            var geoJson = convertGpxToGeoJson(gpxFilePath);
+            log_info('file converted to geoJson, number of timestamps:', geoJson.geometry.coordinates.length);
+            
+            //upsert data into db
+            log_info('Upserting trajectory into db');
+            upsert(geoJson);
+
+            res.json(200, {
+                'msg': 'File uploaded successfully'
+            });
+        });
+
+
+        file.on('end', function() {
+            log_info('File [' + filename + '] Finished uploading');
+            log_debug('uploaded file:', file);
+        });
+    });
+
+    busboy.on('finish', function() {
+        log_info('Done parsing form!');
+        res.json(200, {
+            'msg': 'File uploaded successfully'
+        });
+    });
+
+    //adding busboy parser to request
+    req.pipe(busboy);
 };
 
 
