@@ -5,8 +5,14 @@ var rekuire = require('rekuire');
 var Trajectory = require('./trajectory.model');
 var MysqlConnector = rekuire('mysqlTunnelModule'),
     db = new MysqlConnector(),
+    formidable = require('formidable'),
+    util = require('util'),
     log_info = require('debug')('info'),
-    log_debug = require('debug')('debug');
+    log_debug = require('debug')('debug'),
+    ToGeoJson = require('togeojson'),
+    jsdom = require('jsdom').jsdom,
+    fs = require('fs'),
+    path = require('path');
 
 // Get list of trajectories
 exports.index = function(req, res) {
@@ -107,10 +113,38 @@ function upsert(trajectory) {
         if (err) {
             throw err;
         }
-        log_debug('Upserted ' + traj.id);
+        log_info('Upserted ' + traj.id);
     });
-
 }
+
+// Updates an existing trajectory in the DB.
+exports.parseGPXandImportData = function(req, res) {
+
+    var form = new formidable.IncomingForm();
+    //form.uploadDir = '../uploads';
+    form.parse(req, function(err, fields, files) {
+        //read and parse gpx file
+        var gpxFilePath = files.upload.path;
+        var gpxFileObj = fs.readFileSync(gpxFilePath, 'utf8');
+        var gpx = jsdom(gpxFileObj);
+
+        //convert from gpx to geojson
+        var converted = ToGeoJson.gpx(gpx, { styles: true });
+        var geoJson = converted.features[0];
+        geoJson.id = files.upload.name;
+        upsert(geoJson);
+
+        log_debug(JSON.stringify(geoJson));
+        log_info('uploaded file: ' + files.upload.name);
+
+        res.writeHead(200, {
+            'content-type': 'text/plain'
+        });
+        res.write('received upload:\n\n');
+        res.end(files.upload.name);
+    });
+};
+
 
 // Deletes a trajectory from the DB.
 exports.importMediaQ = function(req, res) {
@@ -124,9 +158,9 @@ exports.importMediaQ = function(req, res) {
 
         for (var i = 0; i < rows.length; i++) {
             var videoSlice = rows[i];
-                
+
             //create initial tmp trajectory
-            if (trajectory === null){
+            if (trajectory === null) {
                 trajectory = createNewTmpTrajectory(videoSlice);
             }
             if (videoSlice.VideoId !== trajectory.id) {
@@ -150,6 +184,9 @@ exports.importMediaQ = function(req, res) {
         });
     });
 };
+
+
+
 
 /*
     Creates a new Trajectory object

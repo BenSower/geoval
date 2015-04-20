@@ -2,11 +2,11 @@ div(ng-include='"components/navbar/navbar.html"')
 .container
 
   p
-    | Import all video-trajectories from MediaQ: 
+    h4 Import all video-trajectories from MediaQ: 
     button( class="btn btn-md btn-default", ng-click='importMediaQ()', ladda="loading", data-style="zoom-out", data-spinner-color="#123456") 
       span( class="ladda-label") {{mediaq}}
   p
-    | Record a new trajectory (browser based): 
+    h4 Record a new trajectory (browser based, experimental): 
     button( class="btn btn-md btn-default", ng-click='recordTrajectory()', ladda="loading", data-style="zoom-out", data-spinner-color="#123456") 
       span( class="ladda-label") Start recording
     button( class="btn btn-md btn-default", ng-click='stopRecord()', ladda="loading", data-style="zoom-out", data-spinner-color="#123456") 
@@ -14,12 +14,11 @@ div(ng-include='"components/navbar/navbar.html"')
   p
     {{locations}}
   p
+    h4 Upload a gpx trajectory: 
     form(action='/api/trajectories/gpx', enctype='multipart/form-data', method='post')
-      input(type='text', name='title')
-      |   
-      input(type='file', name='upload', multiple='multiple')
-      |   
-      input(type='submit', value='Upload')
+      input(type='file',class="btn btn-md btn-default", name='upload', multiple='multiple')
+      | 
+      input(type='submit',class="btn btn-md btn-default", value='Upload')
   p
     | The delete user and user index api routes are restricted to users with the 'admin' role.
   ul.list-group

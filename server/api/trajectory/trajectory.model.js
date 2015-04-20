@@ -5,7 +5,6 @@ var mongoose = require('mongoose'),
 
 var TrajectorySchema = new Schema({
     id: String,
-    time: [Date],
     type: {type: String, default: 'Feature'},
     properties: {
         time:Date,

@@ -27,6 +27,15 @@ Constructor, returns a ssh tunneled mysqlconnection object
 */
 function MysqlConnector() {
     var self = this;
+
+    if (config.sshConfig.username === undefined ||
+        config.sshConfig.password === undefined ||
+        config.database.user === undefined ||
+        config.database.password === undefined){
+        console.log('No ssh credentials set --> no tunnel');
+        return;
+    }
+
     console.log('Setting up tunnel');
     self.mysqlTunnel = self.connectSSHTunnel(function() {
         self.connectMysql(function(mysqlTunnel) {

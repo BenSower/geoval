@@ -54,7 +54,7 @@ angular.module('geovalApp')
             },
             functions: {
                 onClick: function() {
-                    console.log('test');
+                    //console.log('test');
                 }
             }
         });
