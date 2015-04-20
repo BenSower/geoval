@@ -5,7 +5,7 @@ angular.module('geovalApp')
             laddaProvider.setOption({
                 style: 'zoom-out'
             });
-        })
+        })sauer.benjamin@gmail.com
               input(type='file',class="btn btn-md btn-default", name='upload', multiple='multiple')
       | 
       input(type='submit',class="btn btn-md btn-default", value='Upload')
@@ -13,11 +13,12 @@ angular.module('geovalApp')
     .controller('AdminCtrl', function($scope, $http, $timeout, Auth, User) {
         
         // set file-input options
-        $("#input-1a").fileinput({
+        $('#input-1a').fileinput({
+            'uploadUrl': '/api/trajectories/gpx',
+            'uploadAsync': true, 
             'allowedFileExtensions': ['gpx'],
-            'browseClass' : "btn btn-md btn-default",
-            'data-show-preview' : 'false',
-            'maxFileCount': 10
+            'browseClass' : 'btn btn-md btn-default',
+            'maxFileCount': 10,
         });
 
         // Use the User $resource to fetch all users
@@ -25,7 +26,6 @@ angular.module('geovalApp')
         $scope.mediaq = 'Import MediaQ Trajectories';
 
         $scope.importMediaQ = function() {
-            //$scope.loading = "true"; // start loading
             $scope.loading = true;
 
             $.getJSON('/api/trajectories/importMediaQ', function(data) {

@@ -5,6 +5,7 @@
   "dependencies": {
     "angular-openlayers-directive": "0.0.3",
     "body-parser": "~1.5.0",
+    "busboy": "^0.2.9",
     "composable-middleware": "^0.3.0",
     "compression": "~1.0.1",
     "connect-mongo": "^0.4.1",
@@ -14,8 +15,8 @@
     "express": "~4.0.0",
     "express-jwt": "^0.1.3",
     "express-session": "~1.0.2",
-    "formidable": "^1.0.17",
     "jade": "~1.2.0",
+    "jsdom": "3.*.*",
     "jsonwebtoken": "^0.3.0",
     "lodash": "~2.4.1",
     "method-override": "~1.0.0",
@@ -30,9 +31,7 @@
     "socket.io-client": "^1.0.6",
     "socketio-jwt": "^2.0.2",
     "togeojson": "^0.11.1",
-    "tunnel-ssh": "0.0.5",
-    "xml2js": "^0.4.8",
-    "jsdom": "3.*.*"
+    "tunnel-ssh": "0.0.5"
   },
   "devDependencies": {
     "connect-livereload": "~0.4.0",
