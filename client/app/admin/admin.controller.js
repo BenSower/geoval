@@ -13,11 +13,11 @@ angular.module('geovalApp')
     .controller('AdminCtrl', function($scope, $http, $timeout, Auth, User) {
         
         // set file-input options
-        $("#input-1a").fileinput({
+        $('#input-1a').fileinput({
             'uploadUrl': '/api/trajectories/gpx',
             'uploadAsync': true, 
             'allowedFileExtensions': ['gpx'],
-            'browseClass' : "btn btn-md btn-default",
+            'browseClass' : 'btn btn-md btn-default',
             'maxFileCount': 10,
         });
 
@@ -26,7 +26,6 @@ angular.module('geovalApp')
         $scope.mediaq = 'Import MediaQ Trajectories';
 
         $scope.importMediaQ = function() {
-            //$scope.loading = "true"; // start loading
             $scope.loading = true;
 
             $.getJSON('/api/trajectories/importMediaQ', function(data) {
