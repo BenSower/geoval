@@ -12,8 +12,8 @@ var TrajectorySchema = new Schema({
     },
     geometry: {
         type: {
-            type: String,
             default: 'LineString'
+            type: String,
         }, 
         coordinates: [],
     }

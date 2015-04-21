@@ -6,7 +6,6 @@ var Trajectory = require('./trajectory.model');
 var MysqlConnector = rekuire('mysqlTunnelModule'),
     db = new MysqlConnector(),
     Busboy = require('busboy'),
-    util = require('util'),
     log_info = require('debug')('info'),
     log_debug = require('debug')('debug'),
     ToGeoJson = require('togeojson'),
@@ -114,7 +113,7 @@ function upsert(trajectory) {
         if (err) {
             throw err;
         }
-        log_info('Upserted ' + traj.id);
+        log_debug('Upserted ' + traj.id);
     });
 }
 
@@ -146,7 +145,7 @@ exports.parseGPXandImportData = function(req, res) {
     var busboy = new Busboy({
         headers: req.headers
     });
-    
+
 
     busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
 
@@ -164,11 +163,11 @@ exports.parseGPXandImportData = function(req, res) {
 
         //parse json file when file is written
         writeStream.on('finish', function() {
-            
+
             log_info('File was written, starting gpx to geoJson conversion.');
             var geoJson = convertGpxToGeoJson(gpxFilePath);
             log_info('file converted to geoJson, number of timestamps:', geoJson.geometry.coordinates.length);
-            
+
             //upsert data into db
             log_info('Upserting trajectory into db');
             upsert(geoJson);
@@ -196,6 +195,68 @@ exports.parseGPXandImportData = function(req, res) {
     req.pipe(busboy);
 };
 
+function simpleOutlierRemoval(trajectory) {
+    console.log('wat');
+
+    var windowSize = 1; //observed window in every direction 
+    var threshold = 0.2; //threshold in km
+
+    var distances = [];
+    //calculate distances between every coordinate and the next one
+    for (var i = 0; i < trajectory.geometry.coordinates.length - 1; i++) {
+        var firstCoordinate = trajectory.geometry.coordinates[i];
+        var secondCoordinate = trajectory.geometry.coordinates[i + 1];
+        distances[i] = getDistanceFromLonLatInKm(firstCoordinate[0], firstCoordinate[1], secondCoordinate[0], secondCoordinate[1]);
+    }
+    if (distances.length < 2 * windowSize + 2) {
+        log_info('windowSize zu groß, da sample zu klein:', distances.length);
+        return null;
+    }
+
+    for (var h = windowSize; h < distances.length - windowSize; h++) {
+        var sum = 0;
+        for (var j = 1; j <= windowSize; j++) {
+            //"left" of focus
+            sum += distances[h - j];
+            //"right" of focus, +1 since a point is always connect to two distances X->Point->Y
+            sum += distances[h + j + 1];
+        }
+
+        var windowAvrg = sum / windowSize * 2;
+        var pointAvrg = (distances[h] + distances[h + 1]) / 2;
+
+        var difference = Math.abs(pointAvrg - windowAvrg);
+        if (difference > threshold) {
+            log_debug('Outlier gefunden, difference:', difference);
+            var index = h + 1; //calculating back from distance index to trajectory index
+            console.log(trajectory.id, 'vorher', trajectory.properties.coordTimes.length, 'index', index);
+            trajectory.geometry.coordinates.splice(index, 1);
+            trajectory.properties.coordTimes.splice(index, 1);
+            console.log('nachher', trajectory.properties.coordTimes.length);
+        }
+    }
+    return trajectory;
+}
+
+
+function getDistanceFromLonLatInKm(lon1, lat1, lon2, lat2) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2 - lat1); // deg2rad below
+    var dLon = deg2rad(lon2 - lon1);
+    var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c; // Distance in km
+    return d;
+}
+
+function deg2rad(deg) {
+    return deg * (Math.PI / 180)
+}
+
+
 
 // Deletes a trajectory from the DB.
 exports.importMediaQ = function(req, res) {
@@ -214,18 +275,20 @@ exports.importMediaQ = function(req, res) {
             if (trajectory === null) {
                 trajectory = createNewTmpTrajectory(videoSlice);
             }
-            if (videoSlice.VideoId !== trajectory.id) {
+            if (videoSlice.VideoId !== trajectory.id || i === rows.length - 1) {
                 //upsert tmp trajectory
-                upsert(trajectory);
-                trajectoryCounter++;
-
+                var outlierFreeTrajectory = simpleOutlierRemoval(trajectory);
+                if (outlierFreeTrajectory !== null) {
+                    upsert(outlierFreeTrajectory);
+                    trajectoryCounter++;
+                }
                 //create new tmp trajectory
                 trajectory = createNewTmpTrajectory(videoSlice);
             } else {
                 trajectory.geometry.coordinates.push(
                     [videoSlice.Plng, videoSlice.PLat]
                 );
-                trajectory.time.push(videoSlice.TimeCode);
+                trajectory.properties.coordTimes.push(videoSlice.TimeCode);
             }
         }
         log_info('imported ' + trajectoryCounter + ' videos from MediaQ');
@@ -236,23 +299,22 @@ exports.importMediaQ = function(req, res) {
     });
 };
 
-
-
-
 /*
     Creates a new Trajectory object
 */
 function createNewTmpTrajectory(videoSlice) {
+
     var trajectory = {
         id: videoSlice.VideoId,
-        time: [videoSlice.TimeCode],
+        properties: {
+            time: videoSlice.TimeCode,
+            coordTimes: []
+        },
         geometry: {
             type: 'LineString',
-            coordinates: [
-                [videoSlice.Plng, videoSlice.PLat]
-            ]
+            coordinates: []
         }
-    }
+    };
     return trajectory;
 }
 
