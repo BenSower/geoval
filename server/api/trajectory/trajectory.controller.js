@@ -195,46 +195,22 @@ exports.parseGPXandImportData = function(req, res) {
     req.pipe(busboy);
 };
 
+//drops all trajectories with a outlier
 function simpleOutlierRemoval(trajectory) {
-    console.log('wat');
 
-    var windowSize = 1; //observed window in every direction 
-    var threshold = 0.2; //threshold in km
+    var threshold = 0.05; //threshold in km
 
-    var distances = [];
     //calculate distances between every coordinate and the next one
     for (var i = 0; i < trajectory.geometry.coordinates.length - 1; i++) {
         var firstCoordinate = trajectory.geometry.coordinates[i];
         var secondCoordinate = trajectory.geometry.coordinates[i + 1];
-        distances[i] = getDistanceFromLonLatInKm(firstCoordinate[0], firstCoordinate[1], secondCoordinate[0], secondCoordinate[1]);
-    }
-    if (distances.length < 2 * windowSize + 2) {
-        log_info('windowSize zu groß, da sample zu klein:', distances.length);
-        return null;
-    }
-
-    for (var h = windowSize; h < distances.length - windowSize; h++) {
-        var sum = 0;
-        for (var j = 1; j <= windowSize; j++) {
-            //"left" of focus
-            sum += distances[h - j];
-            //"right" of focus, +1 since a point is always connect to two distances X->Point->Y
-            sum += distances[h + j + 1];
-        }
-
-        var windowAvrg = sum / windowSize * 2;
-        var pointAvrg = (distances[h] + distances[h + 1]) / 2;
-
-        var difference = Math.abs(pointAvrg - windowAvrg);
-        if (difference > threshold) {
-            log_debug('Outlier gefunden, difference:', difference);
-            var index = h + 1; //calculating back from distance index to trajectory index
-            console.log(trajectory.id, 'vorher', trajectory.properties.coordTimes.length, 'index', index);
-            trajectory.geometry.coordinates.splice(index, 1);
-            trajectory.properties.coordTimes.splice(index, 1);
-            console.log('nachher', trajectory.properties.coordTimes.length);
+        var distance = getDistanceFromLonLatInKm(firstCoordinate[0], firstCoordinate[1], secondCoordinate[0], secondCoordinate[1]);
+        //drop trajectory if a single distance between two points is bigger than the threshold
+        if (distance > threshold){
+            return null;
         }
     }
+
     return trajectory;
 }
 
