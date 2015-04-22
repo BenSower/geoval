@@ -99,6 +99,16 @@ exports.destroy = function(req, res) {
     });
 };
 
+// Deletes a trajectory from the DB.
+exports.dropAll = function(req, res) {
+    Trajectory.remove({}, function(err) {
+        if (err) {
+            return handleError(res, err);
+        }
+        return res.send(204);
+    });
+};
+
 
 function upsert(trajectory) {
     var traj = new Trajectory(trajectory),
@@ -195,43 +205,6 @@ exports.parseGPXandImportData = function(req, res) {
     req.pipe(busboy);
 };
 
-//drops all trajectories with a outlier
-function simpleOutlierRemoval(trajectory) {
-
-    var threshold = 0.05; //threshold in km
-
-    //calculate distances between every coordinate and the next one
-    for (var i = 0; i < trajectory.geometry.coordinates.length - 1; i++) {
-        var firstCoordinate = trajectory.geometry.coordinates[i];
-        var secondCoordinate = trajectory.geometry.coordinates[i + 1];
-        var distance = getDistanceFromLonLatInKm(firstCoordinate[0], firstCoordinate[1], secondCoordinate[0], secondCoordinate[1]);
-        //drop trajectory if a single distance between two points is bigger than the threshold
-        if (distance > threshold){
-            return null;
-        }
-    }
-
-    return trajectory;
-}
-
-
-function getDistanceFromLonLatInKm(lon1, lat1, lon2, lat2) {
-    var R = 6371; // Radius of the earth in km
-    var dLat = deg2rad(lat2 - lat1); // deg2rad below
-    var dLon = deg2rad(lon2 - lon1);
-    var a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = R * c; // Distance in km
-    return d;
-}
-
-function deg2rad(deg) {
-    return deg * (Math.PI / 180)
-}
-
 
 
 // Deletes a trajectory from the DB.
@@ -253,11 +226,8 @@ exports.importMediaQ = function(req, res) {
             }
             if (videoSlice.VideoId !== trajectory.id || i === rows.length - 1) {
                 //upsert tmp trajectory
-                var outlierFreeTrajectory = simpleOutlierRemoval(trajectory);
-                if (outlierFreeTrajectory !== null) {
-                    upsert(outlierFreeTrajectory);
-                    trajectoryCounter++;
-                }
+                upsert(trajectory);
+                trajectoryCounter++;
                 //create new tmp trajectory
                 trajectory = createNewTmpTrajectory(videoSlice);
             } else {

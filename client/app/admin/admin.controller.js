@@ -1,71 +1,49 @@
 'use strict';
 
 angular.module('geovalApp')
-    /*    .config(function(laddaProvider) {
-            laddaProvider.setOption({
-                style: 'zoom-out'
-            });
-        })sauer.benjamin@gmail.com
-              input(type='file',class="btn btn-md btn-default", name='upload', multiple='multiple')
-      | 
-      input(type='submit',class="btn btn-md btn-default", value='Upload')
-    */
     .controller('AdminCtrl', function($scope, $http, $timeout, Auth, User) {
-        
+
         // set file-input options
         $('#input-1a').fileinput({
             'uploadUrl': '/api/trajectories/gpx',
-            'uploadAsync': true, 
+            'uploadAsync': true,
             'allowedFileExtensions': ['gpx'],
-            'browseClass' : 'btn btn-md btn-default',
+            'browseClass': 'btn btn-md btn-default',
             'maxFileCount': 10,
         });
 
         // Use the User $resource to fetch all users
         $scope.users = User.query();
         $scope.mediaq = 'Import MediaQ Trajectories';
+        $scope.clearDbLabel = 'Delete all Trajectories from Db';
 
         $scope.importMediaQ = function() {
-            $scope.loading = true;
+            $scope.isImportingMediaq = true;
 
             $.getJSON('/api/trajectories/importMediaQ', function(data) {
                 $scope.mediaq = 'Imported ' + data.importedVideos + ' trajectories';
                 //forces a redraw
                 $timeout(function() {
-                    $scope.loading = false;
+                    $scope.isImportingMediaq = false;
                 }, 0);
             });
         };
 
 
-        var id;
-        $scope.recordTrajectory = function() {
-            var options;
+        $scope.clearDb = function() {
+            $scope.isDroppingTrajectories = true;
 
-            $scope.locations = '';
-
-            function success(pos) {
-                var crd = pos.coords;
-                var crdString = crd.latitude + ' ' + crd.longitude;
-
-                $scope.locations = $scope.locations + '\n' + crdString;
-            }
-
-
-            function error(err) {
-                console.warn('ERROR(' + err.code + '): ' + err.message);
-            }
-
-            options = {
-                enableHighAccuracy: true,
-                timeout: 100000,
-                maximumAge: 0
-            };
-
-            id = navigator.geolocation.watchPosition(success, error, options);
+            $.ajax({
+                url: '/api/trajectories/',
+                type: 'DELETE',
+                success: function(result) {
+                    $scope.clearDbLabel = 'Deleted all trajectories';
+                    //forces a redraw
+                    $timeout(function() {
+                        $scope.isDroppingTrajectories = false;
+                    }, 0);
+                }
+            });
         };
 
-        $scope.stopRecord = function() {
-            navigator.geolocation.clearWatch(id);
-        };
     });
