@@ -4,13 +4,13 @@ div(ng-include='"components/navbar/navbar.html"')
   p
     h4 Upload a gpx trajectory: 
     input(id="input-1a", name='upload', type="file", class="file", multiple)
-  div(class="row")
-    div(class="col-md-6")
+  .row
+    .col-md-6
       p
         h4 Import all video-trajectories from MediaQ: 
         button( class="btn btn-md btn-default", ng-click='importMediaQ()', ladda="isImportingMediaq", data-style="zoom-out", data-spinner-color="#123456") 
           span( class="ladda-label") {{mediaq}}
-    div(class="col-md-6")
+    .col-md-6
       p
         h4 Delete all trajectories in db: 
         button( class="btn btn-md btn-default", ng-click='clearDb()', ladda="isDroppingTrajectories", data-style="zoom-out", data-spinner-color="#123456") 

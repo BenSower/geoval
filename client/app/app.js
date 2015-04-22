@@ -7,7 +7,8 @@ angular.module('geovalApp', [
   'ui.router',
   'ui.bootstrap',
   'openlayers-directive',
-  'angular-ladda'
+  'angular-ladda',
+  'ui.bootstrap-slider'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $urlRouterProvider

@@ -6,7 +6,6 @@ var Trajectory = require('./trajectory.model');
 var MysqlConnector = rekuire('mysqlTunnelModule'),
     db = new MysqlConnector(),
     Busboy = require('busboy'),
-    util = require('util'),
     log_info = require('debug')('info'),
     log_debug = require('debug')('debug'),
     ToGeoJson = require('togeojson'),
@@ -100,6 +99,16 @@ exports.destroy = function(req, res) {
     });
 };
 
+// Deletes a trajectory from the DB.
+exports.dropAll = function(req, res) {
+    Trajectory.remove({}, function(err) {
+        if (err) {
+            return handleError(res, err);
+        }
+        return res.send(204);
+    });
+};
+
 
 function upsert(trajectory) {
     var traj = new Trajectory(trajectory),
@@ -114,7 +123,7 @@ function upsert(trajectory) {
         if (err) {
             throw err;
         }
-        log_info('Upserted ' + traj.id);
+        log_debug('Upserted ' + traj.id);
     });
 }
 
@@ -146,7 +155,7 @@ exports.parseGPXandImportData = function(req, res) {
     var busboy = new Busboy({
         headers: req.headers
     });
-    
+
 
     busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
 
@@ -164,11 +173,11 @@ exports.parseGPXandImportData = function(req, res) {
 
         //parse json file when file is written
         writeStream.on('finish', function() {
-            
+
             log_info('File was written, starting gpx to geoJson conversion.');
             var geoJson = convertGpxToGeoJson(gpxFilePath);
             log_info('file converted to geoJson, number of timestamps:', geoJson.geometry.coordinates.length);
-            
+
             //upsert data into db
             log_info('Upserting trajectory into db');
             upsert(geoJson);
@@ -197,6 +206,7 @@ exports.parseGPXandImportData = function(req, res) {
 };
 
 
+
 // Deletes a trajectory from the DB.
 exports.importMediaQ = function(req, res) {
     log_info('Importing trajectories from mediaQ');
@@ -214,18 +224,17 @@ exports.importMediaQ = function(req, res) {
             if (trajectory === null) {
                 trajectory = createNewTmpTrajectory(videoSlice);
             }
-            if (videoSlice.VideoId !== trajectory.id) {
+            if (videoSlice.VideoId !== trajectory.id || i === rows.length - 1) {
                 //upsert tmp trajectory
                 upsert(trajectory);
                 trajectoryCounter++;
-
                 //create new tmp trajectory
                 trajectory = createNewTmpTrajectory(videoSlice);
             } else {
                 trajectory.geometry.coordinates.push(
                     [videoSlice.Plng, videoSlice.PLat]
                 );
-                trajectory.time.push(videoSlice.TimeCode);
+                trajectory.properties.coordTimes.push(videoSlice.TimeCode);
             }
         }
         log_info('imported ' + trajectoryCounter + ' videos from MediaQ');
@@ -236,23 +245,22 @@ exports.importMediaQ = function(req, res) {
     });
 };
 
-
-
-
 /*
     Creates a new Trajectory object
 */
 function createNewTmpTrajectory(videoSlice) {
+
     var trajectory = {
         id: videoSlice.VideoId,
-        time: [videoSlice.TimeCode],
+        properties: {
+            time: videoSlice.TimeCode,
+            coordTimes: []
+        },
         geometry: {
             type: 'LineString',
-            coordinates: [
-                [videoSlice.Plng, videoSlice.PLat]
-            ]
+            coordinates: []
         }
-    }
+    };
     return trajectory;
 }
 

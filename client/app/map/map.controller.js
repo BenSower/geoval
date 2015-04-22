@@ -3,10 +3,27 @@
 angular.module('geovalApp')
     .controller('MapCtrl', function($scope, $http) {
 
+        $scope.headerthing = 0;
+        $scope.testOptions = {
+            min: 0,
+            max: 0.5,
+            step: 0.01,
+            precision: 2,
+            orientation: 'horizontal',  // vertical
+            handle: 'round', //'square', 'triangle' or 'custom'
+            tooltip: 'show', //'hide','always'
+            tooltipseparator: ':',
+            tooltipsplit: false,
+            enabled: true,
+            naturalarrowkeys: false,
+            range: false,
+            ngDisabled: false,
+            reversed: false
+        };
+
+        //load and filter jsons
         $http.get('/api/trajectories').success(function(trajectories) {
-
             trajectories = filterTrajectories(trajectories);
-
             $scope.trajectories = {
                 source: {
                     type: 'GeoJSON',
@@ -63,17 +80,24 @@ angular.module('geovalApp')
         });
     });
 
-function filterTrajectories(trajectories) {
-    var filteredTrajectories = [];
-    for (var i = 0; i < trajectories.length; i++) {
-        var filteredTrajectory = simpleOutlierRemoval(trajectories[i]);
-        if (filteredTrajectory !== null) {
-            filteredTrajectories.push(filteredTrajectory);
-        }
-    }
-    return filteredTrajectories;
+
+
+function deg2rad(deg) {
+    return deg * (Math.PI / 180);
 }
 
+function getDistanceFromLonLatInKm(lon1, lat1, lon2, lat2) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2 - lat1); // deg2rad below
+    var dLon = deg2rad(lon2 - lon1);
+    var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c; // Distance in km
+    return d;
+}
 
 //drops all trajectories with a outlier
 function simpleOutlierRemoval(trajectory) {
@@ -94,19 +118,13 @@ function simpleOutlierRemoval(trajectory) {
     return trajectory;
 }
 
-function getDistanceFromLonLatInKm(lon1, lat1, lon2, lat2) {
-    var R = 6371; // Radius of the earth in km
-    var dLat = deg2rad(lat2 - lat1); // deg2rad below
-    var dLon = deg2rad(lon2 - lon1);
-    var a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = R * c; // Distance in km
-    return d;
-}
-
-function deg2rad(deg) {
-    return deg * (Math.PI / 180);
+function filterTrajectories(trajectories) {
+    var filteredTrajectories = [];
+    for (var i = 0; i < trajectories.length; i++) {
+        var filteredTrajectory = simpleOutlierRemoval(trajectories[i]);
+        if (filteredTrajectory !== null) {
+            filteredTrajectories.push(filteredTrajectory);
+        }
+    }
+    return filteredTrajectories;
 }
