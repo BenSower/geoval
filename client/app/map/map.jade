@@ -2,9 +2,12 @@ div(ng-include='"components/navbar/navbar.html"')
 .jumbotron
 	.row
 		.col-lg-10
-			openlayers(id='map',ng-click="functions.onClick()", ol-center='center', ol-defaults="defaults")
+			openlayers(id='map', ol-center='center', ol-defaults="defaults")
 				ol-layer(ol-layer-properties='trajectories')
 		.col-lg-2
 			.well
-				h4 Current threshold lvl: {{headerthing}} km
-				slider(ng-model="headerthing",min="testOptions.min", step="testOptions.step", max="testOptions.max", value="headerthing")
+				label(for="thresholdSlider") Current threshold lvl: {{sliderOptions.thresholdValue}} km
+				//angular slider
+				slider(id="thresholdSlider", ng-model="sliderOptions.thresholdValue", min="sliderOptions.min", step="sliderOptions.step", max="sliderOptions.max", value="sliderOptions.thresholdValue", on-stop-slide="onStopSlide()")
+				p Stroke color: 
+					input(type="color", ng-model="trajectories.style.stroke.color")
