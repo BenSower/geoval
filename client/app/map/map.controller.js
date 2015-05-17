@@ -10,10 +10,9 @@ angular.module('geovalApp')
 
 
         $scope.sliderOptions = {
-            min: 0,
-            max: 0.5,
-            step: 0.01,
-            precision: 2,
+            min: 10,
+            max: 1000,
+            step: 10,
             orientation: 'horizontal', // vertical
             handle: 'round', //'square', 'triangle' or 'custom'
             tooltip: 'hide', //'hide','always'
@@ -23,13 +22,16 @@ angular.module('geovalApp')
             range: false,
             ngDisabled: false,
             reversed: false,
-            thresholdValue: 0.05 //threshold to drop trajectories in km
+            thresholdValue: 30, //threshold to drop trajectories in km,
+            loadedTrajectories: 0,
+            renderedTrajectories: 0
         };
 
         //load and filter jsons
         $http.get('/api/trajectories').success(function(trajectories) {
             $scope.rawTrajectories = trajectories;
-            drawTrajectories(trajectories);
+            var renderedTrajectories = drawTrajectories(trajectories);
+            $scope.sliderOptions.loadedTrajectories = trajectories.length;
         });
 
 
@@ -45,8 +47,7 @@ angular.module('geovalApp')
                 layers: {
                     main: {
                         source: {
-                            type: 'OSM',
-                            url: 'http://{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'
+                            type: 'OSM'
                         }
                     }
                 },
@@ -69,22 +70,22 @@ angular.module('geovalApp')
                         },
                         projection: 'EPSG:3857'
                     }
+                },
+                style : {
+                    stroke: {
+                        color: '#FF0000',
+                        width: 3
+                    }
                 }
             }
         });
 
 
         function drawTrajectories(trajectories) {
-            $scope.trajectories.style = {
-                stroke: {
-                    color: '#FF0000',
-                    width : 3
-                }
-            };
-            $scope.trajectories.source.geojson.object.features = filterTrajectories(trajectories);
-
+            var filteredTrajectories = filterTrajectories(trajectories)
+            $scope.trajectories.source.geojson.object.features = filteredTrajectories;
+            $scope.sliderOptions.renderedTrajectories = filteredTrajectories.length;
         }
-
 
 
         function deg2rad(deg) {
@@ -107,7 +108,7 @@ angular.module('geovalApp')
         //drops all trajectories with a outlier
         function simpleOutlierRemoval(trajectory) {
 
-            var threshold = $scope.sliderOptions.thresholdValue; //threshold in km
+            var threshold = $scope.sliderOptions.thresholdValue /1000; //translate m to km
             //calculate distances between every coordinate and the next one
             for (var i = 0; i < trajectory.geometry.coordinates.length - 1; i++) {
                 var firstCoordinate = trajectory.geometry.coordinates[i];
