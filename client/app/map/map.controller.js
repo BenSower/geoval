@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('geovalApp')
-    .controller('MapCtrl', function($scope, $http) {
+    .controller('MapCtrl', function($scope, $http, olData) {
 
         //redraw after threshold slider was used
         $scope.onStopSlide = function() {
@@ -40,50 +40,62 @@ angular.module('geovalApp')
                 'lat': 48.13650696913464,
                 'lon': 11.606172461258842,
                 'zoom': 12,
-                'projection': 'EPSG:4326',
                 autodiscover: false
             },
-            defaults: {
-                layers: {
-                    main: {
-                        source: {
-                            type: 'OSM'
-                        }
-                    }
-                },
-                interactions: {
-                    mouseWheelZoom: true
-                },
-                controls: {
-                    zoom: false,
-                    rotate: false,
-                    attribution: false
+            layers: [{
+                name: 'main',
+                source: {
+                    type: 'OSM'
                 }
-            },
-            trajectories: {
+            }, {
+                name: 'trajectories',
                 source: {
                     type: 'GeoJSON',
                     geojson: {
                         object: {
                             'type': 'FeatureCollection',
-                            'features': null,
+                            'features': [],
                         },
                         projection: 'EPSG:3857'
                     }
                 },
-                style : {
+                style: {
                     stroke: {
                         color: '#FF0000',
                         width: 3
                     }
                 }
+            }],
+            defaults: {
+                events: {
+                    layers: ['mousemove', 'click']
+                },
+                interactions: {
+                    mouseWheelZoom: true
+                }
             }
+        });
+
+        $scope.$on('openlayers.layers.trajectories.mousemove', function(event, feature) {
+            $scope.$apply(function(scope) {
+                //console.log(feature);
+                var style = new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: '#FF0000',
+                        width: 3
+                    })
+                });
+                feature.setStyle(style);
+                //if (feature && $scope.countries[feature.getId()]) {
+                //    $scope.mouseMoveCountry = feature ? $scope.countries[feature.getId()].name : '';
+                //}
+            });
         });
 
 
         function drawTrajectories(trajectories) {
             var filteredTrajectories = filterTrajectories(trajectories)
-            $scope.trajectories.source.geojson.object.features = filteredTrajectories;
+            $scope.layers[1].source.geojson.object.features = filteredTrajectories;
             $scope.sliderOptions.renderedTrajectories = filteredTrajectories.length;
         }
 
@@ -108,7 +120,7 @@ angular.module('geovalApp')
         //drops all trajectories with a outlier
         function simpleOutlierRemoval(trajectory) {
 
-            var threshold = $scope.sliderOptions.thresholdValue /1000; //translate m to km
+            var threshold = $scope.sliderOptions.thresholdValue / 1000; //translate m to km
             //calculate distances between every coordinate and the next one
             for (var i = 0; i < trajectory.geometry.coordinates.length - 1; i++) {
                 var firstCoordinate = trajectory.geometry.coordinates[i];
