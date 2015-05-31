@@ -59,12 +59,7 @@ angular.module('geovalApp')
                         projection: 'EPSG:3857'
                     }
                 },
-                style: {
-                    stroke: {
-                        color: '#FF0000',
-                        width: 3
-                    }
-                }
+                style: normalStyle
             }],
             defaults: {
                 events: {
@@ -76,19 +71,34 @@ angular.module('geovalApp')
             }
         });
 
+        var highlightStyle = new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: '#FF0000',
+                width: 5
+            })
+        });
+
+        var normalStyle = new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: '#FF0000',
+                width: 1
+            })
+        });
+
+        var highlight;
         $scope.$on('openlayers.layers.trajectories.mousemove', function(event, feature) {
             $scope.$apply(function(scope) {
-                //console.log(feature);
-                var style = new ol.style.Style({
-                    stroke: new ol.style.Stroke({
-                        color: '#FF0000',
-                        width: 3
-                    })
-                });
-                feature.setStyle(style);
-                //if (feature && $scope.countries[feature.getId()]) {
-                //    $scope.mouseMoveCountry = feature ? $scope.countries[feature.getId()].name : '';
-                //}
+
+                if (feature !== highlight) {
+                    if (highlight) {
+                        highlight.setStyle(normalStyle);
+                    }
+                    if (feature) {
+                        feature.setStyle(highlightStyle);
+                    }
+                    highlight = feature;
+                }
+
             });
         });
 
