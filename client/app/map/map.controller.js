@@ -6,7 +6,7 @@ angular.module('geovalApp')
         //redraw after threshold slider was used
         $scope.onStopSlide = function() {
             drawTrajectories($scope.rawTrajectories);
-        }
+        };
 
         $scope.sliderOptions = {
             min: 10,
@@ -31,10 +31,55 @@ angular.module('geovalApp')
             $scope.rawTrajectories = trajectories;
             var renderedTrajectories = drawTrajectories(trajectories);
             $scope.sliderOptions.loadedTrajectories = trajectories.length;
+
+            for (var i = 0; i < renderedTrajectories.length; i++) {
+                var traj = renderedTrajectories[i];
+                var marker = {
+                    name: traj.id,
+                    lat: traj.geometry.coordinates[0][1],
+                    lon: traj.geometry.coordinates[0][0],
+                    label: {
+                        message: '<h1>Test</h1>',
+                        show: false,
+                        showOnMouseOver: true
+                    }
+                };
+                $scope.markers.push(marker);
+            }
         });
 
+        var normalStyle = new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: '#123456',
+                width: 1
+            })
+        });
+
+        var highlightStyle = new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: '#FF0000',
+                width: 5
+            })
+        });
+
+        var highlight;
+        $scope.$on('openlayers.layers.trajectories.mousemove', function(event, feature) {
+            $scope.$apply(function(scope) {
+                if (feature !== highlight) {
+                    if (highlight) {
+                        highlight.setStyle(normalStyle);
+                    }
+                    //hack to ensure that only trajectories are shown.
+                    if (feature && feature.getId() != undefined) {
+                        feature.setStyle(highlightStyle);
+                        highlight = feature;
+                    }
+                }
+            });
+        });
 
         angular.extend($scope, {
+            markers: [],
             center: {
                 lat: 48.13650696913464,
                 lon: 11.606172461258842,
@@ -70,42 +115,14 @@ angular.module('geovalApp')
             }
         });
 
-        var highlightStyle = new ol.style.Style({
-            stroke: new ol.style.Stroke({
-                color: '#FF0000',
-                width: 5
-            })
-        });
 
-        var normalStyle = new ol.style.Style({
-            stroke: new ol.style.Stroke({
-                color: '#FF0000',
-                width: 1
-            })
-        });
-
-        var highlight;
-        $scope.$on('openlayers.layers.trajectories.mousemove', function(event, feature) {
-            $scope.$apply(function(scope) {
-
-                if (feature !== highlight) {
-                    if (highlight) {
-                        highlight.setStyle(normalStyle);
-                    }
-                    if (feature) {
-                        feature.setStyle(highlightStyle);
-                    }
-                    highlight = feature;
-                }
-
-            });
-        });
 
 
         function drawTrajectories(trajectories) {
-            var filteredTrajectories = filterTrajectories(trajectories)
+            var filteredTrajectories = filterTrajectories(trajectories);
             $scope.layers[1].source.geojson.object.features = filteredTrajectories;
             $scope.sliderOptions.renderedTrajectories = filteredTrajectories.length;
+            return filteredTrajectories;
         }
 
 

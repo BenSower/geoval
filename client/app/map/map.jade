@@ -3,8 +3,8 @@ div(ng-include='"components/navbar/navbar.html"')
 	.row
 		.col-lg-10
 			openlayers(id='map', ol-center='center', ol-defaults="defaults")
+				ol-marker(ng-repeat="marker in markers", lat="marker.lat", lon="marker.lon", label="marker.label")
 				ol-layer(ol-layer-properties="layer", ng-repeat="layer in layers")
-				ol-marker(lat="39.92", lon="116.38", message="Here is Beijing. Dreamful place.")
 		.col-lg-2
 			.well
 				label(for="thresholdSlider") Current threshold lvl: {{sliderOptions.thresholdValue}} m ({{sliderOptions.renderedTrajectories}}/{{sliderOptions.loadedTrajectories}} trajectories rendered)
