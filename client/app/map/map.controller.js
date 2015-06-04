@@ -8,7 +8,6 @@ angular.module('geovalApp')
             drawTrajectories($scope.rawTrajectories);
         }
 
-
         $scope.sliderOptions = {
             min: 10,
             max: 1000,
@@ -37,9 +36,9 @@ angular.module('geovalApp')
 
         angular.extend($scope, {
             center: {
-                'lat': 48.13650696913464,
-                'lon': 11.606172461258842,
-                'zoom': 12,
+                lat: 48.13650696913464,
+                lon: 11.606172461258842,
+                zoom: 12,
                 autodiscover: false
             },
             layers: [{
