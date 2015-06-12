@@ -3,6 +3,23 @@
 angular.module('geovalApp')
     .controller('MapCtrl', function($scope, $http, olData) {
 
+        var markers = [];
+        var normalStyle = new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: '#123456',
+                width: 1
+            })
+        });
+
+        var highlightStyle = new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: '#FF0000',
+                width: 5
+            })
+        });
+
+        var highlight;
+
         //redraw after threshold slider was used
         $scope.onStopSlide = function() {
             drawTrajectories($scope.rawTrajectories);
@@ -44,25 +61,11 @@ angular.module('geovalApp')
                         showOnMouseOver: true
                     }
                 };
-                $scope.markers.push(marker);
+                markers.push(marker);
             }
         });
 
-        var normalStyle = new ol.style.Style({
-            stroke: new ol.style.Stroke({
-                color: '#123456',
-                width: 1
-            })
-        });
 
-        var highlightStyle = new ol.style.Style({
-            stroke: new ol.style.Stroke({
-                color: '#FF0000',
-                width: 5
-            })
-        });
-
-        var highlight;
         $scope.$on('openlayers.layers.trajectories.mousemove', function(event, feature) {
             $scope.$apply(function(scope) {
                 if (feature !== highlight) {
@@ -77,6 +80,7 @@ angular.module('geovalApp')
                 }
             });
         });
+
 
         angular.extend($scope, {
             markers: [],
@@ -115,7 +119,13 @@ angular.module('geovalApp')
             }
         });
 
-
+        $scope.toggleMarker = function() {
+            if ($scope.markers.length > 0) {
+                $scope.markers = [];
+            } else {
+                $scope.markers = markers;
+            }
+        };
 
 
         function drawTrajectories(trajectories) {
