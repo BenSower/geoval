@@ -38,7 +38,7 @@ angular.module('geovalApp')
             range: false,
             ngDisabled: false,
             reversed: false,
-            thresholdValue: 30, //threshold to drop trajectories in km,
+            thresholdValue: 10, //threshold to drop trajectories in km,
             loadedTrajectories: 0,
             renderedTrajectories: 0
         };
@@ -48,21 +48,6 @@ angular.module('geovalApp')
             $scope.rawTrajectories = trajectories;
             var renderedTrajectories = drawTrajectories(trajectories);
             $scope.sliderOptions.loadedTrajectories = trajectories.length;
-
-            for (var i = 0; i < renderedTrajectories.length; i++) {
-                var traj = renderedTrajectories[i];
-                var marker = {
-                    name: traj.id,
-                    lat: traj.geometry.coordinates[0][1],
-                    lon: traj.geometry.coordinates[0][0],
-                    label: {
-                        message: '<h1>Test</h1>',
-                        show: false,
-                        showOnMouseOver: true
-                    }
-                };
-                markers.push(marker);
-            }
         });
 
 
@@ -119,7 +104,7 @@ angular.module('geovalApp')
             }
         });
 
-        $scope.toggleMarker = function() {
+        $scope.toggleMarkers = function() {
             if ($scope.markers.length > 0) {
                 $scope.markers = [];
             } else {
@@ -132,7 +117,32 @@ angular.module('geovalApp')
             var filteredTrajectories = filterTrajectories(trajectories);
             $scope.layers[1].source.geojson.object.features = filteredTrajectories;
             $scope.sliderOptions.renderedTrajectories = filteredTrajectories.length;
+            updateMarkers(filteredTrajectories);         
             return filteredTrajectories;
+        }
+
+        function updateMarkers(trajectories){
+            //reset markers
+            markers = [];
+            $scope.markers = [];
+            for (var i = 0; i < trajectories.length; i++) {
+                var traj = trajectories[i];
+                var labelMessage = '<h5>' + traj.id + '</h5>'  
+                                    + 'Coordinates: ' +  traj.geometry.coordinates.length;
+                var marker = {
+                    name: traj.id,
+                    lat: traj.geometry.coordinates[0][1],
+                    lon: traj.geometry.coordinates[0][0],
+                    label: {
+                        message: labelMessage,
+                        show: false,
+                        showOnMouseOver: true
+                    }
+                };
+                markers.push(marker);
+            }
+
+             $scope.toggleMarkers();
         }
 
 

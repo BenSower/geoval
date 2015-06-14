@@ -3,7 +3,7 @@ div(ng-include='"components/navbar/navbar.html"')
 	.row
 		.col-lg-10
 			openlayers(id='map', ol-center='center', ol-defaults="defaults")
-				ol-marker(ng-repeat="marker in markers", lat="marker.lat", lon="marker.lon", label="marker.label")
+				ol-marker(ng-repeat="marker in markers", ol-marker-properties="marker")
 				ol-layer(ol-layer-properties="layer", ng-repeat="layer in layers")
 		.col-lg-2
 			.well
@@ -13,4 +13,4 @@ div(ng-include='"components/navbar/navbar.html"')
 				p Stroke color: 
 					input(type="color", ng-model="trajectories.style.stroke.color")
 				p Show markers:
-					input(type="checkbox", ng-click="toggleMarker()")
+					input(type="checkbox", ng-click="toggleMarkers()")
