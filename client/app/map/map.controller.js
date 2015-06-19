@@ -38,9 +38,10 @@ angular.module('geovalApp')
             range: false,
             ngDisabled: false,
             reversed: false,
-            thresholdValue: 10, //threshold to drop trajectories in km,
             loadedTrajectories: 0,
-            renderedTrajectories: 0
+            renderedTrajectories: 0,
+            trajectoryLengthConstraint: 50, //threshold to drop trajectories with fewer than x coordinates
+            thresholdValue: 10, //threshold to drop trajectories in km,
         };
 
         //load and filter jsons
@@ -145,9 +146,7 @@ angular.module('geovalApp')
                 } else {
                     console.log("this trajectory has no correct coordinates:", traj)
                 }
-
             }
-
             $scope.toggleMarkers();
         }
 
@@ -155,7 +154,8 @@ angular.module('geovalApp')
         //drops all trajectories with a outlier
         function simpleOutlierRemoval(trajectory) {
             var threshold = $scope.sliderOptions.thresholdValue; 
-            if (trajectory.properties.outlierThreshold > threshold) {
+            if (trajectory.properties.outlierThreshold > threshold
+                || trajectory.geometry.coordinates.length < $scope.sliderOptions.trajectoryLengthConstraint) {
                 return null;
             }
             return trajectory;
