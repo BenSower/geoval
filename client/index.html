@@ -34,10 +34,8 @@
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
-
     <!-- Add your site or application content here -->
     <div ui-view=""></div>
-
     <!--[if lt IE 9]>
     <script src="bower_components/es5-shim/es5-shim.js"></script>
     <script src="bower_components/json3/lib/json3.min.js"></script>
@@ -59,12 +57,12 @@
     <script src="bower_components/ladda/dist/ladda.min.js"></script>
     <script src="bower_components/angular-ladda/dist/angular-ladda.min.js"></script>
     <script src="bower_components/bootstrap-fileinput/js/fileinput.min.js"></script>
+    <script src="bower_components/jquery-bridget/jquery.bridget.js"></script>
     <script src="bower_components/seiyria-bootstrap-slider/js/bootstrap-slider.js"></script>
     <script src="bower_components/angular-bootstrap-slider/slider.js"></script>
     <!-- endbower -->
     <script src="bower_components/openlayers3/build/ol.js"></script>
     <!-- endbuild -->
-
     <!-- build:js({.tmp,client}) app/app.js -->
     <script src="app/app.js"></script>
     <!-- injector:js -->
@@ -74,12 +72,15 @@
     <script src="app/account/signup/signup.controller.js"></script>
     <script src="app/admin/admin.controller.js"></script>
     <script src="app/admin/admin.js"></script>
+    <script src="app/analysis/analysis.controller.js"></script>
+    <script src="app/analysis/analysis.js"></script>
     <script src="app/main/main.controller.js"></script>
     <script src="app/main/main.js"></script>
     <script src="app/map/map.controller.js"></script>
     <script src="app/map/map.js"></script>
     <script src="components/auth/auth.service.js"></script>
     <script src="components/auth/user.service.js"></script>
+    <script src="components/footer/footer.controller.js"></script>
     <script src="components/modal/modal.service.js"></script>
     <script src="components/mongoose-error/mongoose-error.directive.js"></script>
     <script src="components/navbar/navbar.controller.js"></script>

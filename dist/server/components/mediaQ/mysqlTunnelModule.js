@@ -25,6 +25,7 @@ var Tunnel = require('tunnel-ssh'),
 /*      
 Constructor, returns a ssh tunneled mysqlconnection object      
 */
+
 function MysqlConnector() {
     var self = this;
 
@@ -37,7 +38,7 @@ function MysqlConnector() {
     }
 
     console.log('Setting up tunnel');
-    self.mysqlTunnel = self.connectSSHTunnel(function() {
+    self.mysqlTunnel = self.connectSSHTunnel(function(err) {
         self.connectMysql(function(mysqlTunnel) {
             return self;
         });
