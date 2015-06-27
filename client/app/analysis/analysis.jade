@@ -1,15 +1,17 @@
 div(ng-include='"components/navbar/navbar.html"')
-.container
-    table.table
+.container(ng-controller='AnalysisCtrl')
+    table.table(ts-wrapper='')
         thead
           tr
-            th Trajectory Name
-            th Length
-            th Outlier Threshold
-        tbody(ng-repeat='trajectory in rawTrajectories')
+            th(ts-criteria="id|lowercase") Name
+            th(ts-criteria="geometry.coordinates.length|parseInt", ts-default='descending') Length
+            th(ts-criteria="properties.outlierThreshold") Outlier Threshold
+        tbody(ng-repeat='trajectory in rawTrajectories', ts-repeat='')
           tr
             td {{trajectory.id}}
             td {{trajectory.geometry.coordinates.length}}
             td {{trajectory.properties.outlierThreshold.toFixed(2)}}m
           
 div(ng-include='"components/footer/footer.html"')
+
+
