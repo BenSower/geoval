@@ -1,6 +1,7 @@
 div(ng-include='"components/navbar/navbar.html"')
 .container(ng-controller='AnalysisCtrl')
-    table.table-responsive.table.table-hover(ts-wrapper='')
+    a.btn.btn-primary.btn-lg(href='', ng-click='showTable = !showTable') Toggle Full Table
+    table.table-responsive.table.table-hover(ts-wrapper='', ng-show='showTable')
         thead
           tr
             th(ts-criteria="id|lowercase") Name

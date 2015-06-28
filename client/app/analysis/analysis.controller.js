@@ -5,4 +5,6 @@ angular.module('geovalApp')
             $scope.rawTrajectories = trajectories;
             console.log(trajectories[0]);
         });
+      $scope.showTable = false;
+
     });
