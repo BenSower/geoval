@@ -6,27 +6,38 @@ angular.module('geovalApp')
     	*/
         $http.get('/api/trajectories').success(function(trajectories) {
             $scope.rawTrajectories = trajectories;
-            $scope.scatterData = getData(trajectories);
-
+            $scope.scatterData = getScatterData(trajectories);
+            $scope.donutData = getDonutData($scope.scatterData);
         });
         $scope.showTable = false;
 
-        /*
-			Create graph
-    	*/
 
-        var getData = function(rawTrajectories) {
-            var data = [{
-                key: 'Group 1',
-                values: []
-            }];
+        /*
+			scatter plot
+    	*/
+        var getScatterData = function(rawTrajectories) {
+            var aggregated_distribution = {};
             var random = d3.random.normal();
             for (var i = 0; i < rawTrajectories.length; i++) {
-            	var trajectory = rawTrajectories[i];
-                data[0].values.push({
-                    x: (trajectory.geometry.coordinates.length < 400) ? trajectory.geometry.coordinates.length : 0,
-                    y: (trajectory.properties.outlierThreshold < 800) ? trajectory.properties.outlierThreshold : 0,
-                    size: Math.random()
+                var trajectory = rawTrajectories[i];
+                for (var property in trajectory.properties.distribution) {
+                    if (aggregated_distribution[property] === undefined) {
+                        aggregated_distribution[property] = trajectory.properties.distribution[property];
+                    } else {
+                        aggregated_distribution[property] += trajectory.properties.distribution[property];
+                    }
+                }
+            }
+
+            var data = [];
+            for (var property in aggregated_distribution) {
+                data.push({
+                    key: 'Group ' + property,
+                    values: [{
+                        x: property,
+                        y: aggregated_distribution[property],
+                        size: aggregated_distribution[property]
+                    }]
                 });
             }
             return data;
@@ -37,4 +48,49 @@ angular.module('geovalApp')
                 return '<strong>YO!' + x + '</strong>'
             }
         }
+
+        /*
+        	donut graph
+        */
+        var getDonutData = function(scatterData) {
+            var data = [];
+            var others = {
+                key: 'Others',
+                y: 0
+            };
+            for (var property in scatterData) {
+                var scatterDataSlice = scatterData[property];
+                var value = scatterDataSlice.values[0].y;
+                if (value > 100) {
+                    data.push({
+                        key: scatterDataSlice.key,
+                        y: value
+                    });
+                } else {
+                	others.y += value;
+                }
+            }
+            data.push(others);
+
+            return data;
+        }
+        $scope.xFunction = function() {
+            return function(d) {
+                return d.key;
+            };
+        }
+        $scope.yFunction = function() {
+            return function(d) {
+                return d.y;
+            };
+        }
     });
+
+
+/* 
+data[0].values.push({
+                        x: (trajectory.geometry.coordinates.length < 400) ? trajectory.geometry.coordinates.length : 0,
+                        y: (trajectory.properties.outlierThreshold < 800) ? trajectory.properties.outlierThreshold : 0,
+                        size: Math.random()
+                    });
+*/

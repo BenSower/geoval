@@ -227,13 +227,16 @@ exports.importMediaQ = function(req, res) {
             //save trajectory and create new trajectory
             if (videoSlice.VideoId !== trajectory.id || i === rows.length - 1) {
 
-                trajectory.properties.outlierThreshold = getOutlierThreshold(trajectory);
-                if (trajectory.geometry.coordinates.length !== 0){
-                   //upsert tmp trajectory
-                   upsert(trajectory);
-                   trajectoryCounter++;
+                var outlierProperties = getOutlierProperties(trajectory);
+                trajectory.properties.outlierThreshold = outlierProperties.outlierThreshold;
+                trajectory.properties.distribution = outlierProperties.distribution;
+
+                if (trajectory.geometry.coordinates.length !== 0) {
+                    //upsert tmp trajectory
+                    upsert(trajectory);
+                    trajectoryCounter++;
                 }
-                
+
                 //create new tmp trajectory
                 trajectory = createNewTmpTrajectory(videoSlice);
             } else {
@@ -252,10 +255,11 @@ exports.importMediaQ = function(req, res) {
 };
 
 
-//drops all trajectories with a outlier
-function getOutlierThreshold(trajectory) {
+
+function getOutlierProperties(trajectory) {
     //calculate distances between every coordinate and the next one
     var biggestDistance = 0;
+    var buckets = {};
     for (var i = 0; i < trajectory.geometry.coordinates.length - 1; i++) {
         var firstCoordinate = trajectory.geometry.coordinates[i];
         var secondCoordinate = trajectory.geometry.coordinates[i + 1];
@@ -263,9 +267,21 @@ function getOutlierThreshold(trajectory) {
         if (distance > biggestDistance) {
             biggestDistance = distance;
         }
+        //var bucketedDistance = Math.round(distance / 10) * 10
+        var bucketedDistance = Math.round(distance);
+        if (buckets[bucketedDistance] === undefined) {
+            buckets[bucketedDistance] = 1;
+        } else {
+            buckets[bucketedDistance]++;
+        }
     }
-    return biggestDistance;
+
+    return {
+        outlierThreshold: biggestDistance,
+        distribution : buckets
+    }
 }
+
 
 function deg2rad(deg) {
     return deg * (Math.PI / 180);
@@ -281,7 +297,7 @@ function getDistanceFromLonLatInM(lon1, lat1, lon2, lat2) {
         Math.sin(dLon / 2) * Math.sin(dLon / 2);
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     var d = R * c; // Distance in km
-    return d*1000;
+    return d * 1000;
 }
 
 /*

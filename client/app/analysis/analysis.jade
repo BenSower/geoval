@@ -1,7 +1,9 @@
 div(ng-include='"components/navbar/navbar.html"')
 .container(ng-controller='AnalysisCtrl')
     .container
-        nvd3-scatter-chart(height='900', id='scatter', data='scatterData',tooltips='true', interactive='true', tooltipcontent='tooltipXContentFunction()', shape='circle')
+        nvd3-scatter-chart(height='300', id='scatter', data='scatterData',tooltips='true', interactive='true', tooltipcontent='tooltipXContentFunction()', shape='circle')
+        nvd3-pie-chart(data='donutData', height='500', margin='{left:0,top:0,bottom:0,right:0}', x='xFunction()', y='yFunction()', showlabels='true', pielabelsoutside='true', showvalues='true', labeltype='percent')
+            svg
     .container-fluid
         a.btn.btn-primary.btn-lg(href='', ng-click='showTable = !showTable') Toggle Full Table
         table.table-responsive.table.table-hover(ts-wrapper='', ng-show='showTable')
