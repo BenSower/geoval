@@ -9,7 +9,8 @@ angular.module('geovalApp', [
         'openlayers-directive',
         'angular-ladda',
         'ui.bootstrap-slider',
-        'tableSort'
+        'tableSort',
+        'nvd3ChartDirectives'
     ])
     .config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
         $urlRouterProvider

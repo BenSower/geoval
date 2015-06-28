@@ -1,17 +1,20 @@
 div(ng-include='"components/navbar/navbar.html"')
 .container(ng-controller='AnalysisCtrl')
-    a.btn.btn-primary.btn-lg(href='', ng-click='showTable = !showTable') Toggle Full Table
-    table.table-responsive.table.table-hover.animate-show(ts-wrapper='', ng-show='showTable')
-        thead
-          tr
-            th(ts-criteria="id|lowercase") Name
-            th(ts-criteria="geometry.coordinates.length|parseInt", ts-default='descending') Length
-            th(ts-criteria="properties.outlierThreshold") Outlier Threshold
-        tbody(ng-repeat='trajectory in rawTrajectories', ts-repeat='')
-          tr
-            td {{trajectory.id}}
-            td {{trajectory.geometry.coordinates.length}}
-            td {{trajectory.properties.outlierThreshold.toFixed(2)}}m
+    .container
+        nvd3-scatter-chart(height='900', id='scatter', data='scatterData',tooltips='true', interactive='true', tooltipcontent='tooltipXContentFunction()', shape='circle')
+    .container-fluid
+        a.btn.btn-primary.btn-lg(href='', ng-click='showTable = !showTable') Toggle Full Table
+        table.table-responsive.table.table-hover(ts-wrapper='', ng-show='showTable')
+            thead
+              tr
+                th(ts-criteria="id|lowercase") Name
+                th(ts-criteria="geometry.coordinates.length|parseInt", ts-default='descending') Length
+                th(ts-criteria="properties.outlierThreshold") Outlier Threshold
+            tbody(ng-repeat='trajectory in rawTrajectories', ts-repeat='')
+              tr
+                td {{trajectory.id}}
+                td {{trajectory.geometry.coordinates.length}}
+                td {{trajectory.properties.outlierThreshold.toFixed(2)}}m
           
 div(ng-include='"components/footer/footer.html"')
 
