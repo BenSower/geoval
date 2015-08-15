@@ -61,14 +61,17 @@ angular.module('geovalApp')
             for (var property in scatterData) {
                 var scatterDataSlice = scatterData[property];
                 var value = scatterDataSlice.values[0].y;
-                if (value > 100) {
-                    data.push({
+                data.push({
                         key: scatterDataSlice.key,
                         y: value
                     });
+                /*
+                if (value > 100) {
+                    
                 } else {
-                	others.y += value;
+                    others.y += value;
                 }
+                */
             }
             data.push(others);
 
@@ -76,6 +79,7 @@ angular.module('geovalApp')
         }
         $scope.xFunction = function() {
             return function(d) {
+                console.log(d.key);
                 return d.key;
             };
         }
@@ -83,6 +87,12 @@ angular.module('geovalApp')
             return function(d) {
                 return d.y;
             };
+        }
+
+        $scope.descriptionFunction = function() {
+            return function(d) {
+                return d.key;
+            }
         }
     });
 

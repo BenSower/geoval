@@ -9,7 +9,8 @@ var TrajectorySchema = new Schema({
     properties: {
         time:Date,
         coordTimes: [Date],
-        outlierThreshold:{ type: Number, min: 1, max: 10000}
+        outlierThreshold:{ type: Number, min: 1, max: 10000},
+        distribution: {}
     },
     geometry: {
         type: {
