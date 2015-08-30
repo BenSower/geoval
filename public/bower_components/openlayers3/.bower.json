@@ -1,0 +1,14 @@
+{
+  "name": "openlayers3",
+  "homepage": "https://github.com/tombatossals/ol3-compiled",
+  "version": "3.4.0",
+  "_release": "3.4.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v3.4.0",
+    "commit": "ac95ffb448614bb232d685550ab4679191d28491"
+  },
+  "_source": "https://github.com/tombatossals/ol3-compiled.git",
+  "_target": "3.4.0",
+  "_originalSource": "https://github.com/tombatossals/ol3-compiled.git"
+}
