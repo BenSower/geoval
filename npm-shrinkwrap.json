@@ -2,11 +2,6 @@
   "name": "geoval",
   "version": "0.0.0",
   "dependencies": {
-    "angular-openlayers-directive": {
-      "version": "0.0.3",
-      "from": "angular-openlayers-directive@0.0.3",
-      "resolved": "https://registry.npmjs.org/angular-openlayers-directive/-/angular-openlayers-directive-0.0.3.tgz"
-    },
     "body-parser": {
       "version": "1.5.2",
       "from": "body-parser@>=1.5.0 <1.6.0",
