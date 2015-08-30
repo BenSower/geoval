@@ -2,7 +2,7 @@
 
 angular.module('geovalApp')
     .controller('MapCtrl', function($scope, $http, olData) {
-
+        
         var markers = [];
         var normalStyle = new ol.style.Style({
             stroke: new ol.style.Stroke({
