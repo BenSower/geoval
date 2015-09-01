@@ -2,7 +2,7 @@
 
 angular.module('geovalApp')
     .controller('MapCtrl', function($scope, $http, olData) {
-        
+
         var markers = [];
         var normalStyle = new ol.style.Style({
             stroke: new ol.style.Stroke({
@@ -64,9 +64,25 @@ angular.module('geovalApp')
                         highlight = feature;
                     }
                 }
+
             });
         });
 
+        $scope.$on('openlayers.map.singleclick', function(event, data) {
+            $scope.$apply(function() {
+                if ($scope.projection === data.projection) {
+                    $scope.mouseclickposition = data.coord;
+                } else {
+                    var p = ol.proj.transform([data.coord[0], data.coord[1]], data.projection, $scope.projection);
+                    $scope.mouseclickposition.push({
+                        lat: p[1],
+                        lon: p[0]
+                    });
+                    console.log($scope.mouseclickposition);
+
+                }
+            });
+        });
 
         angular.extend($scope, {
             markers: [],
@@ -97,12 +113,16 @@ angular.module('geovalApp')
             }],
             defaults: {
                 events: {
-                    layers: ['mousemove', 'click']
+                    layers: ['mousemove'],
+                    map: ['singleclick']
                 },
                 interactions: {
                     mouseWheelZoom: true
                 }
-            }
+            },
+            mouseclickposition: [],
+            projection: 'EPSG:4326'
+
         });
 
         $scope.toggleMarkers = function() {
@@ -129,9 +149,7 @@ angular.module('geovalApp')
             for (var i = 0; i < trajectories.length; i++) {
                 var traj = trajectories[i];
                 if (traj.geometry.coordinates[0]) {
-                    var labelMessage = '<h5>' + traj.id + '</h5>' + 'Coordinates: ' 
-                                    + traj.geometry.coordinates.length 
-                                    + '<br/> Outlier Threshold: ' + traj.properties.outlierThreshold + 'm';
+                    var labelMessage = '<h5>' + traj.id + '</h5>' + 'Coordinates: ' + traj.geometry.coordinates.length + '<br/> Outlier Threshold: ' + traj.properties.outlierThreshold + 'm';
                     var marker = {
                         name: traj.id,
                         lat: traj.geometry.coordinates[0][1],
@@ -153,9 +171,8 @@ angular.module('geovalApp')
 
         //drops all trajectories with a outlier
         function simpleOutlierRemoval(trajectory) {
-            var threshold = $scope.sliderOptions.thresholdValue; 
-            if (trajectory.properties.outlierThreshold > threshold
-                || trajectory.geometry.coordinates.length < $scope.sliderOptions.trajectoryLengthConstraint) {
+            var threshold = $scope.sliderOptions.thresholdValue;
+            if (trajectory.properties.outlierThreshold > threshold ||  trajectory.geometry.coordinates.length < $scope.sliderOptions.trajectoryLengthConstraint) {
                 return null;
             }
             return trajectory;
