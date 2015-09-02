@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('geovalApp')
-    .controller('MapCtrl', function($scope, $http, olData) {
+    .controller('MapCtrl', function($scope, $http) {
 
         var markers = [];
         var normalStyle = new ol.style.Style({
@@ -97,13 +97,13 @@ angular.module('geovalApp')
 
 
         $scope.$on('openlayers.layers.trajectories.mousemove', function(event, feature) {
-            $scope.$apply(function(scope) {
+            $scope.$apply(function() {
                 if (feature !== highlight) {
                     if (highlight) {
                         highlight.setStyle(normalStyle);
                     }
                     //hack to ensure that only trajectories are shown.
-                    if (feature && feature.getId() != undefined) {
+                    if (feature && feature.getId() !== undefined) {
                         feature.setStyle(highlightStyle);
                         highlight = feature;
                     }
@@ -137,7 +137,7 @@ angular.module('geovalApp')
 
         $scope.clearTrajectory = function() {
             $scope.customTrajectory = [];
-        }
+        };
 
 
         function drawTrajectories(trajectories) {
@@ -157,10 +157,7 @@ angular.module('geovalApp')
                 var os = (endsWith(traj.id, '.mov')) ? 'iOs' : 'Android';
 
                 if (traj.geometry.coordinates[0]) {
-                    var labelMessage = '<h5>' + traj.id 
-                    + '</h5>' + 'Coordinates: ' + traj.geometry.coordinates.length 
-                    + '<br/> Outlier Threshold: ' + traj.properties.outlierThreshold + 'm' 
-                    + '<br/> Device: ' + os;
+                    var labelMessage = '<h5>' + traj.id + '</h5>' + 'Coordinates: ' + traj.geometry.coordinates.length + '<br/> Outlier Threshold: ' + traj.properties.outlierThreshold + 'm' + '<br/> Device: ' + os;
                     var marker = {
                         name: traj.id,
                         lat: traj.geometry.coordinates[0][1],
@@ -173,7 +170,7 @@ angular.module('geovalApp')
                     };
                     markers.push(marker);
                 } else {
-                    console.log("this trajectory has no correct coordinates:", traj)
+                    console.log('this trajectory has no correct coordinates:', traj);
                 }
             }
             $scope.toggleMarkers();

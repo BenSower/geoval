@@ -36,7 +36,7 @@ angular.module('geovalApp')
             $.ajax({
                 url: '/api/trajectories/',
                 type: 'DELETE',
-                success: function(result) {
+                success: function() {
                     $scope.clearDbLabel = 'Deleted all trajectories';
                     //forces a redraw
                     $timeout(function() {
