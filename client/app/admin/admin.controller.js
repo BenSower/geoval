@@ -3,47 +3,63 @@
 angular.module('geovalApp')
     .controller('AdminCtrl', function($scope, $http, $timeout, Auth, User) {
 
-        // set file-input options
-        $('#input-1a').fileinput({
-            'uploadUrl': '/api/trajectories/gpx',
-            'uploadAsync': true,
-            'allowedFileExtensions': ['gpx'],
-            'browseClass': 'btn btn-md btn-default',
-            'maxFileCount': 10,
-        });
-
-        // Use the User $resource to fetch all users
-        $scope.users = User.query();
-        $scope.mediaq = 'Import MediaQ Trajectories';
-        $scope.clearDbLabel = 'Delete all Trajectories from Db';
-
-        $scope.importMediaQ = function() {
-            $scope.isImportingMediaq = true;
-
-            $.getJSON('/api/trajectories/importMediaQ', function(data) {
-                $scope.mediaq = 'Imported ' + data.importedVideos + ' trajectories';
-                //forces a redraw
-                $timeout(function() {
-                    $scope.isImportingMediaq = false;
-                }, 0);
+            // set file-input options
+            $('#input-1a').fileinput({
+                'uploadUrl': '/api/trajectories/gpx',
+                'uploadAsync': true,
+                'allowedFileExtensions': ['gpx'],
+                'browseClass': 'btn btn-md btn-default',
+                'maxFileCount': 10,
             });
-        };
 
+            // Use the User $resource to fetch all users
+            $scope.users = User.query();
+            $scope.mediaq = 'Import MediaQ Trajectories';
+            $scope.clearDbLabel = 'Delete all Trajectories from Db';
+            $scope.creatingFakes = 'Create Lvl 1 fake path';
+            $scope.spoofAmount = 5;
 
-        $scope.clearDb = function() {
-            $scope.isDroppingTrajectories = true;
+            $scope.importMediaQ = function() {
+                $scope.isImportingMediaq = true;
 
-            $.ajax({
-                url: '/api/trajectories/',
-                type: 'DELETE',
-                success: function() {
-                    $scope.clearDbLabel = 'Deleted all trajectories';
+                $.getJSON('/api/trajectories/importMediaQ', function(data) {
+                    $scope.mediaq = 'Imported ' + data.importedVideos + ' trajectories';
                     //forces a redraw
                     $timeout(function() {
-                        $scope.isDroppingTrajectories = false;
+                        $scope.isImportingMediaq = false;
                     }, 0);
-                }
-            });
-        };
+                });
+            };
 
+
+            $scope.clearDb = function() {
+                $scope.isDroppingTrajectories = true;
+
+                $.ajax({
+                    url: '/api/trajectories/',
+                    type: 'DELETE',
+                    success: function() {
+                        $scope.clearDbLabel = 'Deleted all trajectories';
+                        //forces a redraw
+                        $timeout(function() {
+                            $scope.isDroppingTrajectories = false;
+                        }, 0);
+                    }
+                });
+            };
+
+
+            $scope.createLvL1Fakes = function() {
+                $scope.isCreatingFakes = true;
+
+                var setLabels = function() {
+                    $scope.creatingFakes = 'Created Fakes';
+                    //forces a redraw
+                    $timeout(function() {
+                        $scope.isCreatingFakes = false;
+                    }, 0);
+                };
+
+                $.post('/api/trajectories/createLvL1Spoofs', { amount : $scope.spoofAmount}, setLabels);
+            };
     });

@@ -12,7 +12,9 @@ var MysqlConnector = rekuire('mysqlTunnelModule'),
     jsdom = require('jsdom').jsdom,
     fs = require('fs'),
     os = require('os'),
-    path = require('path');
+    path = require('path'),
+    TrajectorySpoofFactory = rekuire('SpoofFactory'),
+    SpoofFactory = new TrajectorySpoofFactory();
 
 // Get list of trajectories
 exports.index = function(req, res) {
@@ -253,6 +255,15 @@ exports.importMediaQ = function(req, res) {
         });
     });
 };
+
+exports.createLvL1Spoofs = function(req,res) {
+    
+    var amount = req.body.amount;
+    SpoofFactory.createLvL1Spoofs(amount);
+    return res.json({
+            amount : amount
+        });
+}
 
 
 
