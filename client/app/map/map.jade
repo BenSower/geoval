@@ -8,14 +8,16 @@ div(ng-include='"components/navbar/navbar.html"')
     .col-lg-2
       .well
         label(for="thresholdSlider") Current threshold lvl: {{sliderOptions.thresholdValue}} m ({{sliderOptions.renderedTrajectories}}/{{sliderOptions.loadedTrajectories}} trajectories rendered)
-        //angular slider
         slider(id="thresholdSlider", ng-model="sliderOptions.thresholdValue", min="sliderOptions.min", step="sliderOptions.step", max="sliderOptions.max", value="sliderOptions.thresholdValue", on-stop-slide="onStopSlide()")
         label(for="lengthSlider") Current length: {{sliderOptions.trajectoryLengthConstraint}} coordinates
         slider(id="lengthSlider", ng-model="sliderOptions.trajectoryLengthConstraint", min="sliderOptions.min", step="sliderOptions.step", max="sliderOptions.max/2", value="sliderOptions.trajectoryLengthConstraint", on-stop-slide="onStopSlide()")
-        p Stroke color: 
-          input(type="color", ng-model="trajectories.style.stroke.color")
-        p Show markers:
-          input(type="checkbox", ng-click="toggleMarkers()")
-        p Mouse click position 
-          p {{mouseclickposition}}
+        label(for="markerToggle") Toggle markers
+        button(id="markerToggle", ng-click="toggleMarkers()")
+          span Toggle Markers
+        h3 Mouse click position 
+          p(ng-repeat="point in customTrajectory") {{point}}
+          button( class="btn btn-md btn-default", ng-click="clearTrajectory()")
+            span Clear trajectory
+          
+
 

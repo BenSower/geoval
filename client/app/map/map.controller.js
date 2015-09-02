@@ -18,79 +18,14 @@ angular.module('geovalApp')
             })
         });
 
-        var highlight;
-
-        //redraw after threshold slider was used
-        $scope.onStopSlide = function() {
-            drawTrajectories($scope.rawTrajectories);
-        };
-
-        $scope.sliderOptions = {
-            min: 10,
-            max: 1000,
-            step: 10,
-            orientation: 'horizontal', // vertical
-            handle: 'round', //'square', 'triangle' or 'custom'
-            tooltip: 'hide', //'hide','always'
-            tooltipsplit: false,
-            enabled: true,
-            naturalarrowkeys: false,
-            range: false,
-            ngDisabled: false,
-            reversed: false,
-            loadedTrajectories: 0,
-            renderedTrajectories: 0,
-            trajectoryLengthConstraint: 50, //threshold to drop trajectories with fewer than x coordinates
-            thresholdValue: 10, //threshold to drop trajectories in km,
-        };
-
-        //load and filter jsons
-        $http.get('/api/trajectories').success(function(trajectories) {
-            $scope.rawTrajectories = trajectories;
-            var renderedTrajectories = drawTrajectories(trajectories);
-            $scope.sliderOptions.loadedTrajectories = trajectories.length;
-        });
-
-
-        $scope.$on('openlayers.layers.trajectories.mousemove', function(event, feature) {
-            $scope.$apply(function(scope) {
-                if (feature !== highlight) {
-                    if (highlight) {
-                        highlight.setStyle(normalStyle);
-                    }
-                    //hack to ensure that only trajectories are shown.
-                    if (feature && feature.getId() != undefined) {
-                        feature.setStyle(highlightStyle);
-                        highlight = feature;
-                    }
-                }
-
-            });
-        });
-
-        $scope.$on('openlayers.map.singleclick', function(event, data) {
-            $scope.$apply(function() {
-                if ($scope.projection === data.projection) {
-                    $scope.mouseclickposition = data.coord;
-                } else {
-                    var p = ol.proj.transform([data.coord[0], data.coord[1]], data.projection, $scope.projection);
-                    $scope.mouseclickposition.push({
-                        lat: p[1],
-                        lon: p[0]
-                    });
-                    console.log($scope.mouseclickposition);
-
-                }
-            });
-        });
-
         angular.extend($scope, {
             markers: [],
             center: {
                 lat: 48.13650696913464,
                 lon: 11.606172461258842,
                 zoom: 12,
-                autodiscover: false
+                autodiscover: false,
+                bounds: []
             },
             layers: [{
                 name: 'main',
@@ -120,10 +55,77 @@ angular.module('geovalApp')
                     mouseWheelZoom: true
                 }
             },
-            mouseclickposition: [],
+            customTrajectory: [],
             projection: 'EPSG:4326'
 
         });
+
+
+
+        var highlight;
+
+        //redraw after threshold slider was used
+        $scope.onStopSlide = function() {
+            drawTrajectories($scope.rawTrajectories);
+        };
+
+        $scope.sliderOptions = {
+            min: 10,
+            max: 1000,
+            step: 10,
+            orientation: 'horizontal', // vertical
+            handle: 'round', //'square', 'triangle' or 'custom'
+            tooltip: 'hide', //'hide','always'
+            tooltipsplit: false,
+            enabled: true,
+            naturalarrowkeys: false,
+            range: false,
+            ngDisabled: false,
+            reversed: false,
+            loadedTrajectories: 0,
+            renderedTrajectories: 0,
+            trajectoryLengthConstraint: 50, //threshold to drop trajectories with fewer than x coordinates
+            thresholdValue: 10, //threshold to drop trajectories in km,
+        };
+
+        //load and filter jsons
+        $http.get('/api/trajectories').success(function(trajectories) {
+            $scope.rawTrajectories = trajectories;
+            $scope.renderedTrajectories = drawTrajectories(trajectories);
+            $scope.sliderOptions.loadedTrajectories = trajectories.length;
+        });
+
+
+        $scope.$on('openlayers.layers.trajectories.mousemove', function(event, feature) {
+            $scope.$apply(function(scope) {
+                if (feature !== highlight) {
+                    if (highlight) {
+                        highlight.setStyle(normalStyle);
+                    }
+                    //hack to ensure that only trajectories are shown.
+                    if (feature && feature.getId() != undefined) {
+                        feature.setStyle(highlightStyle);
+                        highlight = feature;
+                    }
+                }
+
+            });
+        });
+
+        $scope.$on('openlayers.map.singleclick', function(event, data) {
+            $scope.$apply(function() {
+                if ($scope.projection === data.projection) {
+                    $scope.customTrajectory = data.coord;
+                } else {
+                    var p = ol.proj.transform([data.coord[0], data.coord[1]], data.projection, $scope.projection);
+                    $scope.customTrajectory.push({
+                        lat: p[1],
+                        lon: p[0]
+                    });
+                }
+            });
+        });
+
 
         $scope.toggleMarkers = function() {
             if ($scope.markers.length > 0) {
@@ -132,6 +134,10 @@ angular.module('geovalApp')
                 $scope.markers = markers;
             }
         };
+
+        $scope.clearTrajectory = function() {
+            $scope.customTrajectory = [];
+        }
 
 
         function drawTrajectories(trajectories) {
@@ -148,8 +154,13 @@ angular.module('geovalApp')
             $scope.markers = [];
             for (var i = 0; i < trajectories.length; i++) {
                 var traj = trajectories[i];
+                var os = (endsWith(traj.id, '.mov')) ? 'iOs' : 'Android';
+
                 if (traj.geometry.coordinates[0]) {
-                    var labelMessage = '<h5>' + traj.id + '</h5>' + 'Coordinates: ' + traj.geometry.coordinates.length + '<br/> Outlier Threshold: ' + traj.properties.outlierThreshold + 'm';
+                    var labelMessage = '<h5>' + traj.id 
+                    + '</h5>' + 'Coordinates: ' + traj.geometry.coordinates.length 
+                    + '<br/> Outlier Threshold: ' + traj.properties.outlierThreshold + 'm' 
+                    + '<br/> Device: ' + os;
                     var marker = {
                         name: traj.id,
                         lat: traj.geometry.coordinates[0][1],
@@ -168,9 +179,13 @@ angular.module('geovalApp')
             $scope.toggleMarkers();
         }
 
+        function endsWith(str, suffix) {
+            return str.indexOf(suffix, str.length - suffix.length) !== -1;
+        }
 
         //drops all trajectories with a outlier
         function simpleOutlierRemoval(trajectory) {
+
             var threshold = $scope.sliderOptions.thresholdValue;
             if (trajectory.properties.outlierThreshold > threshold ||  trajectory.geometry.coordinates.length < $scope.sliderOptions.trajectoryLengthConstraint) {
                 return null;
@@ -186,6 +201,7 @@ angular.module('geovalApp')
                     filteredTrajectories.push(filteredTrajectory);
                 }
             }
+            console.log(filteredTrajectories.length);
             return filteredTrajectories;
         }
     });

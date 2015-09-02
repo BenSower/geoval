@@ -1,0 +1,2 @@
+- Mit osm abgleichen ob Weg möglich
+- Zeitabstände in buckets unbekannter Größe verpacken, "verschlüsseln" und zu regelmäßigen Abständen verschicken.

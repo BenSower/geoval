@@ -2,6 +2,7 @@
   "name": "geoval",
   "version": "0.0.0",
   "dependencies": {
+    "Geolib": "geolib#~2.0.18",
     "angular-bootstrap": "~0.13.3",
     "angular-bootstrap-slider": "~0.1.18",
     "angular-cookies": "~1.4.5",
