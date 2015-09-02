@@ -1,3 +1,31 @@
+version 4.1.9
+=============
+**Date**: 02-May-2015
+
+1. (enh #232): Update docs to reflect updated bootstrap CDN domain.
+2. (enh #237): Better styling of file caption icon.
+3. (bug #238): Correct initialization of plugin variables when other than maxFileCount & maxFileSize.
+4. (enh #241): Enhancements to initial preview delete to perform validations before delete.
+5. (bug #243): Correct sending of `deleteExtraData`.
+6. (enh #244): Add Serbian translations.
+7. (enh #245): Allow initial caption to be set without initial preview.
+8. (bug #247): Correct mime types validation.
+9. (enh #248): keep chinese characters in file caption.
+10. (bug #249): Fix error message content display.
+11. (enh #250): Change default slug routine to allow umlauts in filenames.
+12. (enh #251): Add Italian localizations.
+13. (enh #252): Enhance async batch completion.
+14. (bug #253): Fix initial preview delete cache initialization.
+15. (bug #257): Fix upload single to replace thumbs correctly.
+16. (enh #258): Enhance messages to include file plural and single.
+17. (enh #259): Add Polish translations.
+18. (enh #263): Enhance parsing of file preview thumbnails and actions.
+19. (enh #264): Validate input type of file before initializing plugin.
+20. (enh #269, #272): Add Turkish translations.
+21. (enh #270): Add Portugese translations.
+22. (enh #271): Add Dutch translations.
+23. (bug #273): Reset caption correctly after all initial preview is deleted.
+
 version 4.1.8
 =============
 **Date**: 30-Mar-2015
