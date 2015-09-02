@@ -41,6 +41,5 @@
   },
   "_source": "git://github.com/tombatossals/angular-openlayers-directive.git",
   "_target": "~1.0.1",
-  "_originalSource": "angular-openlayers-directive",
-  "_direct": true
+  "_originalSource": "angular-openlayers-directive"
 }
