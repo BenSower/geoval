@@ -1,2 +1,6 @@
+Neu:
+
+Eingetragen:
 - Mit osm abgleichen ob Weg möglich
 - Zeitabstände in buckets unbekannter Größe verpacken, "verschlüsseln" und zu regelmäßigen Abständen verschicken.
+- nur marker anzeigen und auf hover/click trajectory dazu
