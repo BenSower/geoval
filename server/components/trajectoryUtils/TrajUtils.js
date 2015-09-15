@@ -21,13 +21,21 @@ TrajUtils.prototype.convertGpxToGeoJson = function(gpxFilePath) {
     log_debug('Raw data: ', converted);
 
     //Selecting first/only trajectory in file
-    var geoJson = converted.features[0];
-
+    var trajectory = this.preprocess(converted.features[0]);
+    //var trajectory = converted.features[0];
     //setting the filename
-    geoJson.id = path.basename(gpxFilePath);
-    return geoJson;
+    trajectory.id = path.basename(gpxFilePath);
+    log_debug("returning a trajectory with distribution:", trajectory.properties.distribution);
+    log_debug("returning a trajectory with outlierThreshold:", trajectory.properties.outlierThreshold);
+    return trajectory;
 }
 
+TrajUtils.prototype.preprocess = function(trajectory){
+    var outlierProperties = this.getOutlierProperties(trajectory);
+    trajectory.properties.outlierThreshold = outlierProperties.outlierThreshold;
+    trajectory.properties.distribution = outlierProperties.distribution;
+    return trajectory;
+}
 
 TrajUtils.prototype.getOutlierProperties = function(trajectory) {
 

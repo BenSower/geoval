@@ -161,11 +161,6 @@ exports.parseGPXandImportData = function(req, res) {
             //upsert data into db
             log_info('Upserting trajectory into db');
             upsert(geoJson);
-
-            res.json(200, {
-                'msg': 'File uploaded successfully'
-            });
-
         });
 
 
@@ -208,10 +203,8 @@ exports.importMediaQ = function(req, res) {
             //save trajectory and create new trajectory
             if (videoSlice.VideoId !== trajectory.id || i === rows.length - 1) {
 
-                var outlierProperties = TrajUtils.getOutlierProperties(trajectory);
-                trajectory.properties.outlierThreshold = outlierProperties.outlierThreshold;
-                trajectory.properties.distribution = outlierProperties.distribution;
-
+                var trajectory = TrajUtils.preprocess(trajectory);
+                
                 if (trajectory.geometry.coordinates.length !== 0) {
                     //upsert tmp trajectory
                     upsert(trajectory);

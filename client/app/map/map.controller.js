@@ -71,7 +71,7 @@ angular.module('geovalApp')
 
         $scope.sliderOptions = {
             min: 10,
-            max: 1000,
+            max: 8000,
             step: 10,
             orientation: 'horizontal', // vertical
             handle: 'round', //'square', 'triangle' or 'custom'

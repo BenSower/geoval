@@ -41,10 +41,7 @@ function createLvl1Spoof() {
         }
     };
 
-    var outlierProperties = TrajUtils.getOutlierProperties(spoof);
-    spoof.properties.outlierThreshold = outlierProperties.outlierThreshold;
-    spoof.properties.distribution = outlierProperties.distribution;
-
+    var spoof = TrajUtils.preprocess(spoof);
     return spoof;
 }
 
