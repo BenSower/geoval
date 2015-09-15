@@ -6,8 +6,8 @@ angular.module('geovalApp')
         var markers = [];
         var normalStyle = new ol.style.Style({
             stroke: new ol.style.Stroke({
-                color: '#123456',
-                width: 1
+                color: '#FF0000',
+                width: 3
             })
         });
 
@@ -17,6 +17,24 @@ angular.module('geovalApp')
                 width: 5
             })
         });
+
+        function getRandomStyle() {
+            return new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: getRandomColor(),
+                    width: 3
+                })
+            });
+        }
+
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF'.split('');
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
 
         angular.extend($scope, {
             markers: [],
@@ -108,7 +126,6 @@ angular.module('geovalApp')
                         highlight = feature;
                     }
                 }
-
             });
         });
 
@@ -128,11 +145,7 @@ angular.module('geovalApp')
 
 
         $scope.toggleMarkers = function() {
-            if ($scope.markers.length > 0) {
-                $scope.markers = [];
-            } else {
-                $scope.markers = markers;
-            }
+            $scope.markers = ($scope.markers.length > 0) ? [] : markers;
         };
 
         $scope.clearTrajectory = function() {
@@ -142,7 +155,7 @@ angular.module('geovalApp')
 
         function drawTrajectories(trajectories) {
             var filteredTrajectories = filterTrajectories(trajectories);
-            $scope.layers[1].source.geojson.object.features = filteredTrajectories;
+            //$scope.layers[1].source.geojson.object.features = filteredTrajectories;
             $scope.sliderOptions.renderedTrajectories = filteredTrajectories.length;
             updateMarkers(filteredTrajectories);
             return filteredTrajectories;
@@ -166,7 +179,8 @@ angular.module('geovalApp')
                             message: labelMessage,
                             show: false,
                             showOnMouseOver: true
-                        }
+                        },
+                        onClick: toggleTrajectory(traj)
                     };
                     markers.push(marker);
                 } else {
@@ -176,13 +190,24 @@ angular.module('geovalApp')
             $scope.toggleMarkers();
         }
 
+        function toggleTrajectory(trajectory) {
+            return function(event, properties) {
+                var renderedTrajectories = $scope.layers[1].source.geojson.object.features;
+                var index = renderedTrajectories.indexOf(trajectory);
+                if (index === -1) {
+                    $scope.layers[1].source.geojson.object.features.push(trajectory);
+                } else {
+                    $scope.layers[1].source.geojson.object.features.splice(index, 1);
+                }
+            }
+        }
+
         function endsWith(str, suffix) {
             return str.indexOf(suffix, str.length - suffix.length) !== -1;
         }
 
         //drops all trajectories with a outlier
         function simpleOutlierRemoval(trajectory) {
-
             var threshold = $scope.sliderOptions.thresholdValue;
             if (trajectory.properties.outlierThreshold > threshold ||  trajectory.geometry.coordinates.length < $scope.sliderOptions.trajectoryLengthConstraint) {
                 return null;
@@ -198,7 +223,6 @@ angular.module('geovalApp')
                     filteredTrajectories.push(filteredTrajectory);
                 }
             }
-            console.log(filteredTrajectories.length);
             return filteredTrajectories;
         }
     });
