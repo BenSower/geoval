@@ -30,7 +30,8 @@
     "socket.io-client": "^1.0.6",
     "socketio-jwt": "^2.0.2",
     "togeojson": "^0.11.1",
-    "tunnel-ssh": "0.0.5"
+    "tunnel-ssh": "0.0.5",
+    "uuid-js": "^0.7.5"
   },
   "devDependencies": {
     "connect-livereload": "~0.4.0",

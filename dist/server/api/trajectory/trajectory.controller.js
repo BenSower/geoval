@@ -8,11 +8,12 @@ var MysqlConnector = rekuire('mysqlTunnelModule'),
     Busboy = require('busboy'),
     log_info = require('debug')('info'),
     log_debug = require('debug')('debug'),
-    ToGeoJson = require('togeojson'),
-    jsdom = require('jsdom').jsdom,
     fs = require('fs'),
     os = require('os'),
-    path = require('path');
+    path = require('path'),
+    TrajUtils = rekuire('TrajUtils'),
+    TrajectorySpoofFactory = rekuire('SpoofFactory'),
+    SpoofFactory = new TrajectorySpoofFactory();
 
 // Get list of trajectories
 exports.index = function(req, res) {
@@ -44,9 +45,10 @@ exports.show = function(req, res) {
 function createTrajectory(req, res) {
     Trajectory.create(req.body, function(err, trajectory) {
         if (err) {
+            console.log(err);
             return handleError(res, err);
         }
-        if (res !== null) {
+        if (res !== null && res !== undefined) {
             return res.json(201, trajectory);
         } else {
             return trajectory
@@ -99,7 +101,7 @@ exports.destroy = function(req, res) {
     });
 };
 
-// Deletes a trajectory from the DB.
+// Deletes all trajectories from the DB.
 exports.dropAll = function(req, res) {
     Trajectory.remove({}, function(err) {
         if (err) {
@@ -113,8 +115,8 @@ exports.dropAll = function(req, res) {
 function upsert(trajectory) {
     var traj = new Trajectory(trajectory),
         upsertData = traj.toObject();
-
     delete upsertData._id;
+
     Trajectory.update({
         id: traj.id
     }, upsertData, {
@@ -127,27 +129,6 @@ function upsert(trajectory) {
     });
 }
 
-function convertGpxToGeoJson(gpxFilePath) {
-    //load file
-    var gpxFileObj = fs.readFileSync(gpxFilePath, 'utf8');
-    //get dom tree from gpx file
-    var gpx = jsdom(gpxFileObj);
-
-    //convert from gpx to geojson
-    var converted = ToGeoJson.gpx(gpx, {
-        styles: true
-    });
-    log_info('file converted to geoJson');
-    log_debug('Raw data: ', converted);
-
-    //Selecting first/only trajectory in file
-    var geoJson = converted.features[0];
-
-    //setting the filename
-    geoJson.id = path.basename(gpxFilePath);
-
-    return geoJson;
-}
 
 // Updates an existing trajectory in the DB.
 exports.parseGPXandImportData = function(req, res) {
@@ -175,16 +156,12 @@ exports.parseGPXandImportData = function(req, res) {
         writeStream.on('finish', function() {
 
             log_info('File was written, starting gpx to geoJson conversion.');
-            var geoJson = convertGpxToGeoJson(gpxFilePath);
+            var geoJson = TrajUtils.convertGpxToGeoJson(gpxFilePath)
             log_info('file converted to geoJson, number of timestamps:', geoJson.geometry.coordinates.length);
 
             //upsert data into db
             log_info('Upserting trajectory into db');
             upsert(geoJson);
-
-            res.json(200, {
-                'msg': 'File uploaded successfully'
-            });
         });
 
 
@@ -222,15 +199,13 @@ exports.importMediaQ = function(req, res) {
 
             //create initial tmp trajectory
             if (trajectory === null) {
-                trajectory = createNewTmpTrajectory(videoSlice);
+                trajectory = TrajUtils.createNewTmpTrajectory(videoSlice);
             }
             //save trajectory and create new trajectory
             if (videoSlice.VideoId !== trajectory.id || i === rows.length - 1) {
 
-                var outlierProperties = getOutlierProperties(trajectory);
-                trajectory.properties.outlierThreshold = outlierProperties.outlierThreshold;
-                trajectory.properties.distribution = outlierProperties.distribution;
-
+                var trajectory = TrajUtils.preprocess(trajectory);
+                
                 if (trajectory.geometry.coordinates.length !== 0) {
                     //upsert tmp trajectory
                     upsert(trajectory);
@@ -238,7 +213,7 @@ exports.importMediaQ = function(req, res) {
                 }
 
                 //create new tmp trajectory
-                trajectory = createNewTmpTrajectory(videoSlice);
+                trajectory = TrajUtils.createNewTmpTrajectory(videoSlice);
             } else {
                 trajectory.geometry.coordinates.push(
                     [videoSlice.Plng, videoSlice.PLat]
@@ -254,72 +229,22 @@ exports.importMediaQ = function(req, res) {
     });
 };
 
+exports.createLvL1Spoofs = function(req, res) {
 
+    var amount = parseInt(req.body.amount);
+    var spoofs = SpoofFactory.createLvL1Spoofs(amount);
 
-function getOutlierProperties(trajectory) {
-    //calculate distances between every coordinate and the next one
-    var biggestDistance = 0;
-    var buckets = {};
-    for (var i = 0; i < trajectory.geometry.coordinates.length - 1; i++) {
-        var firstCoordinate = trajectory.geometry.coordinates[i];
-        var secondCoordinate = trajectory.geometry.coordinates[i + 1];
-        var distance = getDistanceFromLonLatInM(firstCoordinate[0], firstCoordinate[1], secondCoordinate[0], secondCoordinate[1]);
-        if (distance > biggestDistance) {
-            biggestDistance = distance;
-        }
-        //var bucketedDistance = Math.round(distance / 10) * 10
-        var bucketedDistance = Math.round(distance);
-        if (buckets[bucketedDistance] === undefined) {
-            buckets[bucketedDistance] = 1;
-        } else {
-            buckets[bucketedDistance]++;
-        }
+    for (var i = 0; i < spoofs.length; i++) {
+        //hijacking the crud api
+        var spoof = {body : spoofs[i]};
+        createTrajectory(spoof, null);
     }
 
-    return {
-        outlierThreshold: biggestDistance,
-        distribution : buckets
-    }
+    return res.json({
+        message: 'OK',
+        amount: amount
+    });
 }
-
-
-function deg2rad(deg) {
-    return deg * (Math.PI / 180);
-}
-
-function getDistanceFromLonLatInM(lon1, lat1, lon2, lat2) {
-    var R = 6371; // Radius of the earth in km
-    var dLat = deg2rad(lat2 - lat1); // deg2rad below
-    var dLon = deg2rad(lon2 - lon1);
-    var a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = R * c; // Distance in km
-    return d * 1000;
-}
-
-/*
-    Creates a new Trajectory object
-*/
-function createNewTmpTrajectory(videoSlice) {
-
-    var trajectory = {
-        id: videoSlice.VideoId,
-        properties: {
-            time: videoSlice.TimeCode,
-            coordTimes: [],
-            outlierThreshold: 0
-        },
-        geometry: {
-            type: 'LineString',
-            coordinates: []
-        }
-    };
-    return trajectory;
-}
-
 
 function queryMediaQ(query, fn) {
     db.query(query, function(rows, fields) {

@@ -7,14 +7,14 @@ angular.module('geovalApp')
         var normalStyle = new ol.style.Style({
             stroke: new ol.style.Stroke({
                 color: '#FF0000',
-                width: 3
+                width: 2
             })
         });
 
         var highlightStyle = new ol.style.Style({
             stroke: new ol.style.Stroke({
-                color: '#FF0000',
-                width: 5
+                color: '#123456',
+                width: 2
             })
         });
 
