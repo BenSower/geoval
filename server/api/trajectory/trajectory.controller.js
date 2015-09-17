@@ -45,9 +45,10 @@ exports.show = function(req, res) {
 function createTrajectory(req, res) {
     Trajectory.create(req.body, function(err, trajectory) {
         if (err) {
+            console.log(err);
             return handleError(res, err);
         }
-        if (res !== null) {
+        if (res !== null && res !== undefined) {
             return res.json(201, trajectory);
         } else {
             return trajectory
@@ -100,7 +101,7 @@ exports.destroy = function(req, res) {
     });
 };
 
-// Deletes a trajectory from the DB.
+// Deletes all trajectories from the DB.
 exports.dropAll = function(req, res) {
     Trajectory.remove({}, function(err) {
         if (err) {
@@ -234,8 +235,9 @@ exports.createLvL1Spoofs = function(req, res) {
     var spoofs = SpoofFactory.createLvL1Spoofs(amount);
 
     for (var i = 0; i < spoofs.length; i++) {
-        var spoof = spoofs[i];
-        createTrajectory(spoof);
+        //hijacking the crud api
+        var spoof = {body : spoofs[i]};
+        createTrajectory(spoof, null);
     }
 
     return res.json({

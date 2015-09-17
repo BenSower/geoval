@@ -19,7 +19,7 @@ SpoofFactory.prototype.createLvL1Spoofs = function(number) {
     }
 
     //return spoofs;
-    return {};
+    return spoofs;
 }
 
 
@@ -29,7 +29,7 @@ function createLvl1Spoof() {
 		minLength = 10,
 		trajLength = getRandInt(minLength, maxLength),
 		coordinates = createCoordinates(trajLength),
-		times = createTimes(trajLength);
+		times = createRandomTimes(trajLength);
 
     var spoof = {
         properties: {
@@ -53,24 +53,33 @@ function getRandInt(min, max){
 function createCoordinates(amount){
 
 	//9007199254740991 is the max int value of js :-)
-	var range = 400000000000000;
+	var range = 40000000000000;
 	var coordinates = [];
 	for (var i = 0; i < amount; i ++){
 		//offset points based on baseCoordinate in munich
-		var lon = baseCoordinates.lon + getRandInt(-range, range)/10000000000000000;
-		var lat = baseCoordinates.lat + getRandInt(-range, range)/10000000000000000;
+		var lon = baseCoordinates.lon + getRandInt(-range, range)/1000000000000000;
+		var lat = baseCoordinates.lat + getRandInt(-range, range)/1000000000000000;
 		coordinates.push([lon,lat]);
 	}
-	console.log(coordinates);
 	return coordinates;
 }
 
-function createTimes(amount){
+function createRandomTimes(amount){
 	var times = [];
+	var d = new Date();
+	var time = d.getTime();
+
 	for (var i = 0; i < amount; i ++){
-		
-	}
+		//random time between timestamps 1-60 seconds
+		time = time + randomIntFromInterval(1,60000);
+		times.push(time);
+	}	
 	return times;
+}
+
+function randomIntFromInterval(min,max)
+{
+    return Math.floor(Math.random()*(max-min+1)+min);
 }
 
 module.exports = SpoofFactory;

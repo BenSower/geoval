@@ -17,6 +17,9 @@ div(ng-include='"components/navbar/navbar.html"')
                 td {{trajectory.id}}
                 td {{trajectory.geometry.coordinates.length}}
                 td {{trajectory.properties.outlierThreshold.toFixed(2)}}m
+                td 
+                    a.trash(ng-click='delete(trajectory)')
+                        span.glyphicon.glyphicon-trash.pull-right
           
 div(ng-include='"components/footer/footer.html"')
 

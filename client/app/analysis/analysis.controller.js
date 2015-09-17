@@ -1,15 +1,20 @@
 'use strict';
 angular.module('geovalApp')
     .controller('AnalysisCtrl', function($scope, $http) {
+        
+        var apiUrl = '/api/trajectories';
         /*
 			Create full table
     	*/
-        $http.get('/api/trajectories').success(function(trajectories) {
+       
+        $scope.showTable = false;
+        $http.get(apiUrl).success(redraw);
+
+        function redraw (trajectories) {
             $scope.rawTrajectories = trajectories;
             $scope.scatterData = getScatterData(trajectories);
             $scope.donutData = getDonutData($scope.scatterData);
-        });
-        $scope.showTable = false;
+        }
 
         /*
 			scatter plot
@@ -64,7 +69,6 @@ angular.module('geovalApp')
         };
         $scope.xFunction = function() {
             return function(d) {
-                console.log(d.key);
                 return d.key;
             };
         };
@@ -79,4 +83,14 @@ angular.module('geovalApp')
                 return d.key;
             };
         };
+
+        $scope.delete = function (trajectory) {
+            $.ajax({
+                    url: '/api/trajectories/' + trajectory._id,
+                    type: 'DELETE',
+                    success: function() {
+                        $http.get(apiUrl).success(redraw);
+                    }
+                });
+        }
     });
