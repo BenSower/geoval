@@ -1,24 +1,24 @@
 'use strict';
 angular.module('geovalApp')
     .controller('AnalysisCtrl', function($scope, $http) {
-        
+
         var apiUrl = '/api/trajectories';
         /*
-			Create full table
-    	*/
-       
-        $scope.showTable = false;
+            Create full table
+        */
+
+        $scope.showTable = true;
         $http.get(apiUrl).success(redraw);
 
-        function redraw (trajectories) {
+        function redraw(trajectories) {
             $scope.rawTrajectories = trajectories;
             $scope.scatterData = getScatterData(trajectories);
             $scope.donutData = getDonutData($scope.scatterData);
         }
 
         /*
-			scatter plot
-    	*/
+            scatter plot
+        */
         var getScatterData = function(rawTrajectories) {
             var aggregatedDistribution = {};
             for (var i = 0; i < rawTrajectories.length; i++) {
@@ -47,7 +47,7 @@ angular.module('geovalApp')
         };
 
         /*
-        	donut graph
+            donut graph
         */
         var getDonutData = function(scatterData) {
             var data = [];
@@ -59,9 +59,9 @@ angular.module('geovalApp')
                 var scatterDataSlice = scatterData[attribute];
                 var value = scatterDataSlice.values[0].y;
                 data.push({
-                        key: scatterDataSlice.key,
-                        y: value
-                    });
+                    key: scatterDataSlice.key,
+                    y: value
+                });
             }
             data.push(others);
 
@@ -84,13 +84,19 @@ angular.module('geovalApp')
             };
         };
 
-        $scope.delete = function (trajectory) {
+        $scope.delete = function(trajectory) {
             $.ajax({
-                    url: '/api/trajectories/' + trajectory._id,
-                    type: 'DELETE',
-                    success: function() {
-                        $http.get(apiUrl).success(redraw);
-                    }
-                });
+                url: '/api/trajectories/' + trajectory._id,
+                type: 'DELETE',
+                success: function() {
+                    $http.get(apiUrl).success(redraw);
+                }
+            });
+        }
+
+        $scope.analyse = function() {
+            $http.get('/api/trajectories/analyse').success(function(result) {
+                console.log(result);
+            });
         }
     });

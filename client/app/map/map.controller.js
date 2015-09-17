@@ -116,6 +116,7 @@ angular.module('geovalApp')
 
         $scope.$on('openlayers.layers.trajectories.mousemove', function(event, feature) {
             $scope.$apply(function() {
+                console.log("TRAJ");
                 if (feature !== highlight) {
                     if (highlight) {
                         highlight.setStyle(normalStyle);
@@ -125,6 +126,8 @@ angular.module('geovalApp')
                         feature.setStyle(highlightStyle);
                         highlight = feature;
                     }
+                } else {
+                  console.log(feature);
                 }
             });
         });

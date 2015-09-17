@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var rekuire = require('rekuire');
 var Trajectory = require('./trajectory.model');
+var Analyser = rekuire('Analyser');
 var MysqlConnector = rekuire('mysqlTunnelModule'),
     db = new MysqlConnector(),
     Busboy = require('busboy'),
@@ -19,7 +20,7 @@ var MysqlConnector = rekuire('mysqlTunnelModule'),
 exports.index = function(req, res) {
     Trajectory.find(function(err, trajectories) {
         if (err) {
-            return handleError(res, err);
+            return handleError(err,res);
         }
         return res.json(200, trajectories);
     });
@@ -29,7 +30,7 @@ exports.index = function(req, res) {
 exports.show = function(req, res) {
     Trajectory.findById(req.params.id, function(err, trajectory) {
         if (err) {
-            return handleError(res, err);
+            return handleError(err,res);
         }
         if (!trajectory) {
             return res.send(404);
@@ -46,7 +47,7 @@ function createTrajectory(req, res) {
     Trajectory.create(req.body, function(err, trajectory) {
         if (err) {
             console.log(err);
-            return handleError(res, err);
+            return handleError(err,res);
         }
         if (res !== null && res !== undefined) {
             return res.json(201, trajectory);
@@ -67,7 +68,7 @@ exports.update = function(req, res) {
     }
     Trajectory.findById(req.params.id, function(err, trajectory) {
         if (err) {
-            return handleError(res, err);
+            return handleError(err,res);
         }
         if (!trajectory) {
             return res.send(404);
@@ -75,7 +76,7 @@ exports.update = function(req, res) {
         var updated = _.merge(trajectory, req.body);
         updated.save(function(err) {
             if (err) {
-                return handleError(res, err);
+                return handleError(err,res);
             }
             return res.json(200, trajectory);
         });
@@ -87,14 +88,14 @@ exports.update = function(req, res) {
 exports.destroy = function(req, res) {
     Trajectory.findById(req.params.id, function(err, trajectory) {
         if (err) {
-            return handleError(res, err);
+            return handleError(err,res);
         }
         if (!trajectory) {
             return res.send(404);
         }
         trajectory.remove(function(err) {
             if (err) {
-                return handleError(res, err);
+                return handleError(err,res);
             }
             return res.send(204);
         });
@@ -105,7 +106,7 @@ exports.destroy = function(req, res) {
 exports.dropAll = function(req, res) {
     Trajectory.remove({}, function(err) {
         if (err) {
-            return handleError(res, err);
+            return handleError(err,res);
         }
         return res.send(204);
     });
@@ -246,6 +247,16 @@ exports.createLvL1Spoofs = function(req, res) {
     });
 }
 
+exports.analyse = function(req, res) {
+    console.log(Analyser);
+    Analyser.analyse(function(err, result) {
+        if (err) {
+            return handleError(err,res);
+        }
+        return res.json(200, result);
+    });
+};
+
 function queryMediaQ(query, fn) {
     db.query(query, function(rows, fields) {
         fn(rows, fields);
@@ -253,6 +264,6 @@ function queryMediaQ(query, fn) {
 }
 
 
-function handleError(res, err) {
+function handleError(err,res) {
     return res.send(500, err);
 }

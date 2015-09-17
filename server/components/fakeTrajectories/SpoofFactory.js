@@ -56,9 +56,10 @@ function getRandInt(min, max) {
 function createCoordinates(amount) {
 
     var range = 4 * Math.pow(10, 15);
-    var offsetPow = Math.pow(10, 18);
+    var offsetPow = Math.pow(10, 19);
+    //start point gets bigger offset to diversify the start a little
+    var baseCoordinate = getOffsetForCoordinate(baseCoordinates, range, Math.pow(10, 16.5));
     var coordinates = [];
-    var baseCoordinate = _.clone(baseCoordinates);
 
     for (var i = 0; i < amount; i++) {
         //offset points based on baseCoordinate in munich
