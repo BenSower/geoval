@@ -15,4 +15,6 @@ router.patch('/:id', controller.update);
 router.delete('/:id', controller.destroy);
 router.delete('/', controller.dropAll);
 router.post('/gpx', controller.parseGPXandImportData);
+router.post('/createLvL1Spoofs', controller.createLvL1Spoofs);
+
 module.exports = router;

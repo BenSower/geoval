@@ -40,6 +40,5 @@
   },
   "_source": "git://github.com/remotty/angular-ladda.git",
   "_target": "~0.3.1",
-  "_originalSource": "angular-ladda",
-  "_direct": true
+  "_originalSource": "angular-ladda"
 }
