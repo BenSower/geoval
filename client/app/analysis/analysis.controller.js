@@ -11,6 +11,7 @@ angular.module('geovalApp')
         $http.get(apiUrl).success(redraw);
 
         function redraw(trajectories) {
+            console.log(trajectories);
             $scope.rawTrajectories = trajectories;
             $scope.scatterData = getScatterData(trajectories);
             $scope.donutData = getDonutData($scope.scatterData);

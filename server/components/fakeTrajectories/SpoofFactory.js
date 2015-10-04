@@ -18,16 +18,16 @@ SpoofFactory.prototype.createLvL1Spoofs = function(number) {
 
     console.log('creating spoofed trajectories ' + number);
     var spoofs = [];
-
     for (var i = 0; i < number; i++) {
-        spoofs.push(createLvl1Spoof());
+        createLvl1Spoof(function(err, spoof) {
+            spoofs.push(spoof);
+        });
     }
-
-    //return spoofs;
     return spoofs;
 }
 
-function createLvl1Spoof() {
+
+function createLvl1Spoof(cb) {
     var maxLength = 100,
         minLength = 10,
         trajLength = getRandInt(minLength, maxLength),
@@ -45,7 +45,10 @@ function createLvl1Spoof() {
         }
     };
 
-    return TrajUtils.preprocess(spoof);
+    TrajUtils.preprocess(spoof, function(err, preprocessedSpoof) {
+        return cb(err, preprocessedSpoof);
+    });
+
 }
 
 

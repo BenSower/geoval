@@ -16,8 +16,8 @@ div(ng-include='"components/navbar/navbar.html"')
             tbody(ng-repeat='trajectory in rawTrajectories', ts-repeat='')
               tr
                 td {{trajectory.id}}
-                td {{trajectory.geometry.coordinates.length}}
-                td {{trajectory.properties.outlierThreshold.toFixed(2)}}m
+                td {{trajectory.featureVector.sampleAmount}}
+                td {{trajectory.featureVector.distribution.biggestDistance.toFixed(2)}}m
                 td 
                     a.trash(ng-click='delete(trajectory)')
                         span.glyphicon.glyphicon-trash.pull-right

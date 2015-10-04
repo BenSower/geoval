@@ -44,6 +44,7 @@ exports.show = function(req, res) {
 //returns 201 and the trajectory if everything went fine
 //returns the trajectory if no response header was specified.
 function createTrajectory(req, res) {
+
     Trajectory.create(req.body, function(err, trajectory) {
         if (err) {
             console.log(err);
@@ -248,7 +249,6 @@ exports.createLvL1Spoofs = function(req, res) {
 }
 
 exports.analyse = function(req, res) {
-    console.log(Analyser);
     Analyser.analyse(function(err, result) {
         if (err) {
             return handleError(err,res);

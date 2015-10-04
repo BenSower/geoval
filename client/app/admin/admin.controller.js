@@ -17,7 +17,7 @@ angular.module('geovalApp')
             $scope.mediaq = 'Import MediaQ Trajectories';
             $scope.clearDbLabel = 'Delete all Trajectories from Db';
             $scope.creatingFakes = 'Create Lvl 1 fake path';
-            $scope.spoofAmount = 5;
+            $scope.spoofAmount = 1;
 
             $scope.importMediaQ = function() {
                 $scope.isImportingMediaq = true;
