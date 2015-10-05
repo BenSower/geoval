@@ -7,7 +7,7 @@ angular.module('geovalApp')
             Create full table
         */
 
-        $scope.showTable = true;
+        $scope.showTable = false;
         $http.get(apiUrl).success(redraw);
 
         function redraw(trajectories) {

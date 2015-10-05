@@ -12,12 +12,14 @@ div(ng-include='"components/navbar/navbar.html"')
               tr
                 th(ts-criteria="id|lowercase") Name
                 th(ts-criteria="featureVector.sampleAmount", ts-default='descending') Length
-                th(ts-criteria="featureVector.distribution.biggestDistance") Max dist between points
+                th(ts-criteria="featureVector.distribution.biggestDistance") Max dist
+                th(ts-criteria="featureVector.properties.spoofLvL") Type
             tbody(ng-repeat='trajectory in rawTrajectories', ts-repeat='')
               tr
                 td {{trajectory.id}}
                 td {{trajectory.featureVector.sampleAmount}}
                 td {{trajectory.featureVector.distribution.biggestDistance}}m
+                td {{trajectory.properties.spoofLvL}}
                 td 
                     a.trash(ng-click='delete(trajectory)')
                         span.glyphicon.glyphicon-trash.pull-right
