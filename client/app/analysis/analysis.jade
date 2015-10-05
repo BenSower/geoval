@@ -11,13 +11,13 @@ div(ng-include='"components/navbar/navbar.html"')
             thead
               tr
                 th(ts-criteria="id|lowercase") Name
-                th(ts-criteria="geometry.coordinates.length|parseInt", ts-default='descending') Length
-                th(ts-criteria="properties.outlierThreshold") Outlier Threshold
+                th(ts-criteria="featureVector.sampleAmount", ts-default='descending') Length
+                th(ts-criteria="featureVector.distribution.biggestDistance") Max dist between points
             tbody(ng-repeat='trajectory in rawTrajectories', ts-repeat='')
               tr
                 td {{trajectory.id}}
                 td {{trajectory.featureVector.sampleAmount}}
-                td {{trajectory.featureVector.distribution.biggestDistance.toFixed(2)}}m
+                td {{trajectory.featureVector.distribution.biggestDistance}}m
                 td 
                     a.trash(ng-click='delete(trajectory)')
                         span.glyphicon.glyphicon-trash.pull-right

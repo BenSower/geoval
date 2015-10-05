@@ -34,8 +34,8 @@ TrajUtils.prototype.convertGpxToGeoJson = function(gpxFilePath) {
 }
 
 TrajUtils.prototype.preprocess = function(trajectory, cb) {
-
-    FeatureVector.extractFeatures(trajectory, function(err, fv){
+    var rawFv = new FeatureVector();
+    rawFv.extractFeatures(trajectory, function(err, fv) {
         trajectory.featureVector = fv;
         return cb(err, trajectory);
     });
@@ -76,6 +76,41 @@ TrajUtils.prototype.createNewTmpTrajectory = function(videoSlice) {
         featureVector: {}
     };
     return trajectory;
+}
+
+TrajUtils.prototype.parseMediaQBackup = function(pathToBackup, cb) {
+
+    console.log('Parsing Backup File');
+    var self = this;
+    var rawTrajectories = [];
+    var err;
+
+    var rl = require('readline').createInterface({
+        input: require('fs').createReadStream(path.join('./', pathToBackup))
+    });
+
+    rl.on('line', function(line) {
+        var sanitizedLine = sanitizeImportLine(JSON.parse(line));
+        self.preprocess(sanitizedLine, function(error, trajectory) {
+            err = error;
+            rawTrajectories.push(trajectory);
+        });
+    });
+
+    rl.on('close', function() {
+        log_info('end of file', pathToBackup);
+        return cb(err, rawTrajectories);
+    })
+}
+
+function sanitizeImportLine(line) {
+    //removing old mongodb objId
+    delete line._id;
+    //removing mongodb $date obj
+    line.properties.coordTimes = line.properties.coordTimes.map(function(date) {
+        return date.$date;
+    });
+    return line;
 }
 
 module.exports = new TrajUtils();

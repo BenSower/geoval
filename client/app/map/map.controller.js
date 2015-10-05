@@ -116,7 +116,6 @@ angular.module('geovalApp')
 
         $scope.$on('openlayers.layers.trajectories.mousemove', function(event, feature) {
             $scope.$apply(function() {
-                console.log("TRAJ");
                 if (feature !== highlight) {
                     if (highlight) {
                         highlight.setStyle(normalStyle);
@@ -126,8 +125,6 @@ angular.module('geovalApp')
                         feature.setStyle(highlightStyle);
                         highlight = feature;
                     }
-                } else {
-                  console.log(feature);
                 }
             });
         });
@@ -173,7 +170,7 @@ angular.module('geovalApp')
                 var os = (endsWith(traj.id, '.mov')) ? 'iOs' : 'Android';
 
                 if (traj.geometry.coordinates[0]) {
-                    var labelMessage = '<h5>' + traj.id + '</h5>' + 'Coordinates: ' + traj.geometry.coordinates.length + '<br/> Outlier Threshold: ' + traj.properties.outlierThreshold + 'm' + '<br/> Device: ' + os;
+                    var labelMessage = '<h5>' + traj.id + '</h5>' + 'Coordinates: ' + traj.geometry.coordinates.length + '<br/> Outlier Threshold: ' + traj.featureVector.distribution.biggestDistance + 'm' + '<br/> Device: ' + os;
                     var marker = {
                         name: traj.id,
                         lat: traj.geometry.coordinates[0][1],

@@ -22,7 +22,6 @@
     "method-override": "~1.0.0",
     "mongoose": "~3.8.8",
     "morgan": "~1.0.0",
-    "mysql": "^2.5.4",
     "passport": "~0.2.0",
     "passport-local": "~0.1.6",
     "rekuire": "^0.1.9",
@@ -31,7 +30,6 @@
     "socket.io-client": "^1.0.6",
     "socketio-jwt": "^2.0.2",
     "togeojson": "^0.11.1",
-    "tunnel-ssh": "0.0.5",
     "uuid-js": "^0.7.5"
   },
   "devDependencies": {

@@ -8,8 +8,7 @@ function Analyser() {}
 Analyser.prototype.analyse = function(cb) {
 
     cb(null, {
-        message: 'everything ok',
-        results: spoofResults
+        message: 'everything ok'
     });
 
 }

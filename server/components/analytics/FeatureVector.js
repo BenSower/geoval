@@ -1,4 +1,6 @@
-var geolib = require('geolib'),
+var log_info = require('debug')('info'),
+    log_debug = require('debug')('debug'),
+    geolib = require('geolib'),
     rekuire = require('rekuire'),
     TrajUtils = rekuire('TrajUtils');
 
@@ -9,7 +11,7 @@ FeatureVector.prototype.outliers = -1;
 FeatureVector.prototype.distribution = {};
 
 FeatureVector.prototype.extractFeatures = function(trajectory, cb) {
-    console.log("extracting Features");
+    console.log('extracting Features of', trajectory.id);
     this.sampleAmount = trajectory.geometry.coordinates.length;
     this.distribution = this.getLocDiffDistribution(trajectory);
     cb(null, this);
@@ -17,14 +19,15 @@ FeatureVector.prototype.extractFeatures = function(trajectory, cb) {
 
 /**
     Calculates the amount of times a certain spatial difference between
-    two points appears in a trajectory. E.g. {5 [meters] : 2 [times], 6[meters]: 5 [times]}
+    two points appears in a trajectory. E.g. {5[meters] : 2 [times], 6[meters]: 5 [times]}
 */
 FeatureVector.prototype.getLocDiffDistribution = function(trajectory) {
 
-    //calculate distances between every coordinate and the next one
     var buckets = {
         'biggestDistance': 0
     };
+
+    //calculate distances between every coordinate and the next one
     for (var i = 0; i < trajectory.geometry.coordinates.length - 1; i++) {
         var firstCoordinate = trajectory.geometry.coordinates[i];
         var secondCoordinate = trajectory.geometry.coordinates[i + 1];
@@ -34,29 +37,28 @@ FeatureVector.prototype.getLocDiffDistribution = function(trajectory) {
         }, {
             latitude: secondCoordinate[1],
             longitude: secondCoordinate[0]
-        });
+        }, 1);
 
+        distance = Math.round(distance);
+        
         if (distance > buckets.biggestDistance) {
             buckets.biggestDistance = distance;
         }
 
         //var bucketedDistance = Math.round(distance / 10) * 10
-        var bucketedDistance = Math.round(distance);
-        if (buckets[bucketedDistance] === undefined) {
-            buckets[bucketedDistance] = 1;
+        if (buckets[distance] === undefined) {
+            buckets[distance] = 1;
         } else {
-            buckets[bucketedDistance]++;
+            buckets[distance]++;
         }
     }
 
-    if (buckets == undefined) {
+    if (buckets === undefined) {
         log_info('Error creating getOutlierProperties!');
         return null;
     }
-
     return buckets;
 }
-
 function FeatureVector() {}
 
-module.exports = new FeatureVector();
+module.exports = FeatureVector;
