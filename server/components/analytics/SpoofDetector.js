@@ -1,8 +1,9 @@
 'use strict';
 
-
 SpoofDetector.prototype.model = {
-    avrgBucketCount: 0
+    avrgMinBucket: -1,
+    avrgMaxBucket: -1,
+    avrgBucketCount: -1
 };
 SpoofDetector.prototype.results = {
     falseSpoofs: [], //trajectories which are classified as spoofs
@@ -44,14 +45,14 @@ SpoofDetector.prototype.trainModel = function(trajectories) {
  * Applies detectionAlgorithms to the trajectories
  */
 SpoofDetector.prototype.analyseTrajectories = function(trajectories) {
-    
+
     for (var i = 0; i < this.detectionAlgorithms.length; i++) {
         for (var h = 0; h < trajectories.length; h++) {
             var trajectory = trajectories[h];
             if (this.detectionAlgorithms[i](this.model, trajectory).isSpoof) {
-                var tmp = (trajectory.properties.spoofLvL === 0) ? this.results.falseSpoofs.push(trajectory): this.results.spoofs.push(trajectory);
+                var tmp = (trajectory.properties.spoofLvL === 0) ? this.results.falseSpoofs.push(trajectory) : this.results.spoofs.push(trajectory);
             } else {
-                var tmp2 = (trajectory.properties.spoofLvL === 0) ? this.results.realTrajectories.push(trajectory): this.results.falseTrajectories.push(trajectory);
+                var tmp2 = (trajectory.properties.spoofLvL === 0) ? this.results.realTrajectories.push(trajectory) : this.results.falseTrajectories.push(trajectory);
             }
         }
     }
@@ -63,6 +64,8 @@ SpoofDetector.prototype.presentResults = function() {
     var falseSpoofCount = this.results.falseSpoofs.length;
     var falseTrajCount = this.results.falseTrajectories.length;
 
+    console.log('\n#########################################');
+    console.log('Results: \n');
     console.log('Correctly classified spoofs:', spoofCount);
     console.log('Falsely classified spoofs:', falseTrajCount);
     console.log('Correctly classified trajectories:', realTrajCount);
@@ -73,6 +76,9 @@ SpoofDetector.prototype.presentResults = function() {
 
     var trajDetectionRate = (realTrajCount / this.rawTrajectories.length) * 100;
     console.log('Trajectory classification rate: ' + trajDetectionRate.toFixed(2) + '%');
+
+    console.log('\n#########################################');
+
 }
 
 
@@ -83,18 +89,34 @@ SpoofDetector.prototype.presentResults = function() {
 ######################################################################################################################
 */
 function bucketTraining(model, trajectories) {
-    var bucketCount = -1;
-    var biggestBucket = -1;
-    var smallestBucket = -1;
+    var bucketCount = 0;
+    var minBucketSum = 0;
+    var maxBucketSum = 0;
 
+	var minRed = function(a, b) {
+	    if (b === 'biggestDistance')
+	        return a;
+	    else
+	        return Math.min(a, b);
+	};
+	
     for (var i = 0; i < trajectories.length; i++) {
         var trajectory = trajectories[i];
         var distribution = trajectory.featureVector.distribution;
         bucketCount += Object.keys(distribution).length;
+        maxBucketSum += distribution.biggestDistance;
+        var buckets = Object.keys(distribution);
+        var smallesBucket = buckets.reduce(minRed);
+
+        minBucketSum += smallesBucket;
     }
     model.avrgBucketCount = bucketCount / trajectories.length;
+    model.avrgMinBucket = minBucketSum / trajectories.length;
+    model.avrgMaxBucket = maxBucketSum / trajectories.length;
+    //console.log(model);
     return model;
 }
+
 
 
 /**

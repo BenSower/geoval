@@ -1,8 +1,9 @@
 var rekuire = require('rekuire'),
     SpoofDetector = require('./SpoofDetector'),
-    async = require('async');
+    async = require('async'),
+    mongoose = require('mongoose');
 
-var Trajectory = rekuire('trajectory.model');
+var Trajectory = mongoose.model('Trajectory');
 
 function Analyser() {}
 
@@ -16,17 +17,17 @@ Analyser.prototype.analyse = function(cb) {
                     callback(err, trajectories);
                 });
             },
-            spoofs: function(callback) {
+            lvl1spoofs: function(callback) {
                 Trajectory.find({
                     'properties.spoofLvL': 1
-                }, function(err, trajectories) {
-                    callback(err, trajectories);
+                }, function(err, lvl1spoofs) {
+                    callback(err, lvl1spoofs);
                 });
             }
         },
         function(err, results) {
             // results is now equals to: {one: 1, two: 2}
-            var result = SpoofDetector.detectSpoofs(results.trajectories, results.spoofs);
+            var result = SpoofDetector.detectSpoofs(results.trajectories, results.lvl1spoofs);
             cb(null, {
                 message: 'everything ok'
             });
