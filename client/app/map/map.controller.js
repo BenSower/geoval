@@ -18,24 +18,6 @@ angular.module('geovalApp')
             })
         });
 
-        function getRandomStyle() {
-            return new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                    color: getRandomColor(),
-                    width: 3
-                })
-            });
-        }
-
-        function getRandomColor() {
-            var letters = '0123456789ABCDEF'.split('');
-            var color = '#';
-            for (var i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            return color;
-        }
-
         angular.extend($scope, {
             markers: [],
             center: {
@@ -191,7 +173,8 @@ angular.module('geovalApp')
         }
 
         function toggleTrajectory(trajectory) {
-            return function(event, properties) {
+            //actually function(event, properties)
+            return function() {
                 var renderedTrajectories = $scope.layers[1].source.geojson.object.features;
                 var index = renderedTrajectories.indexOf(trajectory);
                 if (index === -1) {
@@ -199,7 +182,7 @@ angular.module('geovalApp')
                 } else {
                     $scope.layers[1].source.geojson.object.features.splice(index, 1);
                 }
-            }
+            };
         }
 
         function endsWith(str, suffix) {

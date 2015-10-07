@@ -34,11 +34,22 @@ TrajUtils.prototype.convertGpxToGeoJson = function(gpxFilePath) {
 }
 
 TrajUtils.prototype.preprocess = function(trajectory, cb) {
+
+    if (!constraintsCheck(trajectory)) {
+        console.log('trajectory did not qualify, skipping:', trajectory.geometry);
+        return cb(null, null);
+    }
     var rawFv = new FeatureVector();
     rawFv.extractFeatures(trajectory, function(err, fv) {
         trajectory.featureVector = fv;
         return cb(err, trajectory);
     });
+}
+
+function constraintsCheck(trajectory) {
+    //skip trajectories with 1 or less points
+    var containsMoreThenOnePoint = (trajectory.geometry.coordinates.length > 1);
+    return containsMoreThenOnePoint;
 }
 
 TrajUtils.prototype.deg2rad = function(deg) {
@@ -93,7 +104,9 @@ TrajUtils.prototype.parseMediaQBackup = function(pathToBackup, cb) {
         var sanitizedLine = sanitizeImportLine(JSON.parse(line));
         self.preprocess(sanitizedLine, function(error, trajectory) {
             err = error;
-            rawTrajectories.push(trajectory);
+            if (trajectory !== null) {
+                rawTrajectories.push(trajectory);
+            }
         });
     });
 

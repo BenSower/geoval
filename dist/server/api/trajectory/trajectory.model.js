@@ -9,8 +9,6 @@ var TrajectorySchema = new Schema({
     properties: {
         time:Date,
         coordTimes: [Date],
-        outlierThreshold:{ type: Number, min: 1, max: 10000},
-        distribution: {},
         //0 => real, 1 => random, 2 => structured, 3 => very realistic
         spoofLvL: {type: Number, default: 0}
     },
@@ -20,7 +18,8 @@ var TrajectorySchema = new Schema({
             default: 'LineString'
         }, 
         coordinates: [],
-    }
+    },
+    featureVector:  Schema.Types.Mixed
 });
 
 TrajectorySchema.index({ coordinates: '2dsphere' });

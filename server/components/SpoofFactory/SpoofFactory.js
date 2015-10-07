@@ -18,13 +18,17 @@ SpoofFactory.prototype.createLvL1Spoofs = function(number) {
 
     console.log('creating spoofed trajectories ' + number);
     var spoofs = [];
+
+    var pushFunction = function(element) {
+        spoofs.push(element);
+    }
+
     for (var i = 0; i < number; i++) {
-        createLvl1Spoof(function(err, spoof) {
-            spoofs.push(spoof);
-        });
+        createLvl1Spoof(pushFunction);
     }
     return spoofs;
 }
+
 
 
 function createLvl1Spoof(cb) {
@@ -46,7 +50,13 @@ function createLvl1Spoof(cb) {
     };
 
     TrajUtils.preprocess(spoof, function(err, preprocessedSpoof) {
-        return cb(err, preprocessedSpoof);
+        if (err) throw err;
+        if (preprocessedSpoof !== null && preprocessedSpoof !== undefined) {
+            return cb(preprocessedSpoof);
+        } else {
+            console.log('error creating spoof');
+            return cb(null);
+        }
     });
 
 }

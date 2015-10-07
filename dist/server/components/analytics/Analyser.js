@@ -16,17 +16,17 @@ Analyser.prototype.analyse = function(cb) {
                     callback(err, trajectories);
                 });
             },
-            lvl1spoofs: function(callback) {
+            spoofs: function(callback) {
                 Trajectory.find({
                     'properties.spoofLvL': 1
-                }, function(err, lvl1spoofs) {
-                    callback(err, lvl1spoofs);
+                }, function(err, trajectories) {
+                    callback(err, trajectories);
                 });
             }
         },
         function(err, results) {
             // results is now equals to: {one: 1, two: 2}
-            var result = SpoofDetector.detectSpoofs(results.trajectories, results.lvl1spoofs);
+            var result = SpoofDetector.detectSpoofs(results.trajectories, results.spoofs);
             cb(null, {
                 message: 'everything ok'
             });

@@ -8,7 +8,6 @@ angular.module('geovalApp')
         */
 
         $scope.showTable = false;
-        $http.get(apiUrl).success(redraw);
 
         function redraw(trajectories) {
             console.log(trajectories);
@@ -46,6 +45,10 @@ angular.module('geovalApp')
             }
             return data;
         };
+
+
+
+        $http.get(apiUrl).success(redraw);
 
         /*
             donut graph
@@ -93,11 +96,11 @@ angular.module('geovalApp')
                     $http.get(apiUrl).success(redraw);
                 }
             });
-        }
+        };
 
         $scope.analyse = function() {
             $http.get('/api/trajectories/analyse').success(function(result) {
                 console.log(result);
             });
-        }
+        };
     });
