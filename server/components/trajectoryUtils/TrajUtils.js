@@ -5,6 +5,10 @@ var log_info = require('debug')('info'),
     ToGeoJson = require('togeojson'),
     path = require('path');
 
+var rekuire = require('rekuire'),
+    FeatureVector = rekuire('FeatureVector');
+
+
 function TrajUtils() {}
 
 TrajUtils.prototype.convertGpxToGeoJson = function(gpxFilePath) {
@@ -26,49 +30,16 @@ TrajUtils.prototype.convertGpxToGeoJson = function(gpxFilePath) {
     //setting the filename
     trajectory.id = path.basename(gpxFilePath);
     log_debug("returning a trajectory with distribution:", trajectory.properties.distribution);
-    log_debug("returning a trajectory with outlierThreshold:", trajectory.properties.outlierThreshold);
     return trajectory;
 }
 
-TrajUtils.prototype.preprocess = function(trajectory){
-    var outlierProperties = this.getOutlierProperties(trajectory);
-    trajectory.properties.outlierThreshold = outlierProperties.outlierThreshold;
-    trajectory.properties.distribution = outlierProperties.distribution;
-    return trajectory;
+TrajUtils.prototype.preprocess = function(trajectory, cb) {
+    var rawFv = new FeatureVector();
+    rawFv.extractFeatures(trajectory, function(err, fv) {
+        trajectory.featureVector = fv;
+        return cb(err, trajectory);
+    });
 }
-
-TrajUtils.prototype.getOutlierProperties = function(trajectory) {
-
-    //calculate distances between every coordinate and the next one
-    var biggestDistance = 0;
-    var buckets = {};
-    for (var i = 0; i < trajectory.geometry.coordinates.length - 1; i++) {
-        var firstCoordinate = trajectory.geometry.coordinates[i];
-        var secondCoordinate = trajectory.geometry.coordinates[i + 1];
-        var distance = this.getDistanceFromLonLatInM(firstCoordinate[0], firstCoordinate[1], secondCoordinate[0], secondCoordinate[1]);
-        if (distance > biggestDistance) {
-            biggestDistance = distance;
-        }
-        //var bucketedDistance = Math.round(distance / 10) * 10
-        var bucketedDistance = Math.round(distance);
-        if (buckets[bucketedDistance] === undefined) {
-            buckets[bucketedDistance] = 1;
-        } else {
-            buckets[bucketedDistance]++;
-        }
-    }
-
-    if (biggestDistance == undefined || buckets == undefined){
-        log_info('Error creating getOutlierProperties!');
-        return null;
-    }
-
-    return {
-        outlierThreshold: biggestDistance,
-        distribution: buckets
-    }
-}
-
 
 TrajUtils.prototype.deg2rad = function(deg) {
     return deg * (Math.PI / 180);
@@ -96,16 +67,50 @@ TrajUtils.prototype.createNewTmpTrajectory = function(videoSlice) {
         id: videoSlice.VideoId,
         properties: {
             time: videoSlice.TimeCode,
-            coordTimes: [],
-            outlierThreshold: 0
+            coordTimes: []
         },
         geometry: {
             type: 'LineString',
             coordinates: []
-        }
+        },
+        featureVector: {}
     };
     return trajectory;
 }
 
+TrajUtils.prototype.parseMediaQBackup = function(pathToBackup, cb) {
+
+    console.log('Parsing Backup File');
+    var self = this;
+    var rawTrajectories = [];
+    var err;
+
+    var rl = require('readline').createInterface({
+        input: require('fs').createReadStream(path.join('./', pathToBackup))
+    });
+
+    rl.on('line', function(line) {
+        var sanitizedLine = sanitizeImportLine(JSON.parse(line));
+        self.preprocess(sanitizedLine, function(error, trajectory) {
+            err = error;
+            rawTrajectories.push(trajectory);
+        });
+    });
+
+    rl.on('close', function() {
+        log_info('end of file', pathToBackup);
+        return cb(err, rawTrajectories);
+    })
+}
+
+function sanitizeImportLine(line) {
+    //removing old mongodb objId
+    delete line._id;
+    //removing mongodb $date obj
+    line.properties.coordTimes = line.properties.coordTimes.map(function(date) {
+        return date.$date;
+    });
+    return line;
+}
 
 module.exports = new TrajUtils();

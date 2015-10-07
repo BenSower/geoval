@@ -3,9 +3,8 @@
 var _ = require('lodash');
 var rekuire = require('rekuire');
 var Trajectory = require('./trajectory.model');
-var MysqlConnector = rekuire('mysqlTunnelModule'),
-    db = new MysqlConnector(),
-    Busboy = require('busboy'),
+var Analyser = rekuire('Analyser');
+var Busboy = require('busboy'),
     log_info = require('debug')('info'),
     log_debug = require('debug')('debug'),
     fs = require('fs'),
@@ -19,7 +18,7 @@ var MysqlConnector = rekuire('mysqlTunnelModule'),
 exports.index = function(req, res) {
     Trajectory.find(function(err, trajectories) {
         if (err) {
-            return handleError(res, err);
+            return handleError(err, res);
         }
         return res.json(200, trajectories);
     });
@@ -29,7 +28,7 @@ exports.index = function(req, res) {
 exports.show = function(req, res) {
     Trajectory.findById(req.params.id, function(err, trajectory) {
         if (err) {
-            return handleError(res, err);
+            return handleError(err, res);
         }
         if (!trajectory) {
             return res.send(404);
@@ -43,10 +42,17 @@ exports.show = function(req, res) {
 //returns 201 and the trajectory if everything went fine
 //returns the trajectory if no response header was specified.
 function createTrajectory(req, res) {
-    Trajectory.create(req.body, function(err, trajectory) {
+    saveTrajectory(req.body, res);
+}
+
+exports.create = createTrajectory;
+
+function saveTrajectory(trajectory, res) {
+    log_debug('saving', trajectory);
+    Trajectory.create(trajectory, function(err, trajectory) {
         if (err) {
             console.log(err);
-            return handleError(res, err);
+            return handleError(err, res);
         }
         if (res !== null && res !== undefined) {
             return res.json(201, trajectory);
@@ -56,7 +62,13 @@ function createTrajectory(req, res) {
     });
 }
 
-exports.create = createTrajectory;
+
+function saveTrajectoryArray(trajArray) {
+    for (var i = 0; i < trajArray.length; i++) {
+        var trajectory = trajArray[i];
+        saveTrajectory(trajectory, null);
+    }
+}
 
 
 
@@ -67,7 +79,7 @@ exports.update = function(req, res) {
     }
     Trajectory.findById(req.params.id, function(err, trajectory) {
         if (err) {
-            return handleError(res, err);
+            return handleError(err, res);
         }
         if (!trajectory) {
             return res.send(404);
@@ -75,7 +87,7 @@ exports.update = function(req, res) {
         var updated = _.merge(trajectory, req.body);
         updated.save(function(err) {
             if (err) {
-                return handleError(res, err);
+                return handleError(err, res);
             }
             return res.json(200, trajectory);
         });
@@ -87,14 +99,14 @@ exports.update = function(req, res) {
 exports.destroy = function(req, res) {
     Trajectory.findById(req.params.id, function(err, trajectory) {
         if (err) {
-            return handleError(res, err);
+            return handleError(err, res);
         }
         if (!trajectory) {
             return res.send(404);
         }
         trajectory.remove(function(err) {
             if (err) {
-                return handleError(res, err);
+                return handleError(err, res);
             }
             return res.send(204);
         });
@@ -105,7 +117,7 @@ exports.destroy = function(req, res) {
 exports.dropAll = function(req, res) {
     Trajectory.remove({}, function(err) {
         if (err) {
-            return handleError(res, err);
+            return handleError(err, res);
         }
         return res.send(204);
     });
@@ -184,61 +196,13 @@ exports.parseGPXandImportData = function(req, res) {
 
 
 
-// Deletes a trajectory from the DB.
-exports.importMediaQ = function(req, res) {
-    log_info('Importing trajectories from mediaQ');
-
-    var query = 'SELECT VideoId, PLat, Plng, TimeCode FROM MediaQ_V2.VIDEO_METADATA ORDER BY VideoId ASC, TimeCode ASC;';
-
-    queryMediaQ(query, function(rows) {
-        var trajectoryCounter = 0,
-            trajectory = null;
-
-        for (var i = 0; i < rows.length; i++) {
-            var videoSlice = rows[i];
-
-            //create initial tmp trajectory
-            if (trajectory === null) {
-                trajectory = TrajUtils.createNewTmpTrajectory(videoSlice);
-            }
-            //save trajectory and create new trajectory
-            if (videoSlice.VideoId !== trajectory.id || i === rows.length - 1) {
-
-                var trajectory = TrajUtils.preprocess(trajectory);
-                
-                if (trajectory.geometry.coordinates.length !== 0) {
-                    //upsert tmp trajectory
-                    upsert(trajectory);
-                    trajectoryCounter++;
-                }
-
-                //create new tmp trajectory
-                trajectory = TrajUtils.createNewTmpTrajectory(videoSlice);
-            } else {
-                trajectory.geometry.coordinates.push(
-                    [videoSlice.Plng, videoSlice.PLat]
-                );
-                trajectory.properties.coordTimes.push(videoSlice.TimeCode);
-            }
-        }
-        log_info('imported ' + trajectoryCounter + ' videos from MediaQ');
-
-        return res.json({
-            importedVideos: trajectoryCounter
-        });
-    });
-};
 
 exports.createLvL1Spoofs = function(req, res) {
 
     var amount = parseInt(req.body.amount);
     var spoofs = SpoofFactory.createLvL1Spoofs(amount);
 
-    for (var i = 0; i < spoofs.length; i++) {
-        //hijacking the crud api
-        var spoof = {body : spoofs[i]};
-        createTrajectory(spoof, null);
-    }
+    saveTrajectoryArray(spoofs);
 
     return res.json({
         message: 'OK',
@@ -246,13 +210,30 @@ exports.createLvL1Spoofs = function(req, res) {
     });
 }
 
-function queryMediaQ(query, fn) {
-    db.query(query, function(rows, fields) {
-        fn(rows, fields);
-    }, 10);
-}
 
+exports.analyse = function(req, res) {
+    Analyser.analyse(function(err, result) {
+        if (err) {
+            return handleError(err, res);
+        }
+        return res.json(200, result);
+    });
+};
 
-function handleError(res, err) {
+function handleError(err, res) {
     return res.send(500, err);
 }
+
+// Deletes a trajectory from the DB.
+exports.importMediaQ = function(req, res) {
+    log_info('Importing trajectories from mediaQ Backup');
+
+    TrajUtils.parseMediaQBackup('testtrajektorien/trajectories.json', function(err, trajectories) {
+        saveTrajectoryArray(trajectories);
+        return res.json({
+            importedVideos: trajectories.length
+        });
+    });
+
+
+};

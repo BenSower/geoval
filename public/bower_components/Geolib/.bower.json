@@ -28,10 +28,5 @@
   },
   "_source": "git://github.com/manuelbieh/Geolib.git",
   "_target": "~2.0.18",
-<<<<<<< HEAD
-  "_originalSource": "geolib",
-  "_direct": true
-=======
   "_originalSource": "geolib"
->>>>>>> fakePaths
 }
