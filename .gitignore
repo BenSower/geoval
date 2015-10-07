@@ -4,3 +4,4 @@ node_modules
 .idea
 client/bower_components
 /server/config/local.env.js
+/testtrajektorien
