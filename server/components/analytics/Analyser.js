@@ -1,8 +1,9 @@
 var rekuire = require('rekuire'),
     SpoofDetector = require('./SpoofDetector'),
-    async = require('async');
+    async = require('async'),
+    mongoose = require('mongoose');
 
-var Trajectory = rekuire('trajectory.model');
+var Trajectory = mongoose.model('Trajectory');
 
 function Analyser() {}
 

@@ -46,8 +46,6 @@ angular.module('geovalApp')
             return data;
         };
 
-
-
         $http.get(apiUrl).success(redraw);
 
         /*

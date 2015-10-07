@@ -93,19 +93,20 @@ function bucketTraining(model, trajectories) {
     var minBucketSum = 0;
     var maxBucketSum = 0;
 
+	var minRed = function(a, b) {
+	    if (b === 'biggestDistance')
+	        return a;
+	    else
+	        return Math.min(a, b);
+	};
+	
     for (var i = 0; i < trajectories.length; i++) {
         var trajectory = trajectories[i];
         var distribution = trajectory.featureVector.distribution;
         bucketCount += Object.keys(distribution).length;
         maxBucketSum += distribution.biggestDistance;
         var buckets = Object.keys(distribution);
-
-        var smallesBucket = buckets.reduce(function(a, b) {
-            if (b === 'biggestDistance')
-                return a;
-            else
-                return Math.min(a, b);
-        });
+        var smallesBucket = buckets.reduce(minRed);
 
         minBucketSum += smallesBucket;
     }
@@ -115,6 +116,7 @@ function bucketTraining(model, trajectories) {
     //console.log(model);
     return model;
 }
+
 
 
 /**
