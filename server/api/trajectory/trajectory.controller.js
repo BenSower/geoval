@@ -212,6 +212,7 @@ exports.createLvL1Spoofs = function(req, res) {
 
 
 exports.analyse = function(req, res) {
+    console.log('Trying to analyse spoofs');
     Analyser.analyse(function(err, result) {
         if (err) {
             return handleError(err, res);

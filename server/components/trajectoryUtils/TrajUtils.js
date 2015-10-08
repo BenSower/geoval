@@ -35,21 +35,32 @@ TrajUtils.prototype.convertGpxToGeoJson = function(gpxFilePath) {
 
 TrajUtils.prototype.preprocess = function(trajectory, cb) {
 
-    if (!constraintsCheck(trajectory)) {
+    if (!trajectoryConstraintsCheck(trajectory)) {
         console.log('trajectory did not qualify, skipping:', trajectory.geometry);
         return cb(null, null);
     }
     var rawFv = new FeatureVector();
     rawFv.extractFeatures(trajectory, function(err, fv) {
+        if (!fvConstraintsCheck(fv)) {
+            console.log('featureVector did not qualify, skipping:', fv);
+            return cb(null, null);
+        }
         trajectory.featureVector = fv;
         return cb(err, trajectory);
     });
 }
 
-function constraintsCheck(trajectory) {
+function trajectoryConstraintsCheck(trajectory) {
     //skip trajectories with 1 or less points
     var containsMoreThenOnePoint = (trajectory.geometry.coordinates.length > 1);
     return containsMoreThenOnePoint;
+}
+
+function fvConstraintsCheck(fv) {
+    //skip trajectories with too big outliers
+    var maxOutlierThreshold = 100;
+    var hasNoBigOutliers = fv.distribution.biggestDistance < maxOutlierThreshold;
+    return hasNoBigOutliers;
 }
 
 TrajUtils.prototype.deg2rad = function(deg) {
@@ -97,6 +108,7 @@ TrajUtils.prototype.parseMediaQBackup = function(pathToBackup, cb) {
     var err;
 
     var rl = require('readline').createInterface({
+        terminal: false,
         input: require('fs').createReadStream(path.join('./', pathToBackup))
     });
 

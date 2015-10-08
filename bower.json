@@ -27,6 +27,8 @@
     "angular-scenario": ">=1.2.*"
   },
   "resolutions": {
-    "d3": "^3.4.4"
+    "d3": "^3.4.4",
+    "seiyria-bootstrap-slider": "~4.13",
+    "angular": "1.4.7"
   }
 }
