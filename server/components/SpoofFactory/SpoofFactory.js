@@ -110,11 +110,7 @@ function createLvl2Coordinates(amount) {
         pointsPerInterval = Math.ceil(possibleIntervals / amount);
     }
 
-    var fraction = 0.5 / pointsPerInterval;
-    console.log('amount', amount);
-    console.log('possibleIntervals', possibleIntervals)
-    console.log('fraction', fraction);
-    console.log('pointsPerInterval', pointsPerInterval);
+    var fraction = 1 / pointsPerInterval;
 
     for (var i = 0; i < possibleIntervals; i++) {
         if (coordinates.length < amount) {
@@ -122,7 +118,6 @@ function createLvl2Coordinates(amount) {
             var pointB = anchorStreet.geometry.coordinates[i + 1];
             for (var j = 1; j < pointsPerInterval + 1; j++) {
                 var currentFraction = (fraction * j);
-                console.log(currentFraction);
                 var coordinate;
                 coordinate = intermediatePoint(pointA, pointB, currentFraction);
                 coordinates.push(coordinate);
