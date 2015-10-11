@@ -194,13 +194,11 @@ exports.parseGPXandImportData = function(req, res) {
     req.pipe(busboy);
 };
 
-
-
-
-exports.createLvL1Spoofs = function(req, res) {
+exports.createSpoofs = function(req, res) {
 
     var amount = parseInt(req.body.amount);
-    var spoofs = SpoofFactory.createLvL1Spoofs(amount);
+    var lvl = parseInt(req.body.lvl);
+    var spoofs = SpoofFactory.createSpoofSet(lvl, amount);
 
     saveTrajectoryArray(spoofs);
 
@@ -209,7 +207,6 @@ exports.createLvL1Spoofs = function(req, res) {
         amount: amount
     });
 }
-
 
 exports.analyse = function(req, res) {
     console.log('Trying to analyse spoofs');

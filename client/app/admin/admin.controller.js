@@ -16,8 +16,9 @@ angular.module('geovalApp')
             $scope.users = User.query();
             $scope.mediaq = 'Import MediaQ Trajectories';
             $scope.clearDbLabel = 'Delete all Trajectories from Db';
-            $scope.creatingFakes = 'Create Lvl 1 fake path';
-            $scope.spoofAmount = 1;
+            $scope.creatingFakes = 'Create spoof trajectories';
+            $scope.lvl1spoofAmount = 1;
+            $scope.lvl2spoofAmount = 1;
 
             $scope.importMediaQ = function() {
                 $scope.isImportingMediaq = true;
@@ -48,8 +49,7 @@ angular.module('geovalApp')
                 });
             };
 
-
-            $scope.createLvL1Fakes = function() {
+            $scope.createFakes = function(lvl){
                 $scope.isCreatingFakes = true;
 
                 var setLabels = function() {
@@ -60,6 +60,6 @@ angular.module('geovalApp')
                     }, 0);
                 };
 
-                $.post('/api/trajectories/createLvL1Spoofs', { amount : $scope.spoofAmount}, setLabels);
-            };
+                $.post('/api/trajectories/createSpoofs', { amount : $scope['lvl' + lvl + 'spoofAmount'], lvl: lvl}, setLabels);
+            }
     });

@@ -18,8 +18,15 @@ div(ng-include='"components/navbar/navbar.html"')
     .col-md-4
       p
         h4 Create Lvl1 (completely random) Spoof Paths: 
-        input(type="number", id="lvl1SpoofAmount", ng-model="spoofAmount")
-        button( class="btn btn-md btn-default", ng-click='createLvL1Fakes()', ladda="isCreatingFakes", data-style="zoom-out", data-spinner-color="#123456") 
+        input(type="number", id="lvl1SpoofAmount", ng-model="lvl1spoofAmount")
+        button( class="btn btn-md btn-default", ng-click='createFakes(1)', ladda="isCreatingFakes", data-style="zoom-out", data-spinner-color="#123456") 
+          span( class="ladda-label") {{creatingFakes}}
+  .row
+    .col-md-4
+      p
+        h4 Create Lvl2 (based on real streets) Spoof Paths: 
+        input(type="number", id="lvl2SpoofAmount", ng-model="lvl2spoofAmount")
+        button( class="btn btn-md btn-default", ng-click='createFakes(2)', ladda="isCreatingFakes", data-style="zoom-out", data-spinner-color="#123456") 
           span( class="ladda-label") {{creatingFakes}}
   p
     | The delete user and user index api routes are restricted to users with the 'admin' role.

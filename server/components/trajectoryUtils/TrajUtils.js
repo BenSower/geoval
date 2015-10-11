@@ -53,12 +53,21 @@ TrajUtils.prototype.preprocess = function(trajectory, cb) {
 function trajectoryConstraintsCheck(trajectory) {
     //skip trajectories with 1 or less points
     var containsMoreThenOnePoint = (trajectory.geometry.coordinates.length > 1);
-    return containsMoreThenOnePoint;
+    var hasNoBrokenCoordinates = true;
+    for (var i = 0; i < trajectory.geometry.coordinates.length; i++){
+        var lon = trajectory.geometry.coordinates[i][0];
+        var lat = trajectory.geometry.coordinates[i][1];
+        if (isNaN(parseFloat(lon)) || isNaN(parseFloat(lat)) || lon === undefined || lat === undefined || lon === '' || lat === ''){
+            hasNoBrokenCoordinates = false;
+            break;
+        }
+    }
+    return containsMoreThenOnePoint && hasNoBrokenCoordinates;
 }
 
 function fvConstraintsCheck(fv) {
     //skip trajectories with too big outliers
-    var maxOutlierThreshold = 100;
+    var maxOutlierThreshold = 150;
     var hasNoBigOutliers = fv.distribution.biggestDistance < maxOutlierThreshold;
     return hasNoBigOutliers;
 }

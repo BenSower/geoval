@@ -8,7 +8,7 @@ var router = express.Router();
 //order of routes important because of bad naming...
 router.get('/importMediaQ', controller.importMediaQ);
 router.post('/gpx', controller.parseGPXandImportData);
-router.post('/createLvL1Spoofs', controller.createLvL1Spoofs);
+router.post('/createSpoofs', controller.createSpoofs);
 router.get('/analyse', controller.analyse);
 
 router.get('/', controller.index);

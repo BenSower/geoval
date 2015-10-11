@@ -1,10 +1,12 @@
 'use strict';
 
 var UUID = require('uuid-js'),
-    _ = require('lodash');
+    _ = require('lodash'),
+    geolib = require('geolib');
 
 var rekuire = require('rekuire'),
-    TrajUtils = rekuire('TrajUtils');
+    TrajUtils = rekuire('TrajUtils'),
+    streetsOfMunich = rekuire('streetsMunich.json').features;
 
 function SpoofFactory() {}
 
@@ -14,35 +16,49 @@ var baseCoordinates = {
     'lon': 11.573041815506889
 };
 
-SpoofFactory.prototype.createLvL1Spoofs = function(number) {
+var minLength = 10;
+var maxLength = 100;
+var coordinateGenerators = {
+    lvl1: createLvl1Coordinates,
+    lvl2: createLvl2Coordinates
+};
 
-    console.log('creating spoofed trajectories ' + number);
+SpoofFactory.prototype.createSpoofSet = function(lvl, amount) {
+
+    console.log('creating ' + amount + ' lvl' + lvl + ' spoofed trajectories ');
     var spoofs = [];
 
     var pushFunction = function(element) {
-        spoofs.push(element);
+        if (element !== null) {
+            spoofs.push(element);
+        } else {
+            console.log('Error creating spoof, will try again later');
+        }
     }
 
-    for (var i = 0; i < number; i++) {
-        createLvl1Spoof(pushFunction);
+    for (var i = 0; i < amount; i++) {
+        createSpoof(lvl, coordinateGenerators['lvl' + lvl], pushFunction);
+    }
+
+    if (spoofs.length < amount) {
+        var difference = amount - spoofs.length;
+        console.log('Not all spoofs satisfied the constraints, trying again for ' + difference + ' spoofs');
+        spoofs.concat(this.createSpoofSet(lvl, difference));
     }
     return spoofs;
 }
 
 
-
-function createLvl1Spoof(cb) {
-    var maxLength = 100,
-        minLength = 10,
-        trajLength = getRandInt(minLength, maxLength),
-        coordinates = createCoordinates(trajLength),
+function createSpoof(lvl, coordinateGenerator, cb) {
+    var trajLength = getRandInt(minLength, maxLength),
+        coordinates = coordinateGenerator(trajLength),
         times = createRandomTimes(trajLength);
 
     var spoof = {
-        id: getName(1),
+        id: getName(lvl),
         properties: {
             coordTimes: times,
-            spoofLvL: 1
+            spoofLvL: lvl
         },
         geometry: {
             coordinates: coordinates
@@ -58,7 +74,21 @@ function createLvl1Spoof(cb) {
             return cb(null);
         }
     });
+}
 
+
+/*
+    Returns the geojson of a street, which should have at least 10 nodes.
+    Worst case runtime is infinite. Yeah. I went there.
+*/
+function getRandStreet(streets) {
+    var street = streets[getRandInt(0, streets.length)];
+    if (street.geometry === undefined || street.geometry.coordinates === undefined) {
+        console.log('Street seems to be empty, trying again', street);
+        return getRandStreet(streets);
+    } else {
+        return (street.geometry.coordinates.length < 10) ? getRandStreet(streets) : street;
+    }
 }
 
 
@@ -66,7 +96,90 @@ function getRandInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-function createCoordinates(amount) {
+function createLvl2Coordinates(amount) {
+
+    var coordinates = [];
+    var anchorStreet = getRandStreet(streetsOfMunich);
+    //number of intervals between street points
+    var possibleIntervals = anchorStreet.geometry.coordinates.length - 1;
+
+    var pointsPerInterval = -1;
+    if (amount > possibleIntervals) {
+        pointsPerInterval = Math.ceil(amount / possibleIntervals);
+    } else {
+        pointsPerInterval = Math.ceil(possibleIntervals / amount);
+    }
+
+    var fraction = 0.5 / pointsPerInterval;
+    console.log('amount', amount);
+    console.log('possibleIntervals', possibleIntervals)
+    console.log('fraction', fraction);
+    console.log('pointsPerInterval', pointsPerInterval);
+
+    for (var i = 0; i < possibleIntervals; i++) {
+        if (coordinates.length < amount) {
+            var pointA = anchorStreet.geometry.coordinates[i];
+            var pointB = anchorStreet.geometry.coordinates[i + 1];
+            for (var j = 1; j < pointsPerInterval + 1; j++) {
+                var currentFraction = (fraction * j);
+                console.log(currentFraction);
+                var coordinate;
+                coordinate = intermediatePoint(pointA, pointB, currentFraction);
+                coordinates.push(coordinate);
+            }
+        }else {
+            break;
+        }
+    }
+
+
+    return coordinates;
+}
+
+/*
+    Intermediate points on a great circle
+    http://williams.best.vwh.net/avform.htm#Intermediate
+*/
+
+function degToRad(d) {
+    return d * Math.PI / 180;
+}
+
+function radToDeg(r) {
+    return r * 180 / Math.PI;
+}
+
+/*
+    Get's the point in between pointA and pointB based on the fraction f 
+    (f=0 => pointA, f=1 => pointB)
+    http://fraserchapman.blogspot.com/2008/09/intermediate-points-on-great-circle.html
+*/
+function intermediatePoint(pointA, pointB, f) {
+
+    var lat1 = degToRad(pointA[1]),
+        lon1 = degToRad(pointA[0]);
+    var lat2 = degToRad(pointB[1]),
+        lon2 = degToRad(pointB[0]);
+
+    var distance = 2 * Math.asin(Math.sqrt(Math.pow((Math.sin((lat1 - lat2) / 2)), 2) + Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin((lon1 - lon2) / 2), 2)));
+    var A = Math.sin((1 - f) * distance) / Math.sin(distance);
+    var B = Math.sin(f * distance) / Math.sin(distance);
+    var x = A * Math.cos(lat1) * Math.cos(lon1) + B * Math.cos(lat2) * Math.cos(lon2);
+    var y = A * Math.cos(lat1) * Math.sin(lon1) + B * Math.cos(lat2) * Math.sin(lon2);
+    var z = A * Math.sin(lat1) + B * Math.sin(lat2);
+    var lat = Math.atan2(z, Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)));
+    var lon = Math.atan2(y, x);
+
+    var intermediatePoint = [radToDeg(lon), radToDeg(lat)];
+    return intermediatePoint;
+}
+
+
+
+/*
+    http://www.movable-type.co.uk/scripts/latlong.html
+*/
+function createLvl1Coordinates(amount) {
 
     var range = 4 * Math.pow(10, 15);
     var offsetPow = Math.pow(10, 19);

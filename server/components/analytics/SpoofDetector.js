@@ -1,13 +1,21 @@
 'use strict';
 
 SpoofDetector.prototype.model = {
-    avrgMinBucket: -1,
-    avrgMaxBucket: -1,
-    avrgBucketCount: -1
+    buckets: {
+        avrgMinBucket: -1,
+        avrgMaxBucket: -1,
+        avrgBucketCount: -1
+    },
+    sampleCount: {
+        avrgSampleCount: -1,
+        minSampleCount: -1,
+        maxSampleCount: -1
+    }
 };
+
 SpoofDetector.prototype.results = {};
 
-SpoofDetector.prototype.trainingAlgorithms = [bucketTraining];
+SpoofDetector.prototype.trainingAlgorithms = [bucketTraining, sampleCountTraining];
 SpoofDetector.prototype.detectionAlgorithms = [bucketDetection];
 
 function SpoofDetector() {}
@@ -18,6 +26,7 @@ SpoofDetector.prototype.detectSpoofs = function(trajectories, spoofs) {
 
     SpoofDetector.prototype.rawTrajectories = trajectories;
     SpoofDetector.prototype.rawSpoofs = spoofs;
+
     this.resetResults();
     this.trainModel(trajectories);
     this.analyseTrajectories(spoofs);
@@ -115,14 +124,35 @@ function bucketTraining(model, trajectories) {
 
         minBucketSum += smallesBucket;
     }
-    model.avrgBucketCount = bucketCount / trajectories.length;
-    model.avrgMinBucket = Math.min(0, minBucketSum / trajectories.length);
-    model.avrgMaxBucket = maxBucketSum / trajectories.length;
+    model.buckets.avrgBucketCount = bucketCount / trajectories.length;
+    model.buckets.avrgMinBucket = Math.min(0, minBucketSum / trajectories.length);
+    model.buckets.avrgMaxBucket = maxBucketSum / trajectories.length;
     //console.log(model);
     return model;
 }
 
+/*
+    Counts and averages the amount of samples in a trajectory
+*/
+function sampleCountTraining(model, trajectories) {
 
+    var sampleAmountSum = trajectories.reduce(function(a, b) {
+        return a + b.geometry.coordinates.length;
+    }, 0);
+
+    var minLength = trajectories.reduce(function(a, b) {
+        return Math.min(a, b.geometry.coordinates.length);
+    }, trajectories[0].geometry.coordinates.length);
+
+    var maxLength = trajectories.reduce(function(a, b) {
+        return Math.max(a, b.geometry.coordinates.length);
+    }, trajectories[0].geometry.coordinates.length);
+
+    model.sampleCount.minSampleCount = minLength;
+    model.sampleCount.maxSampleCount = maxLength;
+    model.sampleCount.avrgSampleCount = Math.round(sampleAmountSum / trajectories.length);
+    return model;
+}
 
 /**
 ######################################################################################################################
@@ -137,20 +167,19 @@ function bucketTraining(model, trajectories) {
 function bucketDetection(model, trajectory) {
     var bucketCount = Object.keys(trajectory.featureVector.distribution).length;
 
-    var isInAvrgRange = (bucketCount > model.avrgMinBucket && bucketCount < model.avrgMaxBucket);
-    var maxDistToMedian = Math.max(model.avrgBucketCount - model.avrgMinBucket, model.avrgMaxBucket - model.avrgBucketCount);
+    var isInAvrgRange = (bucketCount > model.buckets.avrgMinBucket && bucketCount < model.buckets.avrgMaxBucket);
+    var maxDistToMedian = Math.max(model.buckets.avrgBucketCount - model.buckets.avrgMinBucket, model.buckets.avrgMaxBucket - model.buckets.avrgBucketCount);
     //probability in percent, that the trajectory is real
     var p = 0;
     if (isInAvrgRange) {
         //p = (maxDistToMedian - bucketCount) / maxDistToMedian * 100;
-        p = Math.pow((maxDistToMedian - bucketCount) / maxDistToMedian , 2) * 100;
-        //p = p.toFixed(2);
+        p = Math.pow((maxDistToMedian - bucketCount) / maxDistToMedian, 2) * 100;
     }
     /*
     console.log('bucketcount', bucketCount);
-    console.log('minbucket', model.avrgMinBucket);
+    console.log('minbucket', model.buckets.avrgMinBucket);
     console.log('maxbucket', model.avrgMaxBucket);
-    console.log('model.avrgBucketCount', model.avrgBucketCount);
+    console.log('model.buckets.avrgBucketCount', model.buckets.avrgBucketCount);
     console.log('maxDistToMedian', maxDistToMedian);
     console.log('Probability', p);
     */
