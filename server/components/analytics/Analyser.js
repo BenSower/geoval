@@ -14,6 +14,9 @@ Analyser.prototype.analyse = function(cb) {
                 Trajectory.find({
                     'properties.spoofLvL': 0
                 }, function(err, trajectories) {
+                    if(trajectories.length === 0){
+                        console.log('no training/spoofLvl1 trajectories available');
+                    }
                     callback(err, trajectories);
                 });
             },
@@ -33,9 +36,12 @@ Analyser.prototype.analyse = function(cb) {
             }
         },
         function(err, results) {
-            // results is now equals to: {one: 1, two: 2}
-            //var lvl1Result = SpoofDetector.detectSpoofs(results.trajectories, results.lvl1spoofs);
-            var lvl2Result = SpoofDetector.detectSpoofs(results.trajectories, results.lvl2spoofs);
+            for (var i = 1; i < Object.keys(results).length + 1; i++) {
+                var result = results['lvl' + i + 'spoofs'];
+                if (result !== undefined && result.length > 0){
+                    SpoofDetector.detectSpoofs(results.trajectories, result);
+                }
+            }
             cb(null, {
                 message: 'everything ok'
             });
