@@ -67,7 +67,7 @@ function trajectoryConstraintsCheck(trajectory) {
 
 function fvConstraintsCheck(fv) {
     //skip trajectories with too big outliers
-    var maxOutlierThreshold = 150;
+    var maxOutlierThreshold = 100;
     var hasNoBigOutliers = fv.distribution.biggestDistance < maxOutlierThreshold;
     return hasNoBigOutliers;
 }

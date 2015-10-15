@@ -39,6 +39,7 @@ Analyser.prototype.analyse = function(cb) {
             for (var i = 1; i < Object.keys(results).length + 1; i++) {
                 var result = results['lvl' + i + 'spoofs'];
                 if (result !== undefined && result.length > 0){
+                    console.log('\nAnalyzing LvL' + i+ ' trajectories:');
                     SpoofDetector.detectSpoofs(results.trajectories, result);
                 }
             }

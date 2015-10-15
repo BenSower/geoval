@@ -169,8 +169,6 @@ function intermediatePoint(pointA, pointB, f) {
     return intermediatePoint;
 }
 
-
-
 /*
     http://www.movable-type.co.uk/scripts/latlong.html
 */

@@ -1,4 +1,6 @@
 'use strict';
+var Table = require('cli-table');
+
 
 SpoofDetector.prototype.model = {
     buckets: {
@@ -15,14 +17,20 @@ SpoofDetector.prototype.model = {
 
 SpoofDetector.prototype.results = {};
 
-SpoofDetector.prototype.trainingAlgorithms = [bucketTraining, sampleCountTraining];
-SpoofDetector.prototype.detectionAlgorithms = [bucketDetection];
+SpoofDetector.prototype.trainingAlgorithms = {
+    bucketTraining: bucketTraining,
+    timeTraining: timeTraining
+};
+
+
+SpoofDetector.prototype.detectionAlgorithms = {
+    bucketDetection: bucketDetection,
+    timeDetection: timeDetection
+};
 
 function SpoofDetector() {}
 
 SpoofDetector.prototype.detectSpoofs = function(trajectories, spoofs) {
-
-    console.log("detecting Spoofs");
 
     SpoofDetector.prototype.rawTrajectories = trajectories;
     SpoofDetector.prototype.rawSpoofs = spoofs;
@@ -31,26 +39,38 @@ SpoofDetector.prototype.detectSpoofs = function(trajectories, spoofs) {
     this.trainModel(trajectories);
     this.analyseTrajectories(spoofs);
     this.analyseTrajectories(trajectories);
-    this.presentResults(this.results);
+    this.presentResults(this.results, spoofs[0].properties.spoofLvL);
+
     return this.results;
 }
 
+/*
+    Reset/Initialize all results
+*/
 SpoofDetector.prototype.resetResults = function() {
-    this.results = {
-        falseSpoofs: [], //trajectories which are classified as spoofs
-        falseTrajectories: [], //spoofs which are classified as trajectories
-        spoofs: [],
-        realTrajectories: []
-    };
+
+    for (var algorithmKey in this.detectionAlgorithms) {
+        if (this.detectionAlgorithms.hasOwnProperty(algorithmKey)) {
+            this.results[algorithmKey] = {
+                falseSpoofs: [], //trajectories which are classified as spoofs
+                falseTrajectories: [], //spoofs which are classified as trajectories
+                spoofs: [],
+                realTrajectories: []
+            };
+
+        }
+    }
 }
 
 /*
     Trains the model by analysing real trajectories
 */
 SpoofDetector.prototype.trainModel = function(trajectories) {
-    console.log('Training the model with real trajectories');
-    for (var i = 0; i < this.trainingAlgorithms.length; i++) {
-        this.model = this.trainingAlgorithms[i](this.model, trajectories);
+
+    for (var algorithmKey in this.trainingAlgorithms) {
+        if (this.trainingAlgorithms.hasOwnProperty(algorithmKey)) {
+            this.model = this.trainingAlgorithms[algorithmKey](this.model, trajectories);
+        }
     }
 }
 
@@ -59,38 +79,53 @@ SpoofDetector.prototype.trainModel = function(trajectories) {
  */
 SpoofDetector.prototype.analyseTrajectories = function(trajectories) {
 
-    for (var i = 0; i < this.detectionAlgorithms.length; i++) {
+    for (var algorithmKey in this.detectionAlgorithms) {
         for (var h = 0; h < trajectories.length; h++) {
             var trajectory = trajectories[h];
-            if (this.detectionAlgorithms[i](this.model, trajectory).isSpoof) {
-                var tmp = (trajectory.properties.spoofLvL === 0) ? this.results.falseSpoofs.push(trajectory) : this.results.spoofs.push(trajectory);
+            if (this.detectionAlgorithms[algorithmKey](this.model, trajectory).isSpoof) {
+                var tmp = (trajectory.properties.spoofLvL === 0) ? this.results[algorithmKey].falseSpoofs.push(trajectory) : this.results[algorithmKey].spoofs.push(trajectory);
             } else {
-                var tmp2 = (trajectory.properties.spoofLvL === 0) ? this.results.realTrajectories.push(trajectory) : this.results.falseTrajectories.push(trajectory);
+                var tmp2 = (trajectory.properties.spoofLvL === 0) ? this.results[algorithmKey].realTrajectories.push(trajectory) : this.results[algorithmKey].falseTrajectories.push(trajectory);
             }
         }
     }
 }
+SpoofDetector.prototype.presentResults = function(results, spoofLvL) {
 
-SpoofDetector.prototype.presentResults = function() {
-    var spoofCount = this.results.spoofs.length;
-    var realTrajCount = this.results.realTrajectories.length;
-    var falseSpoofCount = this.results.falseSpoofs.length;
-    var falseTrajCount = this.results.falseTrajectories.length;
 
-    console.log('\n#########################################');
-    console.log('Results: \n');
-    console.log('Correctly classified spoofs:', spoofCount);
-    console.log('Falsely classified spoofs:', falseTrajCount);
-    console.log('Correctly classified trajectories:', realTrajCount);
-    console.log('Falsely classified trajectories:', falseSpoofCount);
+    var columns = ['SpoofLvl' + spoofLvL,
+        "Correctly classified spoofs",
+        "Falsely classified spoofs",
+        "Correctly classified trajectories",
+        "Falsely classified trajectories",
+        "Spoof classification rate",
+        "Trajectory classification rate"
+    ];
+    var table = new Table({
+        head: columns
+    });
 
-    var spoofDetectionRate = (spoofCount / this.rawSpoofs.length) * 100;
-    console.log('Spoof classification rate: ' + spoofDetectionRate + '%');
 
-    var trajDetectionRate = (realTrajCount / this.rawTrajectories.length) * 100;
-    console.log('Trajectory classification rate: ' + trajDetectionRate.toFixed(2) + '%');
+    for (var algorithm in results) {
+        if (!results.hasOwnProperty(algorithm)) {
+            continue;
+        }
 
-    console.log('\n#########################################');
+        var result = results[algorithm];
+
+        var spoofCount = result.spoofs.length;
+        var realTrajCount = result.realTrajectories.length;
+        var falseSpoofCount = result.falseSpoofs.length;
+        var falseTrajCount = result.falseTrajectories.length;
+        var spoofDetectionRate = (spoofCount / this.rawSpoofs.length) * 100;
+        var trajDetectionRate = (realTrajCount / this.rawTrajectories.length) * 100;
+
+        var row = {};
+        row[algorithm] = [spoofCount, falseTrajCount, realTrajCount, falseSpoofCount, spoofDetectionRate + '%', trajDetectionRate.toFixed(2) + '%'];
+        table.push(row);
+    }
+
+    console.log(table.toString());
 
 }
 
@@ -134,24 +169,9 @@ function bucketTraining(model, trajectories) {
 /*
     Counts and averages the amount of samples in a trajectory
 */
-function sampleCountTraining(model, trajectories) {
-
-    var sampleAmountSum = trajectories.reduce(function(a, b) {
-        return a + b.geometry.coordinates.length;
-    }, 0);
-
-    var minLength = trajectories.reduce(function(a, b) {
-        return Math.min(a, b.geometry.coordinates.length);
-    }, trajectories[0].geometry.coordinates.length);
-
-    var maxLength = trajectories.reduce(function(a, b) {
-        return Math.max(a, b.geometry.coordinates.length);
-    }, trajectories[0].geometry.coordinates.length);
-
-    model.sampleCount.minSampleCount = minLength;
-    model.sampleCount.maxSampleCount = maxLength;
-    model.sampleCount.avrgSampleCount = Math.round(sampleAmountSum / trajectories.length);
+function timeTraining(model, trajectories) {
     return model;
+
 }
 
 /**
@@ -160,6 +180,20 @@ function sampleCountTraining(model, trajectories) {
                                     An algo needs to return and object like {isSpoof : true}
 ######################################################################################################################
 */
+
+
+/*
+    Counts and averages the amount of samples in a trajectory
+*/
+function timeDetection(model, trajectories) {
+    return {
+        isSpoof: 1,
+        p: 0
+    };
+
+}
+
+
 
 /*
     Returns false, if number of buckets > model number of buckets
