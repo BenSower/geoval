@@ -92,14 +92,13 @@ SpoofDetector.prototype.analyseTrajectories = function(trajectories) {
 }
 SpoofDetector.prototype.presentResults = function(results, spoofLvL) {
 
-
     var columns = ['SpoofLvl' + spoofLvL,
-        "Correctly classified spoofs",
-        "Falsely classified spoofs",
-        "Correctly classified trajectories",
-        "Falsely classified trajectories",
-        "Spoof classification rate",
-        "Trajectory classification rate"
+        'Correct spoofs',
+        'Wrong spoofs',
+        'Correct trajs',
+        'Wrong trajs',
+        'Spoof rate',
+        'Traj rate'
     ];
     var table = new Table({
         head: columns
@@ -121,7 +120,7 @@ SpoofDetector.prototype.presentResults = function(results, spoofLvL) {
         var trajDetectionRate = (realTrajCount / this.rawTrajectories.length) * 100;
 
         var row = {};
-        row[algorithm] = [spoofCount, falseTrajCount, realTrajCount, falseSpoofCount, spoofDetectionRate + '%', trajDetectionRate.toFixed(2) + '%'];
+        row[algorithm] = [spoofCount, falseTrajCount, realTrajCount, falseSpoofCount, spoofDetectionRate.toFixed(2) + '%', trajDetectionRate.toFixed(2) + '%'];
         table.push(row);
     }
 
@@ -170,25 +169,71 @@ function bucketTraining(model, trajectories) {
     Counts and averages the amount of samples in a trajectory
 */
 function timeTraining(model, trajectories) {
+    model = setTimeDistribution(model, trajectories);
     return model;
-
 }
 
 /**
 ######################################################################################################################
                                             Detection Algos
-                                    An algo needs to return and object like {isSpoof : true}
+                            An algo needs to return and object like {isSpoof : true}
 ######################################################################################################################
 */
 
+function setTimeDistribution(model, trajectories) {
 
+    model.timeDifference = (typeof model.timeDifference === 'undefined') ? {} : model.timeDifference;
+    model.timeDifference.absoluteDistribution = (typeof model.timeDifference.absoluteDistribution === 'undefined') ? {} : model.timeDifference.absoluteDistribution;
+    model.timeDifference.normalizedDistribution = (typeof model.timeDifference.normalizedDistribution === 'undefined') ? {} : model.timeDifference.normalizedDistribution;
+
+    for (var i = 0; i < trajectories.length; i++) {
+        var trajectory = trajectories[i];
+        for (var j = 0; j < trajectory.geometry.coordinates.length - 1; j++) {
+            var coordinateA = new Date(trajectory.properties.coordTimes[j]);
+            var coordinateB = new Date(trajectory.properties.coordTimes[j + 1]);
+            var diff = coordinateB.getTime() - coordinateA.getTime();
+            //initialize or increment
+            model.timeDifference.absoluteDistribution[diff] = model.timeDifference.absoluteDistribution[diff] + 1 || 1;
+            model.timeDifference.normalizedDistribution[diff] = model.timeDifference.absoluteDistribution[diff] / trajectories.length;
+        }
+    }
+    return model;
+
+}
 /*
     Counts and averages the amount of samples in a trajectory
 */
-function timeDetection(model, trajectories) {
+function timeDetection(model, trajectory) {
+
+    var localModel = setTimeDistribution({}, [trajectory]);
+    var misses = 0;
+    var timeIntervalCount = Object.keys(localModel.timeDifference.absoluteDistribution).length;
+
+    for (var key in localModel.timeDifference.absoluteDistribution) {
+        if (!localModel.timeDifference.absoluteDistribution.hasOwnProperty(key)) {
+            continue;
+        }
+        var diff;
+        var diffs = []
+        if (model.timeDifference.absoluteDistribution[key] !== undefined) {
+            var localVal = localModel.timeDifference.absoluteDistribution[key];
+            var modelVal =  model.timeDifference.absoluteDistribution[key];
+            var diff = (localVal > modelVal) ? modelVal/localVal : localVal/modelVal;
+            diffs.push(diff);
+        }else {
+            misses++;
+        }
+    }
+    //console.log(misses + '/' + timeIntervalCount + ' missed.')
+
+    var sum = diffs.reduce(function(a,b){
+        return a+b;
+    }, 0);
+    var p = (sum / timeIntervalCount) * 100;
+
     return {
-        isSpoof: 1,
-        p: 0
+        isSpoof: p < 0.001,
+        p: p
     };
 
 }
