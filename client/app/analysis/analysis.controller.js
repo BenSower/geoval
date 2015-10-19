@@ -3,88 +3,14 @@ angular.module('geovalApp')
     .controller('AnalysisCtrl', function($scope, $http) {
 
         var apiUrl = '/api/trajectories';
-        /*
-            Create full table
-        */
 
         $scope.showTable = false;
 
-        function redraw(trajectories) {
-            console.log(trajectories);
-            $scope.rawTrajectories = trajectories;
-            $scope.scatterData = getScatterData(trajectories);
-            $scope.donutData = getDonutData($scope.scatterData);
-        }
-
-        /*
-            scatter plot
-        */
-        var getScatterData = function(rawTrajectories) {
-            var aggregatedDistribution = {};
-            for (var i = 0; i < rawTrajectories.length; i++) {
-                var trajectory = rawTrajectories[i];
-                for (var property in trajectory.properties.distribution) {
-                    if (aggregatedDistribution[property] === undefined) {
-                        aggregatedDistribution[property] = trajectory.properties.distribution[property];
-                    } else {
-                        aggregatedDistribution[property] += trajectory.properties.distribution[property];
-                    }
-                }
-            }
-
-            var data = [];
-            for (var attribute in aggregatedDistribution) {
-                data.push({
-                    key: 'Group ' + attribute,
-                    values: [{
-                        x: attribute,
-                        y: aggregatedDistribution[attribute],
-                        size: aggregatedDistribution[attribute]
-                    }]
-                });
-            }
-            return data;
-        };
-
         $http.get(apiUrl).success(redraw);
 
-        /*
-            donut graph
-        */
-        var getDonutData = function(scatterData) {
-            var data = [];
-            var others = {
-                key: 'Others',
-                y: 0
-            };
-            for (var attribute in scatterData) {
-                var scatterDataSlice = scatterData[attribute];
-                var value = scatterDataSlice.values[0].y;
-                data.push({
-                    key: scatterDataSlice.key,
-                    y: value
-                });
-            }
-            data.push(others);
-
-            return data;
-        };
-        $scope.xFunction = function() {
-            return function(d) {
-                return d.key;
-            };
-        };
-        $scope.yFunction = function() {
-            return function(d) {
-                return d.y;
-            };
-        };
-
-        $scope.descriptionFunction = function() {
-            return function(d) {
-                return d.key;
-            };
-        };
+        function redraw(trajectories) {
+            $scope.rawTrajectories = trajectories;
+        }
 
         $scope.delete = function(trajectory) {
             $.ajax({
@@ -98,7 +24,28 @@ angular.module('geovalApp')
 
         $scope.analyse = function() {
             $http.get('/api/trajectories/analyse').success(function(result) {
-                console.log(result);
+                $scope.data = getLineData(result);
             });
         };
+
+        function getLineData(result) {
+            console.log(result);
+            var data = [];
+            for (var i = 0; i < result.length; i++) {
+                var normDist = result[i].model.buckets.normalizedDistribution;
+                var dataObj = {
+                    key: 'Test'+i,
+                    values: []
+                };
+                for (var key in normDist) {
+                    if (normDist.hasOwnProperty(key)) {
+
+                        dataObj.values.push([parseInt(key), normDist[key]]);
+                    }
+                }
+                data.push(dataObj);
+            }
+            console.log(data);
+            return data;
+        }
     });
