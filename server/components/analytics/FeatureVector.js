@@ -9,6 +9,7 @@ function FeatureVector() {}
 FeatureVector.prototype.sampleAmount = -1;
 FeatureVector.prototype.outliers = -1;
 FeatureVector.prototype.spatialDistance = {};
+FeatureVector.prototype.timeDifference = {};
 
 FeatureVector.prototype.extractFeatures = function (trajectory, cb) {
   console.log('extracting Features of', trajectory.id);

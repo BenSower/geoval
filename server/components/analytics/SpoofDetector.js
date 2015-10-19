@@ -1,22 +1,6 @@
 'use strict';
 var Table = require('cli-table');
 
-SpoofDetector.prototype.model = {
-  sampleCount: {
-    avrgSampleCount: -1,
-    minSampleCount: -1,
-    maxSampleCount: -1
-  },
-  timeDifference: {
-    absoluteDistribution: {},
-    normalizedDistribution: {}
-  },
-  buckets: {
-    absoluteDistribution: {},
-    normalizedDistribution: {}
-  }
-}
-
 SpoofDetector.prototype.results = {};
 
 SpoofDetector.prototype.trainingAlgorithms = {
@@ -30,28 +14,26 @@ SpoofDetector.prototype.detectionAlgorithms = {
 };
 
 function SpoofDetector() {}
-
-SpoofDetector.prototype.detectSpoofs = function (trajectories, spoofs) {
-
-  SpoofDetector.prototype.rawTrajectories = trajectories;
-  SpoofDetector.prototype.rawSpoofs = spoofs;
-
-  this.resetResults();
-  this.trainModel(trajectories);
-  this.analyseTrajectories(spoofs);
-  this.analyseTrajectories(trajectories);
-  this.presentResults(this.results, spoofs[0].properties.spoofLvL);
-  return {
-    results: this.results,
-    model: this.model
-  };
-}
-
 /*
     Reset/Initialize all results
 */
-SpoofDetector.prototype.resetResults = function () {
+SpoofDetector.prototype.resetDetector = function () {
 
+  this.model = {
+    sampleCount: {
+      avrgSampleCount: -1,
+      minSampleCount: -1,
+      maxSampleCount: -1
+    },
+    timeDifference: {
+      absoluteDistribution: {},
+      normalizedDistribution: {}
+    },
+    buckets: {
+      absoluteDistribution: {},
+      normalizedDistribution: {}
+    }
+  };
   for (var algorithmKey in this.detectionAlgorithms) {
     if (this.detectionAlgorithms.hasOwnProperty(algorithmKey)) {
       this.results[algorithmKey] = {
@@ -62,6 +44,22 @@ SpoofDetector.prototype.resetResults = function () {
       };
     }
   }
+}
+
+SpoofDetector.prototype.detectSpoofs = function (trajectories, spoofs) {
+
+  SpoofDetector.prototype.rawTrajectories = trajectories;
+  SpoofDetector.prototype.rawSpoofs = spoofs;
+
+  this.resetDetector();
+  this.trainModel(trajectories);
+  this.analyseTrajectories(spoofs);
+  this.analyseTrajectories(trajectories);
+  this.presentResults(this.results, spoofs[0].properties.spoofLvL);
+  return {
+    results: this.results,
+    model: this.model
+  };
 }
 
 /*
@@ -184,7 +182,7 @@ function setTimeDistribution(model, trajectories) {
 }
 
 function getNormalizedDistribution(absoluteDistribution, trajectories) {
-  var normalizedDistribution = absoluteDistribution;
+  var normalizedDistribution = JSON.parse(JSON.stringify(absoluteDistribution));
   if (trajectories.length > 1) {
     //normalizing/averaging every bucket value
     for (var bucket in normalizedDistribution) {
@@ -200,15 +198,16 @@ function getNormalizedDistribution(absoluteDistribution, trajectories) {
 ######################################################################################################################
 */
 function bucketTraining(model, trajectories) {
-
+  var absoluteDistribution = model.buckets.absoluteDistribution
   for (var i = 0; i < trajectories.length; i++) {
     var trajectory = trajectories[i];
     for (var key in trajectory.featureVector.spatialDistance) {
       if (key !== 'biggestDistance')
-        model.buckets.absoluteDistribution[key] = model.buckets.absoluteDistribution[key] + 1 || 1;
+        absoluteDistribution[key] = absoluteDistribution[key] + 1 || 1;
     }
   }
-  model.buckets.normalizedDistribution = getNormalizedDistribution(model.buckets.absoluteDistribution, trajectories);
+  model.buckets.absoluteDistribution = absoluteDistribution;
+  model.buckets.normalizedDistribution = getNormalizedDistribution(absoluteDistribution, trajectories);
   return model;
 }
 
