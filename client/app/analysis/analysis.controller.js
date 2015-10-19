@@ -24,25 +24,45 @@ angular.module('geovalApp')
 
     $scope.analyse = function () {
       $http.get('/api/trajectories/analyse').success(function (result) {
-        console.log(result);
         $scope.data = getLineData(result);
       });
     };
 
-    function getLineDataValues(lvl) {
-      var lvl1Dist = {};
+    function getTrajectoriesForLevel(lvl) {
+      var trajectories = [];
       for (var i = 0; i < $scope.rawTrajectories.length; i++) {
         var trajectory = $scope.rawTrajectories[i];
         if (trajectory.properties.spoofLvL === lvl) {
-          for (var key in trajectory.featureVector.spatialDistance) {
-            if (key !== 'biggestDistance')
-              lvl1Dist[key] = lvl1Dist[key] + 1 || 1;
-          }
+          trajectories.push(trajectory);
         }
       }
+      return trajectories;
+    }
 
-      var values = mapToArray(lvl1Dist);
+    function getLineDataValues(lvl) {
+      var absoluteDistribution = {};
+      var trajectories = getTrajectoriesForLevel(lvl);
+      trajectories.map(function (trajectory) {
+        for (var key in trajectory.featureVector.spatialDistance) {
+          if (key !== 'biggestDistance')
+            absoluteDistribution[key] = absoluteDistribution[key] + 1 || 1;
+        }
+      });
+      var normalizedDistribution = getNormalizedDistribution(absoluteDistribution, trajectories);
+      var values = mapToArray(normalizedDistribution);
       return values;
+    }
+
+    function getNormalizedDistribution(absoluteDistribution, trajectories) {
+      var normalizedDistribution = JSON.parse(JSON.stringify(absoluteDistribution));
+      if (trajectories.length > 1) {
+        //normalizing/averaging every bucket value
+        for (var bucket in normalizedDistribution) {
+          if (normalizedDistribution.hasOwnProperty(bucket))
+            normalizedDistribution[bucket] = normalizedDistribution[bucket] / trajectories.length;
+        }
+      }
+      return normalizedDistribution;
     }
 
     function mapToArray(map) {
@@ -56,10 +76,9 @@ angular.module('geovalApp')
 
     function getLineData(result) {
       var data = [];
-      var values = mapToArray(result[0].model.buckets.absoluteDistribution);
       data.push({
         key: 'ModelAbsolute',
-        values: values
+        values: mapToArray(result[0].model.buckets.normalizedDistribution)
       });
 
       data.push({
