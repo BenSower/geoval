@@ -1,7 +1,5 @@
 div(ng-include='"components/navbar/navbar.html"')
 .container(ng-controller='AnalysisCtrl')
-    .container
-        nvd3-line-chart(data='data', height='700', showLegend='true', showxaxis='true', showyaxis='true', xaxistickformat='xAxisTickFormat_Date_Format()', yaxistickformat='yAxisFormatFunction()')
     .container-fluid
         a.btn.btn-primary.btn-lg(href='', ng-click='showTable = !showTable') Toggle Full Table
         a.btn.btn-primary.btn-lg(href='', ng-click='analyse()') Analyse Trajectories
@@ -21,5 +19,9 @@ div(ng-include='"components/navbar/navbar.html"')
                 td 
                     a.trash(ng-click='delete(trajectory)')
                         span.glyphicon.glyphicon-trash.pull-right
+    .container
+        nvd3-line-chart(data='spatialDistanceData', height='700', showLegend='true', showxaxis='true', showyaxis='true', xaxistickformat='xAxisTickFormat_Date_Format()', yaxistickformat='yAxisFormatFunction()')
+    .container
+        nvd3-line-chart(data='timeDifferenceData', height='700', showLegend='true', showxaxis='true', showyaxis='true', xaxistickformat='xAxisTickFormat_Date_Format()', yaxistickformat='yAxisFormatFunction()')
           
 div(ng-include='"components/footer/footer.html"')

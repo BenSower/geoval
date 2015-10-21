@@ -1,5 +1,6 @@
 'use strict';
 var Table = require('cli-table');
+var plotly = require('plotly')('BenSower', 'w7as40pc4l');
 
 SpoofDetector.prototype.results = {};
 
@@ -50,23 +51,69 @@ SpoofDetector.prototype.detectSpoofs = function (trajectories, spoofs) {
 
   SpoofDetector.prototype.rawTrajectories = trajectories;
   SpoofDetector.prototype.rawSpoofs = spoofs;
-
   this.resetDetector();
   this.trainModel(trajectories);
-  this.analyseTrajectories(spoofs);
-  this.analyseTrajectories(trajectories);
+  var spoofProbablilites = this.analyseTrajectories(spoofs);
+  var trajectoryProbablilites = this.analyseTrajectories(trajectories);
   this.presentResults(this.results, spoofs[0].properties.spoofLvL);
+  //createPlotlyGraph([spoofProbablilites, trajectoryProbablilites]);
   return {
     results: this.results,
     model: this.model
   };
 }
 
+function createPlotlyGraph(rawInput) {
+  function mapToArray(map) {
+    var x = Object.keys(map).sort();
+    var y = [];
+    for (var i = 0; i < x.length; i++) {
+      var key = x[i];
+      y.push(map[key]);
+    }
+    return {
+      x: x,
+      y: y
+    };
+  }
+
+  var data = [];
+  var aggregated = {};
+  for (var i = 0; i < rawInput.length; i++) {
+    var input = rawInput[i];
+    for (var j = 0; j < input.length; j++) {
+      var val = input[j].toFixed(2);
+      aggregated[val] = aggregated[val] + 1 || 1;
+    }
+    var map = mapToArray(aggregated);
+    //x is filled with values from 0 to input.length
+    var trace = {
+      x: map.x,
+      y: map.y,
+      mode: 'lines',
+      name: 'wat' + i,
+      line: {
+        dash: 'solid',
+        width: 4
+      }
+    };
+    data.push(trace);
+  }
+
+  var layout = {
+    fileopt: 'overwrite',
+    filename: 'test'
+  };
+
+  plotly.plot(data, layout, function (err, msg) {
+    if (err) return console.log(err);
+    console.log(msg);
+  });
+}
 /*
     Trains the model by analysing real trajectories
 */
 SpoofDetector.prototype.trainModel = function (trajectories) {
-
   for (var algorithmKey in this.trainingAlgorithms) {
     if (this.trainingAlgorithms.hasOwnProperty(algorithmKey)) {
       this.model = this.trainingAlgorithms[algorithmKey](this.model, trajectories);
@@ -78,11 +125,13 @@ SpoofDetector.prototype.trainModel = function (trajectories) {
  * Applies detectionAlgorithms to the trajectories
  */
 SpoofDetector.prototype.analyseTrajectories = function (trajectories) {
-
+  var probabilities = [];
   for (var algorithmKey in this.detectionAlgorithms) {
     for (var h = 0; h < trajectories.length; h++) {
       var trajectory = trajectories[h];
-      if (this.detectionAlgorithms[algorithmKey](this.model, trajectory).isSpoof) {
+      var detectionResult = this.detectionAlgorithms[algorithmKey](this.model, trajectory);
+      probabilities.push(detectionResult.p);
+      if (detectionResult.isSpoof) {
         var tmp = (trajectory.properties.spoofLvL === 0) ? this.results[algorithmKey].falseSpoofs.push(trajectory) :
           this.results[algorithmKey].spoofs.push(trajectory);
       } else {
@@ -91,6 +140,7 @@ SpoofDetector.prototype.analyseTrajectories = function (trajectories) {
       }
     }
   }
+  return probabilities;
 }
 SpoofDetector.prototype.presentResults = function (results, spoofLvL) {
 
@@ -163,7 +213,8 @@ function compareIntMaps(vectorA, vectorB) {
 
   return {
     p: p,
-    misses: misses
+    misses: misses,
+    missPercentage: ((misses / diffs.length) * 100).toFixed(2)
   };
 }
 
@@ -171,9 +222,10 @@ function setTimeDistribution(model, trajectories) {
   var absoluteDistribution = model.timeDifference.absoluteDistribution;
   for (var i = 0; i < trajectories.length; i++) {
     var trajectory = trajectories[i];
-    for (var key in trajectory.featureVector.timeDifference) {
-      if (trajectory.featureVector.timeDifference.hasOwnProperty(key))
+    for (var key in trajectory.featureVector.timeDifference.absoluteDistribution) {
+      if (trajectory.featureVector.timeDifference.absoluteDistribution.hasOwnProperty(key)) {
         absoluteDistribution[key] = absoluteDistribution[key] + 1 || 1;
+      }
     }
   }
   model.timeDifference.absoluteDistribution = absoluteDistribution;
@@ -183,11 +235,14 @@ function setTimeDistribution(model, trajectories) {
 
 function getNormalizedDistribution(absoluteDistribution, trajectories) {
   var normalizedDistribution = JSON.parse(JSON.stringify(absoluteDistribution));
+  var nodePoints = trajectories.reduce(function (accum, trajB) {
+    return accum + trajB.geometry.coordinates.length;
+  }, 0);
   if (trajectories.length > 1) {
     //normalizing/averaging every bucket value
     for (var bucket in normalizedDistribution) {
       if (normalizedDistribution.hasOwnProperty(bucket))
-        normalizedDistribution[bucket] = normalizedDistribution[bucket] / trajectories.length;
+        normalizedDistribution[bucket] = (normalizedDistribution[bucket] / nodePoints);
     }
   }
   return normalizedDistribution;
@@ -226,25 +281,23 @@ function timeTraining(model, trajectories) {
 ######################################################################################################################
 */
 
-/*
-    Counts and averages the amount of samples in a trajectory
-*/
+function bucketDetection(model, trajectory) {
+  var trajectoryDistribution = trajectory.featureVector.spatialDistance;
+  var modelDistribution = model.buckets.normalizedDistribution;
+  var comparisonResult = compareIntMaps(trajectoryDistribution, modelDistribution);
+
+  return {
+    isSpoof: comparisonResult.p < 0.06 || (comparisonResult.missPercentage >= 60),
+    p: comparisonResult.p
+  };
+}
+
 function timeDetection(model, trajectory) {
   var trajectoryDistribution = trajectory.featureVector.timeDifference.absoluteDistribution;
   var modelDistribution = model.timeDifference.normalizedDistribution;
   var comparisonResult = compareIntMaps(trajectoryDistribution, modelDistribution);
   return {
-    isSpoof: comparisonResult.p < 1.5,
-    p: comparisonResult.p
-  };
-}
-
-function bucketDetection(model, trajectory) {
-  var trajectoryDistribution = trajectory.featureVector.spatialDistance;
-  var modelDistribution = model.buckets.normalizedDistribution;
-  var comparisonResult = compareIntMaps(trajectoryDistribution, modelDistribution);
-  return {
-    isSpoof: comparisonResult.p < 7,
+    isSpoof: (comparisonResult.p < 0.01) || (comparisonResult.missPercentage > 0),
     p: comparisonResult.p
   };
 }

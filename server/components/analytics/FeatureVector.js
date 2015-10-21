@@ -74,7 +74,8 @@ FeatureVector.prototype.getTimeDistribution = function (trajectory) {
     var coordinateB = new Date(trajectory.properties.coordTimes[j + 1]);
     var diff = coordinateB.getTime() - coordinateA.getTime();
     //initialize or increment
-    timeDifference.absoluteDistribution[diff] = timeDifference.absoluteDistribution[diff] + 1 || 1;
+    if (diff <= 5000)
+      timeDifference.absoluteDistribution[diff] = timeDifference.absoluteDistribution[diff] + 1 || 1;
   }
 
   return timeDifference;

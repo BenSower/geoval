@@ -24,7 +24,8 @@ angular.module('geovalApp')
 
     $scope.analyse = function () {
       $http.get('/api/trajectories/analyse').success(function (result) {
-        $scope.data = getLineData(result);
+        $scope.spatialDistanceData = getSpatialDistanceLineData(result);
+        $scope.timeDifferenceData = getTimeLineData(result);
       });
     };
 
@@ -39,27 +40,34 @@ angular.module('geovalApp')
       return trajectories;
     }
 
-    function getLineDataValues(lvl) {
+    function getLineDataValues(lvl, type) {
       var absoluteDistribution = {};
       var trajectories = getTrajectoriesForLevel(lvl);
       trajectories.map(function (trajectory) {
-        for (var key in trajectory.featureVector.spatialDistance) {
-          if (key !== 'biggestDistance')
+
+        for (var key in trajectory.featureVector[type]) {
+
+          if (key !== 'biggestDistance') {
             absoluteDistribution[key] = absoluteDistribution[key] + 1 || 1;
+          }
         }
       });
       var normalizedDistribution = getNormalizedDistribution(absoluteDistribution, trajectories);
       var values = mapToArray(normalizedDistribution);
+
       return values;
     }
 
     function getNormalizedDistribution(absoluteDistribution, trajectories) {
       var normalizedDistribution = JSON.parse(JSON.stringify(absoluteDistribution));
+      var nodePoints = trajectories.reduce(function (accum, trajB) {
+        return accum + trajB.geometry.coordinates.length;
+      }, 0);
       if (trajectories.length > 1) {
         //normalizing/averaging every bucket value
         for (var bucket in normalizedDistribution) {
           if (normalizedDistribution.hasOwnProperty(bucket))
-            normalizedDistribution[bucket] = normalizedDistribution[bucket] / trajectories.length;
+            normalizedDistribution[bucket] = (normalizedDistribution[bucket] / nodePoints);
         }
       }
       return normalizedDistribution;
@@ -74,21 +82,42 @@ angular.module('geovalApp')
       return values;
     }
 
-    function getLineData(result) {
+    function getSpatialDistanceLineData(result) {
       var data = [];
+
       data.push({
-        key: 'ModelAbsolute',
+        key: 'SpatialModelNormalized',
         values: mapToArray(result[0].model.buckets.normalizedDistribution)
       });
 
       data.push({
         key: 'Lvl1',
-        values: getLineDataValues(1)
+        values: getLineDataValues(1, 'spatialDistance')
       });
 
       data.push({
         key: 'Lvl2',
-        values: getLineDataValues(2)
+        values: getLineDataValues(2, 'spatialDistance')
+      });
+      return data;
+    }
+
+    function getTimeLineData(result) {
+      var data = [];
+
+      data.push({
+        key: 'TimeModelNormalized',
+        values: mapToArray(result[0].model.timeDifference.normalizedDistribution)
+      });
+
+      data.push({
+        key: 'Lvl1',
+        values: getLineDataValues(1, 'timeDifference')
+      });
+
+      data.push({
+        key: 'Lvl2',
+        values: getLineDataValues(2, 'timeDifference')
       });
 
       return data;
