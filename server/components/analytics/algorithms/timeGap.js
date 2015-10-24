@@ -2,24 +2,25 @@ var tools = require('../AnalyticalTools');
 
 function TimeGap() {}
 
-TimeGap.prototype.extractFeatures = function (trajectory) {
+TimeGap.prototype.extractFeatures =
+  function (trajectory) {
 
-  var timeGap = {
-    absoluteDistribution: {},
-    normalizedDistribution: {}
-  };
+    var timeGap = {
+      absoluteDistribution: {},
+      normalizedDistribution: {}
+    };
 
-  for (var j = 0; j < trajectory.geometry.coordinates.length - 1; j++) {
-    var coordinateA = new Date(trajectory.properties.coordTimes[j]);
-    var coordinateB = new Date(trajectory.properties.coordTimes[j + 1]);
-    var diff = coordinateB.getTime() - coordinateA.getTime();
-    //initialize or increment
-    if (diff <= 5000)
-      timeGap.absoluteDistribution[diff] = timeGap.absoluteDistribution[diff] + 1 || 1;
+    for (var j = 0; j < trajectory.geometry.coordinates.length - 1; j++) {
+      var coordinateA = new Date(trajectory.properties.coordTimes[j]);
+      var coordinateB = new Date(trajectory.properties.coordTimes[j + 1]);
+      var diff = coordinateB.getTime() - coordinateA.getTime();
+      //initialize or increment
+      if (diff <= 5000)
+        timeGap.absoluteDistribution[diff] = timeGap.absoluteDistribution[diff] + 1 || 1;
+    }
+
+    return timeGap;
   }
-
-  return timeGap;
-}
 
 TimeGap.prototype.training =
   function (model, trajectories) {
