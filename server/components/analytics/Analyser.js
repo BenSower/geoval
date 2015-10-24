@@ -1,6 +1,7 @@
 'use strict';
 var SpoofDetector = require('./SpoofDetector'),
   async = require('async'),
+  Presenter = require('./Presenter'),
   mongoose = require('mongoose');
 
 var Trajectory = mongoose.model('Trajectory');
@@ -41,7 +42,23 @@ Analyser.prototype.analyse = function (cb) {
         var result = results['lvl' + i + 'spoofs'];
         if (result !== undefined && result.length > 0) {
           console.log('\nAnalyzing LvL' + i + ' trajectories:');
-          answer.push(SpoofDetector.detectSpoofs(results.trajectories, result));
+          var analyRes = SpoofDetector.detectSpoofs(results.trajectories, result);
+          answer.push(analyRes);
+          Presenter.presentResults(analyRes.results, result, results.trajectories, i);
+          /*
+          Presenter.createPlotlyGraph(
+            [
+              analyRes.spoofProbabilities.timeGap,
+              analyRes.trajectoryProbabilities.timeGap
+            ],
+            'timeDetection');
+          Presenter.createPlotlyGraph(
+            [
+              analyRes.spoofProbabilities.spatialDistance,
+              analyRes.trajectoryProbabilities.spatialDistance
+            ],
+            'spatialDistance');
+            */
         }
       }
       cb(null, answer);

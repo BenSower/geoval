@@ -25,7 +25,7 @@ angular.module('geovalApp')
     $scope.analyse = function () {
       $http.get('/api/trajectories/analyse').success(function (result) {
         $scope.spatialDistanceData = getSpatialDistanceLineData(result);
-        $scope.timeDifferenceData = getTimeLineData(result);
+        $scope.timeGapData = getTimeLineData(result);
       });
     };
 
@@ -87,7 +87,7 @@ angular.module('geovalApp')
 
       data.push({
         key: 'SpatialModelNormalized',
-        values: mapToArray(result[0].model.buckets.normalizedDistribution)
+        values: mapToArray(result[0].model.spatialDistance.normalizedDistribution)
       });
 
       data.push({
@@ -107,17 +107,17 @@ angular.module('geovalApp')
 
       data.push({
         key: 'TimeModelNormalized',
-        values: mapToArray(result[0].model.timeDifference.normalizedDistribution)
+        values: mapToArray(result[0].model.timeGap.normalizedDistribution)
       });
 
       data.push({
         key: 'Lvl1',
-        values: getLineDataValues(1, 'timeDifference')
+        values: getLineDataValues(1, 'timeGap')
       });
 
       data.push({
         key: 'Lvl2',
-        values: getLineDataValues(2, 'timeDifference')
+        values: getLineDataValues(2, 'timeGap')
       });
 
       return data;
