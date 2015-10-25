@@ -48,7 +48,8 @@ SpatialDistance.prototype.extractFeatures =
 
 SpatialDistance.prototype.training =
   function (model, trajectories) {
-    var absoluteDistribution = model.spatialDistance.absoluteDistribution
+    model.spatialDistance = model.spatialDistance || {};
+    var absoluteDistribution = model.spatialDistance.absoluteDistribution || {};
     for (var i = 0; i < trajectories.length; i++) {
       var trajectory = trajectories[i];
       for (var key in trajectory.featureVector.spatialDistance) {

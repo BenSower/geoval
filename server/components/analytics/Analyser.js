@@ -45,20 +45,9 @@ Analyser.prototype.analyse = function (cb) {
           var analyRes = SpoofDetector.detectSpoofs(results.trajectories, result);
           answer.push(analyRes);
           Presenter.presentResults(analyRes.results, result, results.trajectories, i);
-          /*
-          Presenter.createPlotlyGraph(
-            [
-              analyRes.spoofProbabilities.timeGap,
-              analyRes.trajectoryProbabilities.timeGap
-            ],
-            'timeDetection');
-          Presenter.createPlotlyGraph(
-            [
-              analyRes.spoofProbabilities.spatialDistance,
-              analyRes.trajectoryProbabilities.spatialDistance
-            ],
-            'spatialDistance');
-            */
+
+          Presenter.createPlotlyGraph(analyRes, 'speedMarkov');
+
         }
       }
       cb(null, answer);

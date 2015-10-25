@@ -40,7 +40,9 @@ TimeGap.prototype.detection =
   }
 
 function setTimeDistribution(model, trajectories) {
-  var absoluteDistribution = model.timeGap.absoluteDistribution;
+  model.spatialDistance = model.spatialDistance || {};
+  var absoluteDistribution = model.spatialDistance.absoluteDistribution || {};
+
   for (var i = 0; i < trajectories.length; i++) {
     var trajectory = trajectories[i];
     for (var key in trajectory.featureVector.timeGap.absoluteDistribution) {

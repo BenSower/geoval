@@ -28,10 +28,7 @@ function SpoofDetector() {
 */
 SpoofDetector.prototype.resetDetector = function () {
   for (var algorithmKey in this.detectionAlgorithms) {
-    this.model[algorithmKey] = {
-      absoluteDistribution: {},
-      normalizedDistribution: {}
-    };
+    this.model[algorithmKey] = {};
     if (this.detectionAlgorithms.hasOwnProperty(algorithmKey)) {
       this.results[algorithmKey] = {
         falseSpoofs: [], //trajectories which are classified as spoofs
