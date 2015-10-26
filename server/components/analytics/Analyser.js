@@ -9,13 +9,13 @@ var Trajectory = mongoose.model('Trajectory');
 function Analyser() {}
 
 Analyser.prototype.analyse = function (cb) {
-
+  var trainingTrajectoryAmount = 240;
   async.parallel({
       trajectories: function (callback) {
         Trajectory.find({
           'properties.spoofLvL': 0
         }, {}, {
-          limit: 200
+          limit: trainingTrajectoryAmount
         }, function (err, trajectories) {
           if (trajectories.length === 0) {
             console.log('no training/spoofLvl1 trajectories available');
@@ -28,7 +28,7 @@ Analyser.prototype.analyse = function (cb) {
         Trajectory.find({
           'properties.spoofLvL': 0
         }, {}, {
-          skip: 200
+          skip: trainingTrajectoryAmount
         }, function (err, lvl3spoofs) {
           callback(err, lvl3spoofs);
         });
