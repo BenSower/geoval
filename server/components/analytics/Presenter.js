@@ -83,7 +83,6 @@ Presenter.prototype.presentResults = function (results, rawSpoofs, rawTrajectori
     }
 
     var result = results[algorithm];
-
     var spoofCount = result.spoofs.length;
     var realTrajCount = result.realTrajectories.length;
     var falseSpoofCount = result.falseSpoofs.length;

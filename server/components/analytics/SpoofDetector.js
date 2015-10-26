@@ -41,7 +41,6 @@ SpoofDetector.prototype.resetDetector = function () {
 }
 
 SpoofDetector.prototype.detectSpoofs = function (trajectories, spoofs) {
-
   SpoofDetector.prototype.rawTrajectories = trajectories;
   SpoofDetector.prototype.rawSpoofs = spoofs;
   this.resetDetector();
@@ -74,7 +73,8 @@ SpoofDetector.prototype.analyseTrajectories = function (trajectories) {
     probabilityLvl[algorithm] = {
       0: [],
       1: [],
-      2: []
+      2: [],
+      3: []
     }
   }
 

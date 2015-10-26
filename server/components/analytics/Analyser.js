@@ -14,11 +14,23 @@ Analyser.prototype.analyse = function (cb) {
       trajectories: function (callback) {
         Trajectory.find({
           'properties.spoofLvL': 0
+        }, {}, {
+          limit: 200
         }, function (err, trajectories) {
           if (trajectories.length === 0) {
             console.log('no training/spoofLvl1 trajectories available');
           }
           callback(err, trajectories);
+        });
+      },
+      //second part of lvl0 spoofs
+      lvl0spoofs: function (callback) {
+        Trajectory.find({
+          'properties.spoofLvL': 0
+        }, {}, {
+          skip: 200
+        }, function (err, lvl3spoofs) {
+          callback(err, lvl3spoofs);
         });
       },
       lvl1spoofs: function (callback) {
@@ -38,16 +50,22 @@ Analyser.prototype.analyse = function (cb) {
     },
     function (err, results) {
       var answer = [];
-      for (var i = 1; i < Object.keys(results).length + 1; i++) {
-        var result = results['lvl' + i + 'spoofs'];
-        if (result !== undefined && result.length > 0) {
+      for (var i = 0; i < Object.keys(results).length; i++) {
+        var spoofs = results['lvl' + i + 'spoofs'];
+        if (spoofs !== undefined && spoofs.length > 0) {
+
+          //HACK to ensure that lvl0 trajectories are counted as spoofs
+          if (i === 0) {
+            spoofs = spoofs.map(function (a) {
+              a.properties.spoofLvL = 3;
+              return a;
+            });
+          }
           console.log('\nAnalyzing LvL' + i + ' trajectories:');
-          var analyRes = SpoofDetector.detectSpoofs(results.trajectories, result);
+          var analyRes = SpoofDetector.detectSpoofs(results.trajectories, spoofs);
           answer.push(analyRes);
-          Presenter.presentResults(analyRes.results, result, results.trajectories, i);
-
+          Presenter.presentResults(analyRes.results, spoofs, results.trajectories, i);
           Presenter.createPlotlyGraph(analyRes, 'speedMarkov');
-
         }
       }
       cb(null, answer);
