@@ -9,7 +9,8 @@ var Trajectory = mongoose.model('Trajectory');
 function Analyser() {}
 
 Analyser.prototype.analyse = function (cb) {
-  var trainingTrajectoryAmount = 240;
+
+  var trainingTrajectoryAmount = 170;
   async.parallel({
       trajectories: function (callback) {
         Trajectory.find({
@@ -65,11 +66,12 @@ Analyser.prototype.analyse = function (cb) {
           var analyRes = SpoofDetector.detectSpoofs(results.trajectories, spoofs);
           answer.push(analyRes);
           Presenter.presentResults(analyRes.results, spoofs, results.trajectories, i);
-          Presenter.createPlotlyGraph(analyRes, 'speedMarkov');
+          Presenter.createPlotlyGraph(analyRes, 'spatialBuckets');
         }
       }
       cb(null, answer);
     });
+
 }
 
 module.exports = new Analyser();
