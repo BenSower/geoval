@@ -69,9 +69,30 @@ Analyser.prototype.analyse = function (cb) {
           //Presenter.createPlotlyGraph(analyRes, 'spatialBuckets');
         }
       }
+      mergeResults(answer);
       cb(null, answer);
     });
+}
 
+function mergeResults(results) {
+  var trajectories = {};
+  for (var spoofLvl = 0; spoofLvl < results.length; spoofLvl++) {
+    var spoofLvLResults = results[spoofLvl].results;
+    for (var algorithm in spoofLvLResults) {
+      var categoryResults = spoofLvLResults[algorithm];
+      for (var categoryResultType in categoryResults) {
+        var categoryResult = categoryResults[categoryResultType];
+        for (var j = 0; j < categoryResult.length; j++) {
+          var trajectory = categoryResult[j];
+          trajectories[trajectory._id] = trajectories[trajectory._id] || {};
+          trajectories[trajectory._id][spoofLvl] = {
+
+          }
+        }
+      }
+    }
+
+  }
 }
 
 module.exports = new Analyser();

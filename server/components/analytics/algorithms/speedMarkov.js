@@ -76,7 +76,7 @@ SpeedMarkov.prototype.training =
       }
     }
 
-    model.globalMarkov = globalMarkov;
+    model.speedMarkov.globalMarkov = globalMarkov;
     var probabilities = calculateProbabilities(globalMarkov);
     model.speedMarkov.probabilities = probabilities;
     return model;
