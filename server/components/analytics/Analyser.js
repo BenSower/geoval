@@ -66,7 +66,7 @@ Analyser.prototype.analyse = function (cb) {
           var analyRes = SpoofDetector.detectSpoofs(results.trajectories, spoofs);
           answer.push(analyRes);
           Presenter.presentResults(analyRes.results, spoofs, results.trajectories, i);
-          Presenter.createPlotlyGraph(analyRes, 'spatialBuckets');
+          //Presenter.createPlotlyGraph(analyRes, 'spatialBuckets');
         }
       }
       cb(null, answer);
