@@ -75,24 +75,17 @@ SpeedMarkovProb.prototype.training =
         }
       }
     }
-
-    model.speedMarkovProb.globalMarkov = globalMarkov;
-    var probabilities = calculateProbabilities(globalMarkov);
-    model.speedMarkovProb.probabilities = probabilities;
-    model.speedMarkovProb.normalizedMarkov = tools.getNormalizedDistribution(globalMarkov, trajectories);
+    model.speedMarkovProb.globalMarkov = calculateProbabilities(globalMarkov);
     return model;
   }
 
 SpeedMarkovProb.prototype.detection =
   function (model, trajectory) {
     var markovChain = trajectory.featureVector.speedMarkovProb.markovChain;
-    var trajectoryDistribution = tools.getNormalizedDistribution(markovChain, [trajectory]);
-    var modelDistribution = model.speedMarkovProb.normalizedMarkov;
-    //console.log(modelDistribution);
-    var comparisonResult = tools.compareIntMaps(trajectoryDistribution, modelDistribution);
-
+    var modelDistribution = model.speedMarkovProb.globalMarkov;
+    var comparisonResult = tools.compareProbabilityMaps(markovChain, modelDistribution);
     return {
-      isSpoof: (comparisonResult.p < 0.000000000000000000000000000000001),
+      isSpoof: (comparisonResult.p < 5),
       p: comparisonResult.p
     };
   }

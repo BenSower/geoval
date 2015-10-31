@@ -203,9 +203,8 @@ function createRandomTimes(amount) {
 
   for (var i = 0; i < amount; i++) {
     //random time between timestamps 1-60 seconds
-    //time = time + randomIntFromInterval(1000, 1000);
-    //time = 1000;
-    time = time + 1000;
+    //time += randomIntFromInterval(950, 1050);
+    time += 1000;
     times.push(time);
   }
   return times;

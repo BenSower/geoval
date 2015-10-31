@@ -120,7 +120,7 @@ function mergeResults(results) {
     for (var id in trajectories[spoofLvL]) {
       var res = trajectories[spoofLvL][id];
       //is categorized as spoof
-      if (res.isSpoof.length < 4) {
+      if (res.isSpoof.length <= 3) {
         (spoofLvL !== 0 || spoofLvL !== 3) ? correct[spoofLvL]++: incorrect[spoofLvL]++;
         //not categorized as spoof
       } else {

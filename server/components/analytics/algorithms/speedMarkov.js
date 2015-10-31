@@ -95,7 +95,6 @@ SpeedMarkov.prototype.detection =
       }
       probability = probability * transitionProbability;
     }
-
     return {
       isSpoof: probability <= 0, //Math.pow(0.1, 100),
       p: probability
