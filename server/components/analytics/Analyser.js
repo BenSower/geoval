@@ -19,7 +19,7 @@ Analyser.prototype.analyse = function (cb) {
           limit: trainingTrajectoryAmount
         }, function (err, trajectories) {
           if (trajectories.length === 0) {
-            console.log('no training/spoofLvl1 trajectories available');
+            console.log('no training/spoofLvL1 trajectories available');
           }
           callback(err, trajectories);
         });
@@ -63,36 +63,76 @@ Analyser.prototype.analyse = function (cb) {
             });
           }
           console.log('\nAnalyzing LvL' + i + ' trajectories:');
-          var analyRes = SpoofDetector.detectSpoofs(results.trajectories, spoofs);
+          var analyRes = JSON.parse(JSON.stringify(SpoofDetector.detectSpoofs(results.trajectories, spoofs)));
           answer.push(analyRes);
           Presenter.presentResults(analyRes.results, spoofs, results.trajectories, i);
           //Presenter.createPlotlyGraph(analyRes, 'spatialBuckets');
         }
       }
+
       mergeResults(answer);
       cb(null, answer);
     });
 }
 
 function mergeResults(results) {
-  var trajectories = {};
-  for (var spoofLvl = 0; spoofLvl < results.length; spoofLvl++) {
-    var spoofLvLResults = results[spoofLvl].results;
+  var trajectories = {
+    0: {},
+    1: {},
+    2: {}
+  };
+  for (var spoofLvL = 0; spoofLvL < results.length; spoofLvL++) {
+    var spoofLvLResults = results[spoofLvL].results;
     for (var algorithm in spoofLvLResults) {
       var categoryResults = spoofLvLResults[algorithm];
       for (var categoryResultType in categoryResults) {
         var categoryResult = categoryResults[categoryResultType];
         for (var j = 0; j < categoryResult.length; j++) {
           var trajectory = categoryResult[j];
-          trajectories[trajectory._id] = trajectories[trajectory._id] || {};
-          trajectories[trajectory._id][spoofLvl] = {
-
+          trajectories[spoofLvL][trajectory._id] = trajectories[
+            spoofLvL][trajectory._id] || {
+            isSpoof: [],
+            isReal: []
+          };
+          if (categoryResultType === 'realTrajectories' || categoryResultType === 'falseTrajectories') {
+            trajectories[spoofLvL][trajectory._id].isReal.push(algorithm);
+          } else if (categoryResultType === 'spoofs' || categoryResultType === 'falseSpoofs') {
+            trajectories[spoofLvL][trajectory._id].isSpoof.push(algorithm);
+          } else {
+            console.log(categoryResultType);
           }
         }
       }
     }
-
   }
+
+  var correct = {
+    0: 0,
+    1: 0,
+    2: 0
+  };
+  var incorrect = {
+    0: 0,
+    1: 0,
+    2: 0
+  };
+  for (var spoofLvL in trajectories) {
+    for (var id in trajectories[spoofLvL]) {
+      var res = trajectories[spoofLvL][id];
+      //is categorized as spoof
+      if (res.isSpoof.length < 4) {
+        (spoofLvL !== 0 || spoofLvL !== 3) ? correct[spoofLvL]++: incorrect[spoofLvL]++;
+        //not categorized as spoof
+      } else {
+        (spoofLvL === 0 || spoofLvL === 3) ? correct[spoofLvL]++: incorrect[spoofLvL]++;
+      }
+    }
+    var total = correct[spoofLvL] + incorrect[spoofLvL];
+    correct[spoofLvL] = (correct[spoofLvL] / total).toFixed(2) * 100;
+    incorrect[spoofLvL] = (incorrect[spoofLvL] / total).toFixed(2) * 100;
+  }
+  console.log('correct ', correct, 'incorrect', incorrect);
+
 }
 
 module.exports = new Analyser();
