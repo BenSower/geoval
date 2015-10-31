@@ -66,7 +66,7 @@ Analyser.prototype.analyse = function (cb) {
           var analyRes = JSON.parse(JSON.stringify(SpoofDetector.detectSpoofs(results.trajectories, spoofs)));
           answer.push(analyRes);
           Presenter.presentResults(analyRes.results, spoofs, results.trajectories, i);
-          //Presenter.createPlotlyGraph(analyRes, 'spatialBuckets');
+          //Presenter.createPlotlyGraph(analyRes, 'speedMarkovProb');
         }
       }
 
@@ -120,7 +120,7 @@ function mergeResults(results) {
     for (var id in trajectories[spoofLvL]) {
       var res = trajectories[spoofLvL][id];
       //is categorized as spoof
-      if (res.isSpoof.length <= 3) {
+      if (res.isSpoof.length <= 4) {
         (spoofLvL !== 0 || spoofLvL !== 3) ? correct[spoofLvL]++: incorrect[spoofLvL]++;
         //not categorized as spoof
       } else {

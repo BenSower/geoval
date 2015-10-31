@@ -85,7 +85,7 @@ SpeedMarkovProb.prototype.detection =
     var modelDistribution = model.speedMarkovProb.globalMarkov;
     var comparisonResult = tools.compareProbabilityMaps(markovChain, modelDistribution);
     return {
-      isSpoof: (comparisonResult.p < 5),
+      isSpoof: (comparisonResult.p < 1),
       p: comparisonResult.p
     };
   }
