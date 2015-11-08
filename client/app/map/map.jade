@@ -14,10 +14,3 @@ div(ng-include='"components/navbar/navbar.html"')
         label(for="markerToggle") Toggle markers
         button(id="markerToggle", ng-click="toggleMarkers()")
           span Toggle Markers
-        h3 Mouse click position 
-          p(ng-repeat="point in customTrajectory") {{point}}
-          button( class="btn btn-md btn-default", ng-click="clearTrajectory()")
-            span Clear trajectory
-          
-
-

@@ -47,6 +47,13 @@ Analyser.prototype.analyse = function (cb) {
         }, function (err, lvl2spoofs) {
           callback(err, lvl2spoofs);
         });
+      },
+      lvl3spoofs: function (callback) {
+        Trajectory.find({
+          'properties.spoofLvL': 3
+        }, function (err, lvl3spoofs) {
+          callback(err, lvl3spoofs);
+        });
       }
     },
     function (err, results) {
@@ -58,7 +65,7 @@ Analyser.prototype.analyse = function (cb) {
           //HACK to ensure that lvl0 trajectories are counted as spoofs
           if (i === 0) {
             spoofs = spoofs.map(function (a) {
-              a.properties.spoofLvL = 3;
+              a.properties.spoofLvL = 4;
               return a;
             });
           }
@@ -79,7 +86,8 @@ function mergeResults(results) {
   var trajectories = {
     0: {},
     1: {},
-    2: {}
+    2: {},
+    3: {}
   };
   for (var spoofLvL = 0; spoofLvL < results.length; spoofLvL++) {
     var spoofLvLResults = results[spoofLvL].results;
@@ -89,8 +97,7 @@ function mergeResults(results) {
         var categoryResult = categoryResults[categoryResultType];
         for (var j = 0; j < categoryResult.length; j++) {
           var trajectory = categoryResult[j];
-          trajectories[spoofLvL][trajectory._id] = trajectories[
-            spoofLvL][trajectory._id] || {
+          trajectories[spoofLvL][trajectory._id] = trajectories[spoofLvL][trajectory._id] || {
             isSpoof: [],
             isReal: []
           };
@@ -109,22 +116,24 @@ function mergeResults(results) {
   var correct = {
     0: 0,
     1: 0,
-    2: 0
+    2: 0,
+    3: 0
   };
   var incorrect = {
     0: 0,
     1: 0,
-    2: 0
+    2: 0,
+    3: 0
   };
   for (var spoofLvL in trajectories) {
     for (var id in trajectories[spoofLvL]) {
       var res = trajectories[spoofLvL][id];
       //is categorized as spoof
       if (res.isSpoof.length <= 4) {
-        (spoofLvL !== 0 || spoofLvL !== 3) ? correct[spoofLvL]++: incorrect[spoofLvL]++;
+        (spoofLvL !== 0 || spoofLvL !== 4) ? correct[spoofLvL]++: incorrect[spoofLvL]++;
         //not categorized as spoof
       } else {
-        (spoofLvL === 0 || spoofLvL === 3) ? correct[spoofLvL]++: incorrect[spoofLvL]++;
+        (spoofLvL === 0 || spoofLvL === 4) ? correct[spoofLvL]++: incorrect[spoofLvL]++;
       }
     }
     var total = correct[spoofLvL] + incorrect[spoofLvL];

@@ -21,9 +21,9 @@ div(ng-include='"components/navbar/navbar.html"')
         .col-md-4
           select( class="form-control", id="spoofType", ng-model="spoofValue")
             option(value="all", selected) all
-            option(value="1") 1
-            option(value="2") 2
-            option(value="3") 3
+            option(value="1") 1 (completely Random)
+            option(value="2") 2 (based on real streets)
+            option(value="3") 3 (based on real trajectories)
         .col-md-4
           input(type="number", ng-model="spoofAmount")
           button( class="btn btn-md btn-default", ng-click='createFakes(spoofValue)', ladda="isCreatingFakes", data-style="zoom-out", data-spinner-color="#123456") 

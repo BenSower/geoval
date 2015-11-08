@@ -29,7 +29,7 @@ var TrajectorySchema = new Schema({
 });
 
 TrajectorySchema.index({
-  coordinates: '2dsphere'
+  coordinates: '2dsphere',
 });
 
 module.exports = mongoose.model('Trajectory', TrajectorySchema);

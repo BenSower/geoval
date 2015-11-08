@@ -2,13 +2,32 @@
 
 var UUID = require('uuid-js'),
   _ = require('lodash'),
-  geolib = require('geolib');
+  geolib = require('geolib'),
+  async = require('async');
 
 var rekuire = require('rekuire'),
   TrajUtils = rekuire('TrajUtils'),
-  streetsOfMunich = rekuire('streetsMunich.json').features;
+  streetsOfMunich = rekuire('streetsMunich.json').features,
+  Trajectory = rekuire('trajectory.model');
 
-function SpoofFactory() {}
+function SpoofFactory() {
+  var self = this;
+  Trajectory.find({
+      'properties.spoofLvL': 0
+    },
+    function (err, trajectories) {
+      if (err) {
+        return handleError(err, res);
+      }
+      self.rawTrajectories = trajectories;
+      console.log('SpoofFactory initialized with ' + self.rawTrajectories.length + ' trajectories.');
+      if (self.rawTrajectories.length === 0) {
+        console.log('ERROR, no real trajectories registered? Import trajectories and restart!');
+      }
+      return trajectories;
+    }
+  );
+}
 
 //Base is center of munich
 var baseCoordinates = {
@@ -20,9 +39,14 @@ var minLength = 10;
 var maxLength = 100;
 var coordinateGenerators = {
   lvl1: createLvl1Coordinates,
-  lvl2: createLvl2Coordinates
+  lvl2: createLvl2Coordinates,
+  lvl3: createLvl3Coordinates
 };
 
+//HACK: To allow level 3 creation without constant querying
+SpoofFactory.prototype.rawTrajectories = [];
+
+var retries = 0;
 SpoofFactory.prototype.createSpoofSet = function (lvl, amount) {
 
   console.log('creating ' + amount + ' lvl' + lvl + ' spoofed trajectories ');
@@ -37,21 +61,24 @@ SpoofFactory.prototype.createSpoofSet = function (lvl, amount) {
   }
 
   for (var i = 0; i < amount; i++) {
-    createSpoof(lvl, coordinateGenerators['lvl' + lvl], pushFunction);
+    this.createSpoof(lvl, coordinateGenerators['lvl' + lvl], pushFunction);
   }
 
-  if (spoofs.length < amount) {
+  if (spoofs.length < amount && this.retries < 30) {
     var difference = amount - spoofs.length;
     console.log('Not all spoofs satisfied the constraints, trying again for ' + difference + ' spoofs');
+    this.retries++;
     spoofs.concat(this.createSpoofSet(lvl, difference));
+  } else {
+    console.log('ERROR: could not create enough satisfying trajectories');
   }
   return spoofs;
 }
 
-function createSpoof(lvl, coordinateGenerator, cb) {
+SpoofFactory.prototype.createSpoof = function (lvl, coordinateGenerator, cb) {
   var trajLength = getRandInt(minLength, maxLength),
-    coordinates = coordinateGenerator(trajLength),
-    times = createRandomTimes(trajLength);
+    times = createRandomTimes(trajLength),
+    coordinates = coordinateGenerator(trajLength, this);
 
   var spoof = {
     id: getName(lvl),
@@ -63,7 +90,6 @@ function createSpoof(lvl, coordinateGenerator, cb) {
       coordinates: coordinates
     }
   };
-
   TrajUtils.preprocess(spoof, function (err, preprocessedSpoof) {
     if (err) throw err;
     if (preprocessedSpoof !== null && preprocessedSpoof !== undefined) {
@@ -73,27 +99,31 @@ function createSpoof(lvl, coordinateGenerator, cb) {
       return cb(null);
     }
   });
+
 }
 
 /*
-    Returns the geojson of a street, which should have at least 10 nodes.
-    Worst case runtime is infinite. Yeah. I went there.
+    http://www.movable-type.co.uk/scripts/latlong.html
 */
-function getRandStreet(streets) {
-  var street = streets[getRandInt(0, streets.length)];
-  if (street === undefined || street.geometry === undefined || street.geometry.coordinates === undefined) {
-    console.log('Street seems to be empty, trying again', street);
-    return getRandStreet(streets);
-  } else {
-    return (street.geometry.coordinates.length < 10) ? getRandStreet(streets) : street;
+function createLvl1Coordinates(amount) {
+
+  var range = 4 * Math.pow(10, 15);
+  var offsetPow = Math.pow(10, 19);
+  //start point gets bigger offset to diversify the start a little
+  var baseCoordinate = getOffsetForCoordinate(baseCoordinates, range, Math.pow(10, 16.5));
+  var coordinates = [];
+
+  for (var i = 0; i < amount; i++) {
+    //offset points based on baseCoordinate in munich
+    var offsetCoord = getOffsetForCoordinate(baseCoordinate, range, offsetPow);
+    baseCoordinate.lon = offsetCoord.lon;
+    baseCoordinate.lat = offsetCoord.lat;
+    coordinates.push([offsetCoord.lon, offsetCoord.lat]);
   }
+  return coordinates;
 }
 
-function getRandInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-function createLvl2Coordinates(amount) {
+function createLvl2Coordinates(amount, cb) {
 
   var coordinates = [];
   var anchorStreet = getRandStreet(streetsOfMunich);
@@ -126,10 +156,61 @@ function createLvl2Coordinates(amount) {
   return coordinates;
 }
 
+function createLvl3Coordinates(amount, self) {
+
+  function getFuzzedCoordinates(trajectory, amount) {
+    console.log(trajectory.id);
+    var coordinates = trajectory.geometry.coordinates;
+    //cut to appropriate size if original trajectory is too long
+    coordinates = coordinates.slice(0, amount);
+
+    var range = 4 * Math.pow(10, 13);
+    var offsetPow = Math.pow(10, 19);
+
+    var newCoordinates = [];
+
+    for (var i = 0; i < amount; i++) {
+      //offset points based on baseCoordinate in munich
+      var coordinate = coordinates[i];
+      var offsetCoord = getOffsetForCoordinate({
+        lon: coordinate[0],
+        lat: coordinate[1]
+      }, range, offsetPow);
+      console.log(coordinate[1] + ',' + coordinate[0], offsetCoord.lat + ',' + offsetCoord.lon);
+      newCoordinates.push([offsetCoord.lon, offsetCoord.lat]);
+    }
+    return newCoordinates;
+  }
+
+  //select random trajectory
+  var trajectory = self.rawTrajectories[Math.floor(Math.random() * self.rawTrajectories.length)];
+  var retries = 0;
+  while ((trajectory.geometry.coordinates.length < amount && retries < 100) || trajectory.geometry.coordinates[0][0] ===
+    0) {
+    console.log(trajectory.geometry.coordinates[0][0]);
+    trajectory = self.rawTrajectories[Math.floor(Math.random() * self.rawTrajectories.length)];
+    retries++;
+  }
+  return getFuzzedCoordinates(trajectory, amount);
+}
+
 /*
-    Intermediate points on a great circle
-    http://williams.best.vwh.net/avform.htm#Intermediate
+    Returns the geojson of a street, which should have at least 10 nodes.
+    Worst case runtime is infinite. Yeah. I went there.
 */
+function getRandStreet(streets) {
+  var street = streets[getRandInt(0, streets.length)];
+  if (street === undefined || street.geometry === undefined || street.geometry.coordinates === undefined) {
+    console.log('Street seems to be empty, trying again', street);
+    return getRandStreet(streets);
+  } else {
+    return (street.geometry.coordinates.length < 10) ? getRandStreet(streets) : street;
+  }
+}
+
+function getRandInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
 
 function degToRad(d) {
   return d * Math.PI / 180;
@@ -151,7 +232,8 @@ function intermediatePoint(pointA, pointB, f) {
   var lat2 = degToRad(pointB[1]),
     lon2 = degToRad(pointB[0]);
 
-  var distance = 2 * Math.asin(Math.sqrt(Math.pow((Math.sin((lat1 - lat2) / 2)), 2) + Math.cos(lat1) * Math.cos(lat2) *
+  var distance = 2 * Math.asin(Math.sqrt(Math.pow((Math.sin((lat1 - lat2) / 2)), 2) + Math.cos(lat1) * Math.cos(
+      lat2) *
     Math.pow(Math.sin((lon1 - lon2) / 2), 2)));
   var A = Math.sin((1 - f) * distance) / Math.sin(distance);
   var B = Math.sin(f * distance) / Math.sin(distance);
@@ -163,27 +245,6 @@ function intermediatePoint(pointA, pointB, f) {
 
   var intermediatePoint = [radToDeg(lon), radToDeg(lat)];
   return intermediatePoint;
-}
-
-/*
-    http://www.movable-type.co.uk/scripts/latlong.html
-*/
-function createLvl1Coordinates(amount) {
-
-  var range = 4 * Math.pow(10, 15);
-  var offsetPow = Math.pow(10, 19);
-  //start point gets bigger offset to diversify the start a little
-  var baseCoordinate = getOffsetForCoordinate(baseCoordinates, range, Math.pow(10, 16.5));
-  var coordinates = [];
-
-  for (var i = 0; i < amount; i++) {
-    //offset points based on baseCoordinate in munich
-    var offsetCoord = getOffsetForCoordinate(baseCoordinate, range, offsetPow);
-    baseCoordinate.lon = offsetCoord.lon;
-    baseCoordinate.lat = offsetCoord.lat;
-    coordinates.push([offsetCoord.lon, offsetCoord.lat]);
-  }
-  return coordinates;
 }
 
 function getOffsetForCoordinate(baseCoordinate, range, offsetPow) {
