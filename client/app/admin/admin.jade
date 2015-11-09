@@ -18,16 +18,24 @@ div(ng-include='"components/navbar/navbar.html"')
     .col-md-4
       p
         h4 Create Spoof Trajectories
-        .col-md-4
-          select( class="form-control", id="spoofType", ng-model="spoofValue")
-            option(value="all", selected) all
-            option(value="1") 1 (completely Random)
-            option(value="2") 2 (based on real streets)
-            option(value="3") 3 (based on real trajectories)
-        .col-md-4
-          input(type="number", ng-model="spoofAmount")
-          button( class="btn btn-md btn-default", ng-click='createFakes(spoofValue)', ladda="isCreatingFakes", data-style="zoom-out", data-spinner-color="#123456") 
-            span( class="ladda-label") {{creatingFakes}}
+        form.form-horizontal
+          .form-group
+              label.col-sm-2.control-label(for='spoofType') Type
+              .col-sm-10
+                select( class="form-control", id="spoofType", ng-model="spoofValue")
+                  option(value="all", selected) all
+                  option(value="1") 1 (completely Random)
+                  option(value="2") 2 (based on real streets)
+                  option(value="3") 3 (based on real trajectories)
+            .form-group
+              label.col-sm-2.control-label(for='spoofAmountInput') Amount
+              .col-sm-10
+                input(id="spoofAmountInput", type="number", class="form-control", ng-model="spoofAmount")
+            .form-group
+              .col-sm-offset-2.col-sm-10
+                button( class="btn btn-md btn-default", ng-click='createFakes(spoofValue)', ladda="isCreatingFakes", data-style="zoom-out", data-spinner-color="#123456") 
+                  span( class="ladda-label") {{creatingFakes}}
+
     p
     | The delete user and user index api routes are restricted to users with the 'admin' role.
   ul.list-group

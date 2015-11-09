@@ -69,8 +69,6 @@ SpoofFactory.prototype.createSpoofSet = function (lvl, amount) {
     console.log('Not all spoofs satisfied the constraints, trying again for ' + difference + ' spoofs');
     this.retries++;
     spoofs.concat(this.createSpoofSet(lvl, difference));
-  } else {
-    console.log('ERROR: could not create enough satisfying trajectories');
   }
   return spoofs;
 }

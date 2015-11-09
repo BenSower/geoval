@@ -51,7 +51,7 @@ TrajUtils.prototype.preprocess = function (trajectory, cb) {
 
 function trajectoryConstraintsCheck(trajectory) {
   //skip trajectories with 1 or less points
-  var containsMoreThenOnePoint = (trajectory.geometry.coordinates.length > 1);
+  var containsMoreThenOnePoint = (trajectory.geometry.coordinates.length > 10);
   var hasNoBrokenCoordinates = true;
   for (var i = 0; i < trajectory.geometry.coordinates.length; i++) {
     var lon = trajectory.geometry.coordinates[i][0];
@@ -67,7 +67,7 @@ function trajectoryConstraintsCheck(trajectory) {
 
 function fvConstraintsCheck(fv) {
   //skip trajectories with too big outliers
-  var maxOutlierThreshold = 100;
+  var maxOutlierThreshold = 200;
   var hasNoBigOutliers = fv.spatialDistance.biggestDistance < maxOutlierThreshold;
   return hasNoBigOutliers;
 }

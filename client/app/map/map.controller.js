@@ -67,8 +67,8 @@ angular.module('geovalApp')
     };
 
     $scope.sliderOptions = {
-      min: 10,
-      max: 8000,
+      min: 1,
+      max: 200,
       step: 10,
       orientation: 'horizontal', // vertical
       handle: 'round', //'square', 'triangle' or 'custom'
@@ -81,6 +81,7 @@ angular.module('geovalApp')
       reversed: false,
       loadedTrajectories: 0,
       renderedTrajectories: 0,
+      lengthMax: 500,
       trajectoryLengthConstraint: 50, //threshold to drop trajectories with fewer than x coordinates
       thresholdValue: 10, //threshold to drop trajectories in km,
     };
@@ -170,7 +171,8 @@ angular.module('geovalApp')
     //drops all trajectories with a outlier
     function simpleOutlierRemoval(trajectory) {
       var threshold = $scope.sliderOptions.thresholdValue;
-      if (trajectory.properties.outlierThreshold > threshold ||  trajectory.geometry.coordinates.length < $scope.sliderOptions
+      if (trajectory.featureVector.spatialBuckets.biggestDistance > threshold ||  trajectory.geometry.coordinates.length <
+        $scope.sliderOptions
         .trajectoryLengthConstraint) {
         return null;
       }

@@ -10,7 +10,7 @@ div(ng-include='"components/navbar/navbar.html"')
         label(for="thresholdSlider") Current threshold lvl: {{sliderOptions.thresholdValue}} m ({{sliderOptions.renderedTrajectories}}/{{sliderOptions.loadedTrajectories}} trajectories rendered)
         slider(id="thresholdSlider", ng-model="sliderOptions.thresholdValue", min="sliderOptions.min", step="sliderOptions.step", max="sliderOptions.max", value="sliderOptions.thresholdValue", on-stop-slide="onStopSlide()")
         label(for="lengthSlider") Current length: {{sliderOptions.trajectoryLengthConstraint}} coordinates
-        slider(id="lengthSlider", ng-model="sliderOptions.trajectoryLengthConstraint", min="sliderOptions.min", step="sliderOptions.step", max="sliderOptions.max/2", value="sliderOptions.trajectoryLengthConstraint", on-stop-slide="onStopSlide()")
+        slider(id="lengthSlider", ng-model="sliderOptions.trajectoryLengthConstraint", min="sliderOptions.min", step="sliderOptions.step", max="sliderOptions.lengthMax", value="sliderOptions.trajectoryLengthConstraint", on-stop-slide="onStopSlide()")
         label(for="markerToggle") Toggle markers
-        button(id="markerToggle", ng-click="toggleMarkers()")
+        button(id="markerToggle", class="btn btn-default", ng-click="toggleMarkers()")
           span Toggle Markers
