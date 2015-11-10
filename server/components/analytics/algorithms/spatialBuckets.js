@@ -1,5 +1,4 @@
 var geolib = require('geolib');
-
 var tools = require('../AnalyticalTools');
 
 function SpatialBuckets() {}
@@ -39,11 +38,7 @@ SpatialBuckets.prototype.extractFeatures =
         distribution.smallestDistance = distance;
       }
 
-      if (distribution[distance] === undefined) {
-        distribution[distance] = 1;
-      } else {
-        distribution[distance]++;
-      }
+      distribution[distance] = distribution[distance] + 1 || 1;
     }
 
     //set median
