@@ -11,9 +11,11 @@ function SpatialBuckets() {}
 SpatialBuckets.prototype.extractFeatures =
   function (trajectory) {
     var distribution = {
-      'biggestDistance': 0
+      'biggestDistance': 0,
+      'smallestDistance': 9999
     };
 
+    var sum = 0;
     //calculate distances between every coordinate and the next one
     for (var i = 0; i < trajectory.geometry.coordinates.length - 1; i++) {
       var firstCoordinate = trajectory.geometry.coordinates[i];
@@ -27,9 +29,14 @@ SpatialBuckets.prototype.extractFeatures =
       }, 1);
 
       distance = Math.round(distance);
+      sum += distance;
 
       if (distance > distribution.biggestDistance) {
         distribution.biggestDistance = distance;
+      }
+
+      if (distance < distribution.smallestDistance) {
+        distribution.smallestDistance = distance;
       }
 
       //var bucketedDistance = Math.round(distance / 10) * 10
@@ -40,6 +47,9 @@ SpatialBuckets.prototype.extractFeatures =
       }
     }
 
+    //set median
+    distribution.mean = sum / (trajectory.geometry.coordinates.length - 1);
+
     if (distribution === undefined) {
       log_info('Error creating getOutlierProperties!');
       return null;
@@ -49,29 +59,18 @@ SpatialBuckets.prototype.extractFeatures =
 
 SpatialBuckets.prototype.training =
   function (model, trajectories) {
-    var bucketCount = 0;
+    var sum = 0;
     var minBucketSum = 0;
     var maxBucketSum = 0;
-
-    var minRed = function (a, b) {
-      if (b === 'biggestDistance')
-        return a;
-      else
-        return Math.min(a, b);
-    };
 
     for (var i = 0; i < trajectories.length; i++) {
       var trajectory = trajectories[i];
       var distribution = trajectory.featureVector.spatialBuckets;
-      bucketCount += Object.keys(distribution).length;
+      sum += distribution.mean;
       maxBucketSum += distribution.biggestDistance;
-      //console.log(distribution.biggestDistance);
-      var buckets = Object.keys(distribution);
-      var smallesBucket = buckets.reduce(minRed);
-
-      minBucketSum += smallesBucket;
+      minBucketSum += distribution.smallestDistance;
     }
-    model.spatialBuckets.avrgBucketCount = bucketCount / trajectories.length;
+    model.spatialBuckets.totalMean = sum / trajectories.length;
     model.spatialBuckets.avrgMinBucket = Math.min(0, minBucketSum / trajectories.length);
     model.spatialBuckets.avrgMaxBucket = maxBucketSum / trajectories.length;
     //console.log(model);
@@ -80,22 +79,20 @@ SpatialBuckets.prototype.training =
 
 SpatialBuckets.prototype.detection =
   function (model, trajectory) {
-    var bucketCount = Object.keys(trajectory.featureVector.spatialBuckets).length;
+    var mean = trajectory.featureVector.spatialBuckets.mean;
+    var meanToMin = model.spatialBuckets.totalMean - model.spatialBuckets.avrgMinBucket;
+    var meanToMax = model.spatialBuckets.avrgMaxBucket - model.spatialBuckets.totalMean;
+    var maxDistToMedian = Math.max(meanToMin, meanToMax);
 
-    var isInAvrgRange = (bucketCount > model.spatialBuckets.avrgMinBucket && bucketCount < model.spatialBuckets.avrgMaxBucket);
-    var maxDistToMedian = Math.max(model.spatialBuckets.avrgBucketCount - model.spatialBuckets.avrgMinBucket, model.spatialBuckets
-      .avrgMaxBucket - model.spatialBuckets.avrgBucketCount);
-    //probability in percent, that the trajectory is real
+    var isInInterval = (mean >= model.spatialBuckets.avrgMinBucket && mean <= model.spatialBuckets.avrgMaxBucket);
     var p = 0;
-
-    if (isInAvrgRange) {
-      //p = (maxDistToMedian - bucketCount) / maxDistToMedian * 100;
-      p = Math.pow((maxDistToMedian - bucketCount) / maxDistToMedian, 2) * 100;
-      //p = p.toFixed(2);
+    //probability in percent, that the trajectory is real
+    if (isInInterval) {
+      p = (maxDistToMedian - mean) / maxDistToMedian * 100;
     }
 
     return {
-      isSpoof: p < 1,
+      isSpoof: p < 60,
       p: p
     };
   }

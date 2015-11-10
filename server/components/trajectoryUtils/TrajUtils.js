@@ -51,7 +51,7 @@ TrajUtils.prototype.preprocess = function (trajectory, cb) {
 
 function trajectoryConstraintsCheck(trajectory) {
   //skip trajectories with 1 or less points
-  var containsMoreThenOnePoint = (trajectory.geometry.coordinates.length > 10);
+  var containsMoreThenOnePoint = (trajectory.geometry.coordinates.length > 5);
   var hasNoBrokenCoordinates = true;
   for (var i = 0; i < trajectory.geometry.coordinates.length; i++) {
     var lon = trajectory.geometry.coordinates[i][0];

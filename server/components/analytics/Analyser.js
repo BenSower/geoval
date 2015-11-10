@@ -2,7 +2,8 @@
 var SpoofDetector = require('./SpoofDetector'),
   async = require('async'),
   Presenter = require('./Presenter'),
-  mongoose = require('mongoose');
+  mongoose = require('mongoose'),
+  _ = require('lodash');
 
 var Trajectory = mongoose.model('Trajectory');
 
@@ -70,7 +71,8 @@ Analyser.prototype.analyse = function (cb) {
             });
           }
           console.log('\nAnalyzing LvL' + i + ' trajectories:');
-          var analyRes = JSON.parse(JSON.stringify(SpoofDetector.detectSpoofs(results.trajectories, spoofs)));
+          //var analyRes = JSON.parse(JSON.stringify(SpoofDetector.detectSpoofs(results.trajectories, spoofs)));
+          var analyRes = _.clone(SpoofDetector.detectSpoofs(results.trajectories, spoofs));
           answer.push(analyRes);
           Presenter.presentResults(analyRes.results, spoofs, results.trajectories, i);
           //Presenter.createPlotlyGraph(analyRes, 'speedMarkovProb');

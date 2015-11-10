@@ -174,7 +174,7 @@ function createLvl3Coordinates(amount, self) {
         lon: coordinate[0],
         lat: coordinate[1]
       }, range, offsetPow);
-      console.log(coordinate[1] + ',' + coordinate[0], offsetCoord.lat + ',' + offsetCoord.lon);
+      //console.log(coordinate[1] + ',' + coordinate[0], offsetCoord.lat + ',' + offsetCoord.lon);
       newCoordinates.push([offsetCoord.lon, offsetCoord.lat]);
     }
     return newCoordinates;
