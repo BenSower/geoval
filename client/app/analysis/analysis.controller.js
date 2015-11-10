@@ -86,7 +86,7 @@ angular.module('geovalApp')
       var data = [];
 
       data.push({
-        key: 'SpatialModelNormalized',
+        key: 'LvL0',
         values: mapToArray(result[0].model.spatialDistance.normalizedDistribution)
       });
 
@@ -98,6 +98,11 @@ angular.module('geovalApp')
       data.push({
         key: 'Lvl2',
         values: getLineDataValues(2, 'spatialDistance')
+      });
+
+      data.push({
+        key: 'Lvl3',
+        values: getLineDataValues(3, 'spatialDistance')
       });
       return data;
     }

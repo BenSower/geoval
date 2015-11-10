@@ -157,7 +157,6 @@ function createLvl2Coordinates(amount, cb) {
 function createLvl3Coordinates(amount, self) {
 
   function getFuzzedCoordinates(trajectory, amount) {
-    console.log(trajectory.id);
     var coordinates = trajectory.geometry.coordinates;
     //cut to appropriate size if original trajectory is too long
     coordinates = coordinates.slice(0, amount);
@@ -185,7 +184,6 @@ function createLvl3Coordinates(amount, self) {
   var retries = 0;
   while ((trajectory.geometry.coordinates.length < amount && retries < 100) || trajectory.geometry.coordinates[0][0] ===
     0) {
-    console.log(trajectory.geometry.coordinates[0][0]);
     trajectory = self.rawTrajectories[Math.floor(Math.random() * self.rawTrajectories.length)];
     retries++;
   }

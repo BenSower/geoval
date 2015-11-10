@@ -28,7 +28,7 @@ SpatialBuckets.prototype.extractFeatures =
         longitude: secondCoordinate[0]
       }, 1);
 
-      distance = Math.round(distance);
+      //distance = Math.round(distance);
       sum += distance;
 
       if (distance > distribution.biggestDistance) {
@@ -39,7 +39,6 @@ SpatialBuckets.prototype.extractFeatures =
         distribution.smallestDistance = distance;
       }
 
-      //var bucketedDistance = Math.round(distance / 10) * 10
       if (distribution[distance] === undefined) {
         distribution[distance] = 1;
       } else {
@@ -73,7 +72,6 @@ SpatialBuckets.prototype.training =
     model.spatialBuckets.totalMean = sum / trajectories.length;
     model.spatialBuckets.avrgMinBucket = Math.min(0, minBucketSum / trajectories.length);
     model.spatialBuckets.avrgMaxBucket = maxBucketSum / trajectories.length;
-    //console.log(model);
     return model;
   }
 
@@ -92,7 +90,7 @@ SpatialBuckets.prototype.detection =
     }
 
     return {
-      isSpoof: p < 60,
+      isSpoof: p < 50,
       p: p
     };
   }

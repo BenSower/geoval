@@ -71,15 +71,15 @@ Analyser.prototype.analyse = function (cb) {
             });
           }
           console.log('\nAnalyzing LvL' + i + ' trajectories:');
-          //var analyRes = JSON.parse(JSON.stringify(SpoofDetector.detectSpoofs(results.trajectories, spoofs)));
-          var analyRes = _.clone(SpoofDetector.detectSpoofs(results.trajectories, spoofs));
+          var analyRes = JSON.parse(JSON.stringify(SpoofDetector.detectSpoofs(results.trajectories, spoofs)));
+          //var analyRes = _.clone(SpoofDetector.detectSpoofs(results.trajectories, spoofs));
           answer.push(analyRes);
           Presenter.presentResults(analyRes.results, spoofs, results.trajectories, i);
           //Presenter.createPlotlyGraph(analyRes, 'speedMarkovProb');
         }
       }
 
-      mergeResults(answer);
+      answer = mergeResults(answer);
       cb(null, answer);
     });
 }
@@ -127,15 +127,18 @@ function mergeResults(results) {
     2: 0,
     3: 0
   };
+
   for (var spoofLvL in trajectories) {
     for (var id in trajectories[spoofLvL]) {
       var res = trajectories[spoofLvL][id];
-      //is categorized as spoof
-      if (res.isSpoof.length <= 4) {
+      if (res.isReal.length < 4) {
+        //is categorized as spoof
         (spoofLvL !== 0 || spoofLvL !== 4) ? correct[spoofLvL]++: incorrect[spoofLvL]++;
-        //not categorized as spoof
+        setResult(id, 'spoof');
       } else {
+        //not categorized as spoof
         (spoofLvL === 0 || spoofLvL === 4) ? correct[spoofLvL]++: incorrect[spoofLvL]++;
+        setResult(id, 'real');
       }
     }
     var total = correct[spoofLvL] + incorrect[spoofLvL];
@@ -143,7 +146,21 @@ function mergeResults(results) {
     incorrect[spoofLvL] = (incorrect[spoofLvL] / total).toFixed(2) * 100;
   }
   console.log('correct ', correct, 'incorrect', incorrect);
+  return results;
+}
 
+function setResult(uid, result) {
+  Trajectory.findById(uid, function (err, trajectory) {
+    if (!trajectory)
+      return next(new Error('Could not load Document'));
+    else {
+      trajectory.properties.analysisResult = result;
+      trajectory.save(function (err) {
+        if (err)
+          console.log('error')
+      });
+    }
+  });
 }
 
 module.exports = new Analyser();
