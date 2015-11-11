@@ -60,9 +60,9 @@ SpatialDistance.prototype.detection =
     var trajectoryDistribution = tools.getNormalizedDistribution(trajectory.featureVector.spatialDistance, [trajectory]);
     var modelDistribution = model.spatialDistance.normalizedDistribution;
     var comparisonResult = tools.compareIntMaps(trajectoryDistribution, modelDistribution);
-
+    comparisonResult.p = comparisonResult.p * 100;
     return {
-      isSpoof: comparisonResult.p < 1 || (comparisonResult.missPercentage >= 60),
+      isSpoof: comparisonResult.p < 1 || (comparisonResult.missPercentage >= 40),
       p: comparisonResult.p
     };
   }

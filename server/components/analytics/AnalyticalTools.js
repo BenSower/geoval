@@ -13,9 +13,17 @@ AnalyticalTools.prototype.compareIntMaps = function (vectorA, vectorB) {
     if (vectorB[key] !== undefined) {
       var valA = vectorA[key];
       var valB = vectorB[key];
-      var diff = (valA > valB) ? valB / valA : valA / valB;
-      //perceńtage of how close the values are to each other in this bucket
-      diffs.push(diff * 100);
+      var diff = 0;
+      if (valA === 0 || valB === 0) {
+        diff = 0
+      } else {
+        diff = (valA > valB) ? valB / valA : valA / valB;
+      }
+
+      //percentage of how close the values are to each other in this bucket
+      var div = div * 100;
+      //var diff = Math.max(0, (valB - Math.abs(valB - valA)) / valB) * 100;
+      diffs.push(diff);
     } else {
       diffs.push(0);
       misses++;
@@ -26,8 +34,7 @@ AnalyticalTools.prototype.compareIntMaps = function (vectorA, vectorB) {
     return a + b;
   }, 0);
 
-  var possibleKeys = Object.keys(vectorA).length;
-  var p = (sum / possibleKeys);
+  var p = (sum / diffs.length);
 
   return {
     p: p,
