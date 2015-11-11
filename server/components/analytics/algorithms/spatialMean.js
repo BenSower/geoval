@@ -61,25 +61,26 @@ SpatialMean.prototype.training =
       maxBucketSum += distribution.biggestDistance;
       minBucketSum += distribution.smallestDistance;
     }
-    model.spatialMean.totalMean = sum / trajectories.length;
-    model.spatialMean.avrgMinBucket = Math.min(0, minBucketSum / trajectories.length);
-    model.spatialMean.avrgMaxBucket = maxBucketSum / trajectories.length;
+    model.spatialMean.avrgMean = sum / trajectories.length;
+    model.spatialMean.avrgMin = minBucketSum / trajectories.length;
+    model.spatialMean.avrgMax = maxBucketSum / trajectories.length;
     return model;
   }
 
 SpatialMean.prototype.detection =
   function (model, trajectory) {
     var mean = trajectory.featureVector.spatialMean.mean;
-    var meanToMin = model.spatialMean.totalMean - model.spatialMean.avrgMinBucket;
-    var meanToMax = model.spatialMean.avrgMaxBucket - model.spatialMean.totalMean;
-    var maxDistToMedian = Math.max(meanToMin, meanToMax);
-    //var maxDistToMedian = model.spatialMean.avrgMaxBucket - model.spatialMean.avrgMinBucket;
-    //var isInInterval = (mean >= model.spatialMean.avrgMinBucket && mean <= model.spatialMean.avrgMaxBucket);
+    var meanToMin = model.spatialMean.avrgMean - model.spatialMean.avrgMin;
+    var meanToMax = model.spatialMean.avrgMax - model.spatialMean.avrgMean;
+    var maxDistToMean = Math.max(meanToMin, meanToMax);
+    //var maxDistToMean = model.spatialMean.avrgMax - model.spatialMean.avrgMin;
+    //var isInInterval = (mean >= model.spatialMean.avrgMin && mean <= model.spatialMean.avrgMax);
     var p = 0;
-    p = Math.abs(maxDistToMedian - mean) / maxDistToMedian * 100;
+    var meanDiff = Math.abs(model.spatialMean.avrgMean - mean);
+    p = Math.max(0, maxDistToMean - meanDiff) / maxDistToMean * 100;
 
     return {
-      isSpoof: p < 60,
+      isSpoof: p < 70,
       p: p
     };
   }

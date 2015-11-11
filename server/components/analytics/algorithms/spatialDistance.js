@@ -1,5 +1,4 @@
 var geolib = require('geolib');
-
 var tools = require('../AnalyticalTools');
 
 function SpatialDistance() {}
@@ -10,9 +9,7 @@ function SpatialDistance() {}
 */
 SpatialDistance.prototype.extractFeatures =
   function (trajectory) {
-    var spatialDistances = {
-      'biggestDistance': 0
-    };
+    var spatialDistances = {};
     //calculate distances between every coordinate and the next one
     for (var i = 0; i < trajectory.geometry.coordinates.length - 1; i++) {
       var firstCoordinate = trajectory.geometry.coordinates[i];
@@ -26,17 +23,7 @@ SpatialDistance.prototype.extractFeatures =
       }, 1);
 
       distance = Math.round(distance);
-
-      if (distance > spatialDistances.biggestDistance) {
-        spatialDistances.biggestDistance = distance;
-      }
-
-      //var bucketedDistance = Math.round(distance / 10) * 10
-      if (spatialDistances[distance] === undefined) {
-        spatialDistances[distance] = 1;
-      } else {
-        spatialDistances[distance]++;
-      }
+      spatialDistances[distance] = spatialDistances[distance] + 1 || 1;
     }
 
     if (spatialDistances === undefined) {
