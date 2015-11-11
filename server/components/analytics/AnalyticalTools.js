@@ -15,11 +15,11 @@ AnalyticalTools.prototype.compareIntMaps = function (vectorA, vectorB) {
       var valB = vectorB[key];
       var diff = 0;
 
-      if (valA === 0 || valB === 0) {
-        diff = 0
-      } else {
-        diff = (valA > valB) ? valB / valA : valA / valB;
-      }
+      /*  if (valA === 0 || valB === 0) {
+          diff = 0
+        } else {*/
+      diff = (valA > valB) ? valB / valA : valA / valB;
+      //  }
       //percentage of how close the values are to each other in this bucket
       var div = div * 100;
       //var diff = Math.max(0, (valB - Math.abs(valB - valA)) / valB) * 100;

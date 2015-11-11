@@ -45,11 +45,8 @@ angular.module('geovalApp')
       var trajectories = getTrajectoriesForLevel(lvl);
       trajectories.map(function (trajectory) {
 
-        for (var key in trajectory.featureVector[type]) {
-
-          if (key !== 'biggestDistance') {
-            absoluteDistribution[key] = absoluteDistribution[key] + 1 || 1;
-          }
+        for (var key in trajectory.featureVector[type].absoluteDistribution) {
+          absoluteDistribution[key] = absoluteDistribution[key] + 1 || 1;
         }
       });
       var normalizedDistribution = getNormalizedDistribution(absoluteDistribution, trajectories);

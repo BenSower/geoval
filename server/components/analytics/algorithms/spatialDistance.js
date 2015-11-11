@@ -31,15 +31,15 @@ SpatialDistance.prototype.extractFeatures =
       if (distance > spatialDistances.biggestDistance) {
         spatialDistances.biggestDistance = distance;
       }
-      spatialDistances.absoluteDistribution[distance] = spatialDistances.absoluteDistribution[distance] + 1 || 1;
+      spatialDistances.absoluteDistribution[distance] = spatialDistances.absoluteDistribution[distance] + 1 ||
+        1;
     }
-
     spatialDistances.normalizedDistribution = tools.getNormalizedDistribution(spatialDistances.absoluteDistribution, [
       trajectory
     ]);
 
     if (spatialDistances === undefined) {
-      log_info('Error creating getOutlierProperties!');
+      log_info('Error creating Spatial Distance Feature Vector!');
       return null;
     }
     return spatialDistances;
@@ -67,6 +67,7 @@ SpatialDistance.prototype.detection =
     var modelDistribution = model.spatialDistance.normalizedDistribution;
     var comparisonResult = tools.compareIntMaps(trajectoryDistribution, modelDistribution);
     comparisonResult.p = comparisonResult.p * 100;
+    //console.log(comparisonResult.p, comparisonResult.missPercentage);
     return {
       isSpoof: comparisonResult.p < 1 || (comparisonResult.missPercentage >= 40),
       p: comparisonResult.p
