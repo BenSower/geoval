@@ -78,13 +78,9 @@ AnalyticalTools.prototype.getNormalizedDistribution = function (absoluteDistribu
   var nodePoints = trajectories.reduce(function (accum, trajB) {
     return accum + trajB.geometry.coordinates.length;
   }, 0);
-  if (trajectories.length > 1) {
-    //normalizing/averaging every bucket value
-    for (var bucket in normalizedDistribution) {
-      if (normalizedDistribution.hasOwnProperty(bucket)) {
-        normalizedDistribution[bucket] = (normalizedDistribution[bucket] / nodePoints);
-      }
-    }
+  //normalizing/averaging every bucket value
+  for (var bucket in absoluteDistribution) {
+    normalizedDistribution[bucket] = (normalizedDistribution[bucket] / nodePoints);
   }
   return normalizedDistribution;
 }

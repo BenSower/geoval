@@ -9,7 +9,9 @@ function SpatialDistance() {}
 */
 SpatialDistance.prototype.extractFeatures =
   function (trajectory) {
-    var spatialDistances = {};
+    var spatialDistances = {
+      'biggestDistance': 0
+    };
     //calculate distances between every coordinate and the next one
     for (var i = 0; i < trajectory.geometry.coordinates.length - 1; i++) {
       var firstCoordinate = trajectory.geometry.coordinates[i];
@@ -23,6 +25,10 @@ SpatialDistance.prototype.extractFeatures =
       }, 1);
 
       distance = Math.round(distance);
+
+      if (distance > spatialDistances.biggestDistance) {
+        spatialDistances.biggestDistance = distance;
+      }
       spatialDistances[distance] = spatialDistances[distance] + 1 || 1;
     }
 
@@ -51,12 +57,12 @@ SpatialDistance.prototype.training =
 
 SpatialDistance.prototype.detection =
   function (model, trajectory) {
-    var trajectoryDistribution = trajectory.featureVector.spatialDistance;
+    var trajectoryDistribution = tools.getNormalizedDistribution(trajectory.featureVector.spatialDistance, [trajectory]);
     var modelDistribution = model.spatialDistance.normalizedDistribution;
     var comparisonResult = tools.compareIntMaps(trajectoryDistribution, modelDistribution);
 
     return {
-      isSpoof: comparisonResult.p < 0.08 || (comparisonResult.missPercentage >= 60),
+      isSpoof: comparisonResult.p < 1 || (comparisonResult.missPercentage >= 60),
       p: comparisonResult.p
     };
   }
