@@ -8,14 +8,14 @@ div(ng-include='"components/navbar/navbar.html"')
               tr
                 th(ts-criteria="id|lowercase") Name
                 th(ts-criteria="featureVector.sampleAmount", ts-default='descending') Length
-                th(ts-criteria="featureVector.spatialBuckets.biggestDistance") Max dist
+                th(ts-criteria="featureVector.spatialMean.biggestDistance") Max dist
                 th(ts-criteria="properties.spoofLvL") Type
                 th(ts-criteria="properties.analysisResult") analysisResult
             tbody(ng-repeat='trajectory in rawTrajectories', ts-repeat='')
               tr
                 td {{trajectory.id}}
                 td {{trajectory.featureVector.sampleAmount}}
-                td {{trajectory.featureVector.spatialBuckets.biggestDistance}}m
+                td {{trajectory.featureVector.spatialMean.biggestDistance}}m
                 td {{trajectory.properties.spoofLvL}}
                 td {{trajectory.properties.analysisResult}}
                 td 

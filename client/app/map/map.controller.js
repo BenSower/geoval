@@ -130,7 +130,7 @@ angular.module('geovalApp')
 
         if (traj.geometry.coordinates[0]) {
           var labelMessage = '<h5>' + traj.id + '</h5>' + 'Coordinates: ' + traj.geometry.coordinates.length +
-            '<br/> Outlier Threshold: ' + traj.featureVector.spatialBuckets.biggestDistance + 'm' + '<br/> Device: ' +
+            '<br/> Outlier Threshold: ' + traj.featureVector.spatialMean.biggestDistance + 'm' + '<br/> Device: ' +
             os;
           var marker = {
             name: traj.id,
@@ -171,7 +171,7 @@ angular.module('geovalApp')
     //drops all trajectories with a outlier
     function simpleOutlierRemoval(trajectory) {
       var threshold = $scope.sliderOptions.thresholdValue;
-      if (trajectory.featureVector.spatialBuckets.biggestDistance > threshold ||  trajectory.geometry.coordinates.length <
+      if (trajectory.featureVector.spatialMean.biggestDistance > threshold ||  trajectory.geometry.coordinates.length <
         $scope.sliderOptions
         .trajectoryLengthConstraint) {
         return null;
