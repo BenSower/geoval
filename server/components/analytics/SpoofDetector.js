@@ -14,9 +14,8 @@ SpoofDetector.prototype.detectionAlgorithms = {};
 function SpoofDetector() {
   var self = this;
   var normalizedAlgorithmPath = path.join(__dirname, 'algorithms');
-
   fs.readdirSync(normalizedAlgorithmPath).forEach(function (file) {
-    var algorithm = require('./algorithms/' + file);
+    var algorithm = require(path.join(normalizedAlgorithmPath, file));
     var algorithmName = path.basename(file, '.js');
     self.trainingAlgorithms[algorithmName] = algorithm.training;
     self.detectionAlgorithms[algorithmName] = algorithm.detection;

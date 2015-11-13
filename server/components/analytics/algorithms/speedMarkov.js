@@ -84,7 +84,7 @@ SpeedMarkov.prototype.training =
 
 SpeedMarkov.prototype.detection =
   function (model, trajectory) {
-    var probability = 1;
+    var probs = [];
     var speedSequence = trajectory.featureVector.speedMarkov.speedSequence;
     for (var i = 0; i < speedSequence.length - 1; i++) {
       var speed1 = speedSequence[i];
@@ -93,10 +93,13 @@ SpeedMarkov.prototype.detection =
       if (model.speedMarkov.probabilities[speed1] !== undefined) {
         transitionProbability = model.speedMarkov.probabilities[speed1][speed2] || 0;
       }
-      probability = probability * transitionProbability;
+      probs.push(transitionProbability);
     }
+    var probability = probs.reduce(function (a, b) {
+      return a + b / probs.length;
+    }) * 100;
     return {
-      isSpoof: probability <= 0, //Math.pow(0.1, 100),
+      isSpoof: probability < 20,
       p: probability
     };
   }
