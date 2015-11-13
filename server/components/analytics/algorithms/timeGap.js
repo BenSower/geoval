@@ -15,7 +15,9 @@ TimeGap.prototype.extractFeatures =
       var coordinateB = new Date(trajectory.properties.coordTimes[j + 1]);
       var diff = coordinateB.getTime() - coordinateA.getTime();
       //initialize or increment
-      timeGap.absoluteDistribution[diff] = timeGap.absoluteDistribution[diff] + 1 || 1;
+      if (diff <= 5000) {
+        timeGap.absoluteDistribution[diff] = timeGap.absoluteDistribution[diff] + 1 || 1;
+      }
     }
     timeGap.normalizedDistribution = tools.getNormalizedDistribution(timeGap.absoluteDistribution, [trajectory]);
     return timeGap;
