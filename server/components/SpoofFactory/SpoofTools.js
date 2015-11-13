@@ -16,10 +16,6 @@ SpoofTools.prototype.getRandStreet = function (streets) {
   }
 }
 
-SpoofTools.prototype.getRandInt = function (min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
 SpoofTools.prototype.degToRad = function (d) {
   return d * Math.PI / 180;
 }
@@ -73,15 +69,14 @@ SpoofTools.prototype.createRandomTimes = function (amount) {
   var time = d.getTime();
 
   for (var i = 0; i < amount; i++) {
-    //random time between timestamps 1-60 seconds
-    //time += randomIntFromInterval(950, 1050);
+
     time += 1000;
     times.push(time);
   }
   return times;
 }
 
-SpoofTools.prototype.randomIntFromInterval = function (min, max) {
+SpoofTools.prototype.getRandInt = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 

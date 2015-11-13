@@ -10,13 +10,9 @@ Level2.prototype.generateSpoof = function (amount) {
   var anchorStreet = tools.getRandStreet(streetsOfMunich);
   //number of intervals between street points
   var possibleIntervals = anchorStreet.geometry.coordinates.length - 1;
-
-  var pointsPerInterval = -1;
-  if (amount > possibleIntervals) {
-    pointsPerInterval = Math.ceil(amount / possibleIntervals);
-  } else {
-    pointsPerInterval = Math.ceil(possibleIntervals / amount);
-  }
+  //  var pointsPerInterval = (amount > possibleIntervals) ? amount / possibleIntervals : possibleIntervals / amount;
+  var pointsPerInterval = amount / possibleIntervals;
+  pointsPerInterval = Math.ceil(pointsPerInterval);
 
   var fraction = 1 / pointsPerInterval;
 

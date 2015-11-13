@@ -9,10 +9,10 @@ Level1.prototype.generateSpoof = function (amount) {
     'lon': 11.573041815506889
   };
 
-  var range = 4 * Math.pow(10, 15);
+  var range = Math.pow(10, 16);
   var offsetPow = Math.pow(10, 19);
   //start point gets bigger offset to diversify the start a little
-  var baseCoordinate = tools.getOffsetForCoordinate(baseCoordinates, range, Math.pow(10, 16.5));
+  var baseCoordinate = tools.getOffsetForCoordinate(baseCoordinates, range, Math.pow(10, 17));
   var coordinates = [];
 
   for (var i = 0; i < amount; i++) {
