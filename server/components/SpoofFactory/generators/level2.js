@@ -2,7 +2,9 @@ var tools = require('../SpoofTools'),
   rekuire = require('rekuire'),
   streetsOfMunich = rekuire('streetsMunich.json').features;
 
-function Level2() {}
+function Level2() {
+  console.log('Level2-Spoofgenerator initialized with ' + streetsOfMunich.length + ' streets!');
+}
 
 Level2.prototype.generateSpoof = function (amount) {
 
@@ -10,9 +12,13 @@ Level2.prototype.generateSpoof = function (amount) {
   var anchorStreet = tools.getRandStreet(streetsOfMunich);
   //number of intervals between street points
   var possibleIntervals = anchorStreet.geometry.coordinates.length - 1;
-  //  var pointsPerInterval = (amount > possibleIntervals) ? amount / possibleIntervals : possibleIntervals / amount;
-  var pointsPerInterval = amount / possibleIntervals;
-  pointsPerInterval = Math.ceil(pointsPerInterval);
+
+  var pointsPerInterval = -1;
+  if (amount > possibleIntervals) {
+    pointsPerInterval = Math.ceil(amount / possibleIntervals);
+  } else {
+    pointsPerInterval = Math.ceil(possibleIntervals / amount);
+  }
 
   var fraction = 1 / pointsPerInterval;
 

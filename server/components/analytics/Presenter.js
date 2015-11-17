@@ -98,5 +98,6 @@ Presenter.prototype.presentResults = function (results, rawSpoofs, rawTrajectori
     table.push(row);
   }
   console.log(table.toString());
+  return table;
 }
 module.exports = new Presenter();

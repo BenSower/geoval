@@ -11,7 +11,7 @@ function Analyser() {}
 
 Analyser.prototype.analyse = function (cb) {
 
-  var trainingTrajectoryAmount = 170;
+  var trainingTrajectoryAmount = 201;
   async.parallel({
       trajectories: function (callback) {
         Trajectory.find({
@@ -71,82 +71,14 @@ Analyser.prototype.analyse = function (cb) {
             });
           }
           console.log('\nAnalyzing LvL' + i + ' trajectories:');
-          var analyRes = JSON.parse(JSON.stringify(SpoofDetector.detectSpoofs(results.trajectories, spoofs)));
-          //var analyRes = _.clone(SpoofDetector.detectSpoofs(results.trajectories, spoofs));
-          answer.push(analyRes);
-          Presenter.presentResults(analyRes.results, spoofs, results.trajectories, i);
+          var analyRes = SpoofDetector.detectSpoofs(results.trajectories, spoofs);
+          var table = Presenter.presentResults(analyRes.results, spoofs, results.trajectories, i);
+          answer.push(table);
           //Presenter.createPlotlyGraph(analyRes, 'speedMarkovProb');
         }
       }
-
-      answer = mergeResults(answer);
       cb(null, answer);
     });
-}
-
-function mergeResults(results) {
-  var trajectories = {
-    0: {},
-    1: {},
-    2: {},
-    3: {}
-  };
-  for (var spoofLvL = 0; spoofLvL < results.length; spoofLvL++) {
-    var spoofLvLResults = results[spoofLvL].results;
-    for (var algorithm in spoofLvLResults) {
-      var categoryResults = spoofLvLResults[algorithm];
-      for (var categoryResultType in categoryResults) {
-        var categoryResult = categoryResults[categoryResultType];
-        for (var j = 0; j < categoryResult.length; j++) {
-          var trajectory = categoryResult[j];
-          trajectories[spoofLvL][trajectory._id] = trajectories[spoofLvL][trajectory._id] || {
-            isSpoof: [],
-            isReal: []
-          };
-          if (categoryResultType === 'realTrajectories' || categoryResultType === 'falseTrajectories') {
-            trajectories[spoofLvL][trajectory._id].isReal.push(algorithm);
-          } else if (categoryResultType === 'spoofs' || categoryResultType === 'falseSpoofs') {
-            trajectories[spoofLvL][trajectory._id].isSpoof.push(algorithm);
-          } else {
-            console.log(categoryResultType);
-          }
-        }
-      }
-    }
-  }
-
-  var correct = {
-    0: 0,
-    1: 0,
-    2: 0,
-    3: 0
-  };
-  var incorrect = {
-    0: 0,
-    1: 0,
-    2: 0,
-    3: 0
-  };
-
-  for (var spoofLvL in trajectories) {
-    for (var id in trajectories[spoofLvL]) {
-      var res = trajectories[spoofLvL][id];
-      if (res.isReal.length < 4) {
-        //is categorized as spoof
-        (spoofLvL !== 0 || spoofLvL !== 4) ? correct[spoofLvL]++: incorrect[spoofLvL]++;
-        setResult(id, 'spoof');
-      } else {
-        //not categorized as spoof
-        (spoofLvL === 0 || spoofLvL === 4) ? correct[spoofLvL]++: incorrect[spoofLvL]++;
-        setResult(id, 'real');
-      }
-    }
-    var total = correct[spoofLvL] + incorrect[spoofLvL];
-    correct[spoofLvL] = (correct[spoofLvL] / total).toFixed(2) * 100;
-    incorrect[spoofLvL] = (incorrect[spoofLvL] / total).toFixed(2) * 100;
-  }
-  console.log('correct ', correct, 'incorrect', incorrect);
-  return results;
 }
 
 function setResult(uid, result) {

@@ -43,7 +43,7 @@ function getFuzzedCoordinates(trajectory, amount) {
   var coordinates = trajectory.geometry.coordinates;
   //cut to appropriate size if original trajectory is too long
   coordinates = coordinates.slice(0, amount);
-  var range = 4 * Math.pow(10, 13);
+  var range = Math.pow(10, 13);
   var offsetPow = Math.pow(10, 19);
   var newCoordinates = [];
 

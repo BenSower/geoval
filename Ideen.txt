@@ -1,7 +1,0 @@
-Neu:
-- switch to geolib
-
-Eingetragen:
-- Mit osm abgleichen ob Weg möglich
-- Anzahl Schnitte mit Gebäuden
-- Zeitabstände in buckets unbekannter Größe verpacken, "verschlüsseln" und zu regelmäßigen Abständen verschicken.
