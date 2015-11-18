@@ -74,7 +74,6 @@ Analyser.prototype.analyse = function (cb) {
           var analyRes = SpoofDetector.detectSpoofs(results.trajectories, spoofs);
           var table = Presenter.presentResults(analyRes.results, spoofs, results.trajectories, i);
           answer.push(table);
-          //Presenter.createPlotlyGraph(analyRes, 'speedMarkovProb');
         }
       }
       cb(null, answer);

@@ -32,7 +32,8 @@ div(ng-include='"components/navbar/navbar.html"')
                   th Correct Trajectories
                   th Wrong Trajectories
                   th Correctly categorized
-              tbody(ng-repeat='(algorithm,data) in result')
+                  th Training Data
+              tbody(ng-repeat='data in result')
                 tr
                   td {{data[0]}}
                   td {{data[1]}}
@@ -40,5 +41,5 @@ div(ng-include='"components/navbar/navbar.html"')
                   td {{data[3]}}
                   td {{data[4]}}
                   td {{data[5]}}
-
+                  td {{data[6]}}
 div(ng-include='"components/footer/footer.html"')
