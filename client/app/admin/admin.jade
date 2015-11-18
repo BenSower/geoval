@@ -36,8 +36,7 @@ div(ng-include='"components/navbar/navbar.html"')
                 button( class="btn btn-md btn-default", ng-click='createFakes(spoofValue)', ladda="isCreatingFakes", data-style="zoom-out", data-spinner-color="#123456") 
                   span( class="ladda-label") {{creatingFakes}}
 
-    p
-    | The delete user and user index api routes are restricted to users with the 'admin' role.
+    p The delete user and user index api routes are restricted to users with the 'admin' role.
   ul.list-group
     li.list-group-item(ng-repeat='user in users')
       strong {{user.name}}
