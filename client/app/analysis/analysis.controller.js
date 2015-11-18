@@ -1,12 +1,6 @@
 'use strict';
 angular.module('geovalApp')
   .controller('AnalysisCtrl', function ($scope, $http) {
-
-    var apiUrl = '/api/trajectories';
-    $scope.showTable = false;
-    $scope.results = {};
-    $http.get(apiUrl).success(redraw);
-
     function redraw(trajectories) {
       $scope.rawTrajectories = trajectories;
     }
@@ -34,5 +28,10 @@ angular.module('geovalApp')
         }
       });
     };
+
+    var apiUrl = '/api/trajectories';
+    $scope.showTable = false;
+    $scope.results = {};
+    $http.get(apiUrl).success(redraw);
 
   });

@@ -1,119 +1,82 @@
 'use strict';
 
-var UUID = require('uuid-js'),
-    _ = require('lodash');
+var path = require('path'),
+  fs = require('fs');
 
-var rekuire = require('rekuire'),
-    TrajUtils = rekuire('TrajUtils');
+var tools = require('./SpoofTools'),
+  rekuire = require('rekuire'),
+  TrajUtils = rekuire('TrajUtils');
 
-function SpoofFactory() {}
+SpoofFactory.prototype.minLength = 10;
+SpoofFactory.prototype.maxLength = 100;
+SpoofFactory.prototype.retries = 0;
 
-//Base is center of munich
-var baseCoordinates = {
-    'lat': 48.13891266483958,
-    'lon': 11.573041815506889
-};
+function SpoofFactory() {
+  var self = this;
 
-SpoofFactory.prototype.createLvL1Spoofs = function(number) {
+  //Load all Generators
+  self.coordinateGenerators = {};
+  var normalizedGeneratorPath = path.join(__dirname, 'generators');
+  fs.readdirSync(normalizedGeneratorPath).forEach(function (file) {
+    var generator = require(path.join(normalizedGeneratorPath, file));
+    var generatorName = path.basename(file, '.js');
+    self.coordinateGenerators[generatorName] = generator;
+  });
+}
 
-    console.log('creating spoofed trajectories ' + number);
-    var spoofs = [];
+SpoofFactory.prototype.createSpoofSet = function (lvl, amount) {
 
-    var pushFunction = function(element) {
-        spoofs.push(element);
+  console.log('creating ' + amount + ' lvl' + lvl + ' spoofed trajectories ');
+  var spoofs = [];
+
+  var pushFunction = function (element) {
+    if (element !== null) {
+      spoofs.push(element);
+    } else {
+      console.log('Error creating spoof, will try again later');
     }
+  }
 
-    for (var i = 0; i < number; i++) {
-        createLvl1Spoof(pushFunction);
+  for (var i = 0; i < amount; i++) {
+    this.createSpoof(lvl, this.coordinateGenerators['level' + lvl].generateSpoof, pushFunction);
+  }
+
+  if (spoofs.length < amount && this.retries < 30) {
+    var difference = amount - spoofs.length;
+    console.log('Not all spoofs satisfied the constraints, trying again for ' + difference + ' spoofs');
+    this.retries++;
+    spoofs.concat(this.createSpoofSet(lvl, difference));
+  } else {
+    this.retries = 0;
+  }
+  return spoofs;
+}
+
+SpoofFactory.prototype.createSpoof = function (lvl, coordinateGenerator, cb) {
+  var trajLength = tools.getRandInt(this.minLength, this.maxLength),
+    times = tools.createRandomTimes(trajLength),
+    coordinates = coordinateGenerator(trajLength, this);
+
+  var spoof = {
+    id: tools.getName(lvl),
+    properties: {
+      coordTimes: times,
+      spoofLvL: lvl
+    },
+    geometry: {
+      coordinates: coordinates
     }
-    return spoofs;
-}
-
-
-
-function createLvl1Spoof(cb) {
-    var maxLength = 100,
-        minLength = 10,
-        trajLength = getRandInt(minLength, maxLength),
-        coordinates = createCoordinates(trajLength),
-        times = createRandomTimes(trajLength);
-
-    var spoof = {
-        id: getName(1),
-        properties: {
-            coordTimes: times,
-            spoofLvL: 1
-        },
-        geometry: {
-            coordinates: coordinates
-        }
-    };
-
-    TrajUtils.preprocess(spoof, function(err, preprocessedSpoof) {
-        if (err) throw err;
-        if (preprocessedSpoof !== null && preprocessedSpoof !== undefined) {
-            return cb(preprocessedSpoof);
-        } else {
-            console.log('error creating spoof');
-            return cb(null);
-        }
-    });
-
-}
-
-
-function getRandInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-function createCoordinates(amount) {
-
-    var range = 4 * Math.pow(10, 15);
-    var offsetPow = Math.pow(10, 19);
-    //start point gets bigger offset to diversify the start a little
-    var baseCoordinate = getOffsetForCoordinate(baseCoordinates, range, Math.pow(10, 16.5));
-    var coordinates = [];
-
-    for (var i = 0; i < amount; i++) {
-        //offset points based on baseCoordinate in munich
-        var offsetCoord = getOffsetForCoordinate(baseCoordinate, range, offsetPow);
-        baseCoordinate.lon = offsetCoord.lon;
-        baseCoordinate.lat = offsetCoord.lat;
-        coordinates.push([offsetCoord.lon, offsetCoord.lat]);
+  };
+  TrajUtils.preprocess(spoof, function (err, preprocessedSpoof) {
+    if (err) throw err;
+    if (preprocessedSpoof !== null && preprocessedSpoof !== undefined) {
+      return cb(preprocessedSpoof);
+    } else {
+      console.log('error creating spoof');
+      return cb(null);
     }
-    return coordinates;
-}
+  });
 
-function getOffsetForCoordinate(baseCoordinate, range, offsetPow) {
-    var lonOffset = getRandInt(-range, range) / offsetPow;
-    var latOffset = getRandInt(-range, range) / offsetPow;
-    return {
-        lon: baseCoordinate.lon + lonOffset,
-        lat: baseCoordinate.lat + latOffset
-    };
-
-}
-
-function createRandomTimes(amount) {
-    var times = [];
-    var d = new Date();
-    var time = d.getTime();
-
-    for (var i = 0; i < amount; i++) {
-        //random time between timestamps 1-60 seconds
-        time = time + randomIntFromInterval(1, 60000);
-        times.push(time);
-    }
-    return times;
-}
-
-function randomIntFromInterval(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-function getName(level) {
-    var uuid4 = UUID.create();
-    return uuid4.toString() + '.lvl' + level;
 }
 
 module.exports = SpoofFactory;

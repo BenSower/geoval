@@ -61,15 +61,15 @@ angular.module('geovalApp')
       if (lvl === 'all') {
         for (var i = 1; i < 4; i++) {
           $.post('/api/trajectories/createSpoofs', {
-            amount: $scope['spoofAmount'],
+            amount: $scope.spoofAmount,
             lvl: i
           }, setLabels);
         }
       } else {
         $.post('/api/trajectories/createSpoofs', {
-          amount: $scope['spoofAmount'],
+          amount: $scope.spoofAmount,
           lvl: lvl
         }, setLabels);
       }
-    }
+    };
   });
