@@ -4,6 +4,7 @@ angular.module('geovalApp')
   .controller('MapCtrl', function ($scope, $http) {
 
     var markers = [];
+    //styles for mouseover highlighting
     var normalStyle = new ol.style.Style({
       stroke: new ol.style.Stroke({
         color: '#FF0000',
@@ -93,6 +94,7 @@ angular.module('geovalApp')
       $scope.sliderOptions.loadedTrajectories = trajectories.length;
     });
 
+    //highlight trajectories on mouseover
     $scope.$on('openlayers.layers.trajectories.mousemove', function (event, feature) {
       $scope.$apply(function () {
         if (feature !== highlight) {
