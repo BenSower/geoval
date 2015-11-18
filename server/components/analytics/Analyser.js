@@ -81,18 +81,4 @@ Analyser.prototype.analyse = function (cb) {
     });
 }
 
-function setResult(uid, result) {
-  Trajectory.findById(uid, function (err, trajectory) {
-    if (!trajectory)
-      return next(new Error('Could not load Document'));
-    else {
-      trajectory.properties.analysisResult = result;
-      trajectory.save(function (err) {
-        if (err)
-          console.log('error')
-      });
-    }
-  });
-}
-
 module.exports = new Analyser();

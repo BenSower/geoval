@@ -4,6 +4,7 @@ angular.module('geovalApp')
 
     var apiUrl = '/api/trajectories';
     $scope.showTable = false;
+    $scope.results = {};
     $http.get(apiUrl).success(redraw);
 
     function redraw(trajectories) {
@@ -21,8 +22,16 @@ angular.module('geovalApp')
     };
 
     $scope.analyse = function () {
-      $http.get('/api/trajectories/analyse').success(function (result) {
-        console.log(result);
+      $http.get('/api/trajectories/analyse').success(function (results) {
+        for (var i = 0; i < results.length; i++) {
+          $scope.results[i] = [];
+          var levelData = results[i];
+          for (var j = 0; j < levelData.length; j++) {
+            var algorithmName = Object.keys(levelData[j])[0];
+            var result = levelData[j][algorithmName];
+            $scope.results[i].push(result);
+          }
+        }
       });
     };
 

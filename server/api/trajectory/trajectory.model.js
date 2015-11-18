@@ -16,10 +16,6 @@ var TrajectorySchema = new Schema({
     spoofLvL: {
       type: Number,
       default: 0
-    },
-    analysisResult: {
-      type: String,
-      default: 'uncategorized'
     }
   },
   geometry: {
