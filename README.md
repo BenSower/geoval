@@ -29,3 +29,8 @@ and the basic project-structure visit https://github.com/DaftMonk/generator-angu
 * Generate spoof-trajectories of any level (you might have to restart the server for proper initialization of the lvl-3 generator)
 * view the trajectories on the map
 * automatically analyse all trajectories with the automatic analysis.
+
+
+# General information
+* the detection-algorithms can be found in "./server/components/analytics/algorithms"
+* the spoof generation algorithms can be found in "./server/components/SpoofFactory/generators"

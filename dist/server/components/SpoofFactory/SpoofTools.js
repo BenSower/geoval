@@ -25,9 +25,9 @@ SpoofTools.prototype.radToDeg = function (r) {
 }
 
 /*
-    Get's the point in between pointA and pointB based on the fraction f
+    Gets a point in between pointA and pointB based on the fraction f
     (f=0 => pointA, f=1 => pointB)
-    http://fraserchapman.blogspot.com/2008/09/intermediate-points-on-great-circle.html
+    see http://fraserchapman.blogspot.com/2008/09/intermediate-points-on-great-circle.html
 */
 SpoofTools.prototype.intermediatePoint = function (pointA, pointB, f) {
 

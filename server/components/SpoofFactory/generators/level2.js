@@ -2,6 +2,10 @@ var tools = require('../SpoofTools'),
   rekuire = require('rekuire'),
   streetsOfMunich = rekuire('streetsMunich.json').features;
 
+/*
+Generates trajectories based on real streets
+*/
+
 function Level2() {
   console.log('Level2-Spoofgenerator initialized with ' + streetsOfMunich.length + ' streets!');
 }

@@ -1,5 +1,8 @@
 var tools = require('../SpoofTools');
 
+/*
+Generates more or less completely random trajectories
+*/
 function Level1() {}
 
 Level1.prototype.generateSpoof = function (amount) {

@@ -32,23 +32,28 @@ TrajUtils.prototype.convertGpxToGeoJson = function (gpxFilePath) {
   return trajectory;
 }
 
+/*
+ Filters trajectories before and after feature vector creation
+*/
 TrajUtils.prototype.preprocess = function (trajectory, cb) {
 
-  if (!trajectoryConstraintsCheck(trajectory)) {
-    console.log('trajectory did not qualify, skipping:', trajectory.geometry);
-    return cb(null, null);
-  }
-  var rawFv = new FeatureVector();
-  rawFv.extractFeatures(trajectory, function (err, fv) {
-    if (!fvConstraintsCheck(fv)) {
-      console.log('featureVector did not qualify, skipping:', fv);
+    if (!trajectoryConstraintsCheck(trajectory)) {
+      console.log('trajectory did not qualify, skipping:', trajectory.geometry);
       return cb(null, null);
     }
-    trajectory.featureVector = fv;
-    return cb(err, trajectory);
-  });
-}
-
+    var rawFv = new FeatureVector();
+    rawFv.extractFeatures(trajectory, function (err, fv) {
+      if (!fvConstraintsCheck(fv)) {
+        console.log('featureVector did not qualify, skipping:', fv);
+        return cb(null, null);
+      }
+      trajectory.featureVector = fv;
+      return cb(err, trajectory);
+    });
+  }
+  /*
+  checks if all constraints for imported/generated trajectories are met
+  */
 function trajectoryConstraintsCheck(trajectory) {
   //skip trajectories with 1 or less points
   var containsMoreThenOnePoint = (trajectory.geometry.coordinates.length > 5);
@@ -65,28 +70,14 @@ function trajectoryConstraintsCheck(trajectory) {
   return containsMoreThenOnePoint && hasNoBrokenCoordinates;
 }
 
+/*
+checks if all constraints of the calculated feature vectors are met
+*/
 function fvConstraintsCheck(fv) {
   //skip trajectories with too big outliers
   var maxOutlierThreshold = 200;
   var hasNoBigOutliers = fv.spatialDistance.biggestDistance < maxOutlierThreshold;
   return hasNoBigOutliers;
-}
-
-TrajUtils.prototype.deg2rad = function (deg) {
-  return deg * (Math.PI / 180);
-}
-
-TrajUtils.prototype.getDistanceFromLonLatInM = function (lon1, lat1, lon2, lat2) {
-  var R = 6371; // Radius of the earth in km
-  var dLat = this.deg2rad(lat2 - lat1); // deg2rad below
-  var dLon = this.deg2rad(lon2 - lon1);
-  var a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  var d = R * c; // Distance in km
-  return d * 1000;
 }
 
 /*
@@ -137,6 +128,9 @@ TrajUtils.prototype.parseMediaQBackup = function (pathToBackup, cb) {
   })
 }
 
+/*
+  Used to remove unnecessary/breaking data from import
+*/
 function sanitizeImportLine(line) {
   //removing old mongodb objId
   delete line._id;

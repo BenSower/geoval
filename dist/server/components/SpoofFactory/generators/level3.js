@@ -4,6 +4,10 @@ var tools = require('../SpoofTools'),
 
 var rawTrajectories = [];
 
+/*
+Generates trajectories based on real lvl 0 trajectories
+*/
+
 function Level3() {
   var self = this;
   initializeRawTrajectories();
@@ -27,6 +31,9 @@ function initializeRawTrajectories() {
 }
 
 Level3.prototype.generateSpoof = function (amount) {
+  if (rawTrajectories.length === 0) {
+    initializeRawTrajectories();
+  }
   //select random trajectory from rawTrajectories
   var trajectory = rawTrajectories[Math.floor(Math.random() * rawTrajectories.length)];
   var retries = 0;

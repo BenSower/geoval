@@ -166,7 +166,7 @@
 
       <div class="jumbotron">
         <h1>Slider for Bootstrap <small>bootstrap-slider.js</small></h1>
-        <p class="lead">Examples for the bootstrap-slider component.<p>
+        <p class="lead">Examples for the <a target="_blank" href="https://github.com/seiyria/bootstrap-slider">bootstrap-slider</a> component.<p>
       </div>
 
       <div class="examples">
@@ -978,7 +978,8 @@ new Slider("#ex16b", { min: 0, max: 10, value: [0, 10], focus: true });
 				ticks_labels: ['$0', '$100', '$200', '$300', '$400'],
 				ticks_positions: [0, 30, 70, 90, 100],
 				ticks_snap_bounds: 20,
-				value: 200
+				value: 200,
+				reversed: true
 			});
 
 			/* Example 15 */
