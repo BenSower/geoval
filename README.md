@@ -12,3 +12,6 @@ Geovalidation framework used to check and validate geopositions
 * In the root directory run ```npm i``` to install all necessary packages listed in package.json
 * To install all necessary frontend-packages, run ```bower install```
 (you might have to install bower globally first by running ```npm i -g bower``` )
+* run GeoVal by either running ```npm start``` to run the current version normally or 
+```grunt serve``` to run a dev version. For more information on the build system
+and the basic project-structure visit https://github.com/DaftMonk/generator-angular-fullstack

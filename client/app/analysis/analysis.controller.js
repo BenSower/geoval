@@ -16,6 +16,7 @@ angular.module('geovalApp')
     };
 
     $scope.analyse = function () {
+      $scope.isAnalysing = true;
       $http.get('/api/trajectories/analyse').success(function (results) {
         for (var i = 0; i < results.length; i++) {
           $scope.results[i] = [];
@@ -26,12 +27,15 @@ angular.module('geovalApp')
             $scope.results[i].push(result);
           }
         }
+        $scope.isAnalysing = false;
       });
     };
 
     var apiUrl = '/api/trajectories';
     $scope.showTable = false;
     $scope.results = {};
+    $scope.analyseText = 'Analyse Trajectories';
+    $scope.isAnalysing = false;
     $http.get(apiUrl).success(redraw);
 
   });

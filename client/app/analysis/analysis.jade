@@ -1,8 +1,9 @@
 div(ng-include='"components/navbar/navbar.html"')
 .container(ng-controller='AnalysisCtrl')
     .container-fluid
-        a.btn.btn-primary.btn-lg(href='', ng-click='showTable = !showTable') Toggle Full Table
-        a.btn.btn-primary.btn-lg(href='', ng-click='analyse()') Analyse Trajectories
+        a.btn.btn-default.btn-md(href='', ng-click='showTable = !showTable') Toggle Full Table
+        a.btn.btn-default.btn-md(href='', ng-click='analyse()', ladda="isAnalysing", data-style="zoom-out", data-spinner-color="#123456") 
+          span( class="ladda-label") {{analyseText}}
         table.table-responsive.table.table-hover(ts-wrapper='', ng-show='showTable')
             thead
               tr
